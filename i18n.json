@@ -1,0 +1,138 @@
+{
+  "guide": {
+    "en": "Guide",
+    "zh": "指南"
+  },
+  "api": {
+    "en": "API",
+    "zh": "API"
+  },
+  "document": {
+    "en": "Document",
+    "zh": "文档"
+  },
+  "gettingStarted": {
+    "en": "Getting Started",
+    "zh": "快速开始"
+  },
+  "introduction": {
+    "en": "Introduction",
+    "zh": "介绍"
+  },
+  "useMdx": {
+    "en": "Use MDX",
+    "zh": "使用 MDX"
+  },
+  "codeBlocks": {
+    "en": "Code Blocks",
+    "zh": "代码块"
+  },
+  "components": {
+    "en": "Components",
+    "zh": "组件"
+  },
+  "container": {
+    "en": "Container",
+    "zh": "容器"
+  },
+  "commands": {
+    "en": "Commands",
+    "zh": "命令"
+  },
+  "home": {
+    "en": "Home",
+    "zh": "首页"
+  },
+  "book": {
+    "en": "Hello Agents",
+    "zh": "Agents入门指南"
+  },
+  "preface": {
+    "en": "Preface",
+    "zh": "前言"
+  },
+  "chapter1": {
+    "en": "Chapter 1: Introduction to Agents",
+    "zh": "第一章：初识智能体"
+  },
+  "chapter2": {
+    "en": "Chapter 2: History of Agents",
+    "zh": "第二章：智能体发展史"
+  },
+  "chapter3": {
+    "en": "Chapter 3: Fundamentals of Large Language Models",
+    "zh": "第三章：大语言模型基础"
+  },
+  "chapter4": {
+    "en": "Chapter 4: Building Classic Agent Paradigms",
+    "zh": "第四章：智能体经典范式构建"
+  },
+  "chapter5": {
+    "en": "Chapter 5: Building Agents with Low-Code Platforms",
+    "zh": "第五章：基于低代码平台的智能体搭建"
+  },
+  "chapter6": {
+    "en": "Chapter 6: Framework Development Practice",
+    "zh": "第六章：框架开发实践"
+  },
+  "chapter7": {
+    "en": "Chapter 7: Building Your Agent Framework",
+    "zh": "第七章：构建你的Agent框架"
+  },
+  "chapter8": {
+    "en": "Chapter 8: Memory and Retrieval",
+    "zh": "第八章：记忆与检索"
+  },
+  "chapter9": {
+    "en": "Chapter 9: Context Engineering",
+    "zh": "第九章：上下文工程"
+  },
+  "chapter10": {
+    "en": "Chapter 10: Agent Communication Protocols",
+    "zh": "第十章：智能体通信协议"
+  },
+  "chapter11": {
+    "en": "Chapter 11: Agentic RL",
+    "zh": "第十一章：Agentic-RL"
+  },
+  "chapter12": {
+    "en": "Chapter 12: Agent Performance Evaluation",
+    "zh": "第十二章：智能体性能评估"
+  },
+  "chapter13": {
+    "en": "Chapter 13: Intelligent Travel Assistant",
+    "zh": "第十三章：智能旅行助手"
+  },
+  "chapter14": {
+    "en": "Chapter 14: Automated Deep Research Agent",
+    "zh": "第十四章：自动化深度研究智能体"
+  },
+  "chapter15": {
+    "en": "Chapter 15: Building Cyber Town",
+    "zh": "第十五章：构建赛博小镇"
+  },
+  "chapter16": {
+    "en": "Chapter 16: Graduation Project",
+    "zh": "第十六章：毕业设计"
+  },
+  "part1": {
+    "en": "Part 1: Fundamentals",
+    "zh": "第一部分：基础篇"
+  },
+  "part2": {
+    "en": "Part 2: Single Agent",
+    "zh": "第二部分：单体篇"
+  },
+  "part3": {
+    "en": "Part 3: Advanced",
+    "zh": "第三部分：高级篇"
+  },
+  "part4": {
+    "en": "Part 4: Practice",
+    "zh": "第四部分：实战篇"
+  },
+  "part5": {
+    "en": "Part 5: Outlook",
+    "zh": "第五部分：展望篇"
+  }
+}

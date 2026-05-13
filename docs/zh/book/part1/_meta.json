@@ -1,0 +1,17 @@
+[
+  {
+    "type": "dir",
+    "name": "chapter1",
+    "label": "chapter1"
+  },
+  {
+    "type": "dir",
+    "name": "chapter2",
+    "label": "chapter2"
+  },
+  {
+    "type": "dir",
+    "name": "chapter3",
+    "label": "chapter3"
+  }
+]
