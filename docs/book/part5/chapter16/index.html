@@ -5,12 +5,80 @@
 <title>第十六章 毕业设计：构建属于你的多智能体应用</title>
 <script>{;const saved = localStorage.getItem('rspress-theme-appearance');const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;const isDark = !saved || saved === 'auto' ? preferDark : saved === 'dark';document.documentElement.classList.toggle('dark', isDark);document.documentElement.classList.toggle('rp-dark', isDark);document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';}</script>
 <script>window.onload=function(){document.title='「万维飘」w3pua.com';setTimeout(function(){var imgs=document.querySelectorAll('img.rp-home-hero__image-img');imgs.forEach(function(img){var num=Math.floor(Math.random()*19)+1;img.src='/logo/'+num+'.svg';});},100);};</script>
-<link href="/static/css/styles.a9ece97661.css" rel="stylesheet">
-<script defer src="/static/js/styles.c905503ecf.js"></script>
+<script src="/katex.min.js"></script>
+<script>
+    (function() {
+      function renderMathInElement(container) {
+        if (!container) return;
+        
+        var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+        var textNodes = [];
+        while(walker.nextNode()) textNodes.push(walker.currentNode);
+        
+        textNodes.forEach(function(textNode) {
+          var text = textNode.textContent;
+          if (!text || (!text.includes('$$') && !text.includes('$'))) return;
+          
+          var parent = textNode.parentNode;
+          if (!parent) return;
+          if (parent.tagName === 'PRE' || parent.tagName === 'CODE' || parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE') return;
+          
+          var newHtml = text.replace(/\$\$([\s\S]*?)\$\$/g, function(match, formula) {
+            try {
+              return '<div class="math math-display">' + katex.renderToString(formula.trim(), {displayMode: true, throwOnError: false}) + '</div>';
+            } catch(e) { return match; }
+          }).replace(/\$([^\$\n]+?)\$/g, function(match, formula) {
+            try {
+              return katex.renderToString(formula.trim(), {displayMode: false, throwOnError: false});
+            } catch(e) { return match; }
+          });
+          
+          if (newHtml !== text) {
+            var span = document.createElement('span');
+            span.innerHTML = newHtml;
+            parent.replaceChild(span, textNode);
+          }
+        });
+      }
+
+      function onRouteChange() {
+        setTimeout(function() {
+          var container = document.getElementById('__rspress_root');
+          if (container) {
+            renderMathInElement(container);
+          }
+        }, 100);
+      }
+
+      if (typeof window !== 'undefined') {
+        if (window.__RSPRESS__) {
+          window.__RSPRESS__.addEventListener('routeChangeComplete', onRouteChange);
+        } else {
+          window.addEventListener('popstate', onRouteChange);
+          var originalPushState = history.pushState;
+          history.pushState = function() {
+            originalPushState.apply(this, arguments);
+            onRouteChange();
+          };
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+          onRouteChange();
+        });
+        
+        setTimeout(onRouteChange, 500);
+        setTimeout(onRouteChange, 1000);
+        setTimeout(onRouteChange, 2000);
+      }
+    })();
+  </script>
+<link href="/static/css/styles.e6bedadc36.css" rel="stylesheet">
+<link rel="stylesheet" href="/katex.min.css">
+<script defer src="/static/js/styles.03ebfe3fca.js"></script>
 <script defer src="/static/js/lib-react.06aa503779.js"></script>
 <script defer src="/static/js/lib-router.a7a83a8399.js"></script>
 <script defer src="/static/js/6665.f15cceccdb.js"></script>
-<script defer src="/static/js/index.5c209764ac.js"></script>
+<script defer src="/static/js/index.78ea795f13.js"></script>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="generator" content="Rspress v2.0.11">
 <link rel="icon" href="/logo.png">
