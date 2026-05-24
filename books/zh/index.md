@@ -14,7 +14,7 @@ hero:
       text: GitHub
       link: https://github.com/chalecao/w3pua-doc
   image:
-    src: /logo.png
+    src: /logo/1.svg
     alt: Logo
 features:
   - title: 智能体基础

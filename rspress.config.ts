@@ -5,6 +5,16 @@ export default defineConfig({
   root: path.join(__dirname, 'books'),
   outDir: path.join(__dirname, 'docs'),
   lang: 'zh',
+  builderConfig: {
+    html: {
+      tags: [
+        {
+          tag: 'script',
+          children: "window.onload=function(){document.title='「万维飘」w3pua.com';setTimeout(function(){var imgs=document.querySelectorAll('img.rp-home-hero__image-img');imgs.forEach(function(img){var num=Math.floor(Math.random()*19)+1;img.src='/logo/'+num+'.svg';});},100);};",
+        },
+      ],
+    },
+  },
   locales: [
     {
       lang: 'en',
@@ -30,13 +40,6 @@ export default defineConfig({
     },
   },
   themeConfig: {
-    socialLinks: [
-      {
-        icon: 'github',
-        mode: 'link',
-        content: 'https://github.com/chalecao/w3pua-doc',
-      },
-    ],
     locales: [
       {
         lang: 'en',
