@@ -8,11 +8,11 @@ hero:
   tagline: 探索知识的边界，发现学习的乐趣
   actions:
     - theme: brand
-      text: 开始阅读
+      text: Agent指南
       link: /zh/book/preface
     - theme: alt
-      text: GitHub
-      link: https://github.com/chalecao/w3pua-doc
+      text: Harness手册
+      link: /zh/harness/1-four-frameworks-comparison  
   image:
     src: /logo/1.svg
     alt: Logo

@@ -8,11 +8,11 @@ hero:
   tagline: Explore the boundaries of knowledge, discover the joy of learning
   actions:
     - theme: brand
-      text: Start Reading
+      text: Agent Guide
       link: /en/book/preface
     - theme: alt
-      text: GitHub
-      link: https://github.com/chalecao/w3pua-doc
+      text: Harness Handbook
+      link: /en/harness/1-four-frameworks-comparison  
   image:
     src: /logo/1.svg
     alt: Logo
