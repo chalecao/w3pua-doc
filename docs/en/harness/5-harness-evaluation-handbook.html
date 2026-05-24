@@ -1,0 +1,1180 @@
+<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness Component Evaluation Handbook (HEval Handbook v1.0)</title>
+<script>{;const saved = localStorage.getItem('rspress-theme-appearance');const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;const isDark = !saved || saved === 'auto' ? preferDark : saved === 'dark';document.documentElement.classList.toggle('dark', isDark);document.documentElement.classList.toggle('rp-dark', isDark);document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';}</script>
+<script>window.onload=function(){document.title='「万维飘」w3pua.com';setTimeout(function(){var imgs=document.querySelectorAll('img.rp-home-hero__image-img');imgs.forEach(function(img){var num=Math.floor(Math.random()*19)+1;img.src='/logo/'+num+'.svg';});},100);};</script>
+<link href="/static/css/styles.a9ece97661.css" rel="stylesheet">
+<script defer src="/static/js/styles.c905503ecf.js"></script>
+<script defer src="/static/js/lib-react.06aa503779.js"></script>
+<script defer src="/static/js/lib-router.a7a83a8399.js"></script>
+<script defer src="/static/js/6665.f15cceccdb.js"></script>
+<script defer src="/static/js/index.529caf5c59.js"></script>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Rspress v2.0.11">
+<link rel="icon" href="/logo.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Harness Component Evaluation Handbook (HEval Handbook v1.0)">
+<meta name="description" content="This handbook defines the methodology, dimensions, task sets, and aggregation formulas used by Harness Engineering projects to evaluate AI Agent harness component capabilities.Core Position: HEval is not for scoring LLMs, but for scoring &quot;engineering scaffolding that wraps LLMs&quot; — the evaluation targets are harness frameworks themselves like OpenSpec, Superpowers, gstack, GSD, harness-engineering.Historical Context: This handbook supersedes four-frameworks-comparison.md as the authoritative evaluation method. The star matrix is retained as historical archive.">
+<meta property="og:description" content="This handbook defines the methodology, dimensions, task sets, and aggregation formulas used by Harness Engineering projects to evaluate AI Agent harness component capabilities.Core Position: HEval is not for scoring LLMs, but for scoring &quot;engineering scaffolding that wraps LLMs&quot; — the evaluation targets are harness frameworks themselves like OpenSpec, Superpowers, gstack, GSD, harness-engineering.Historical Context: This handbook supersedes four-frameworks-comparison.md as the authoritative evaluation method. The star matrix is retained as historical archive."></head>
+
+  <body>
+    <div id="__rspress_root"><link rel="preload" as="image" href="/logo.png"/><header class="rp-nav"><div class="rp-nav__left"><div class="rp-nav__title"><a href="/en/" class="rp-nav__title__link rp-link"><div class="rp-nav__title__logo"><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--light"/><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--dark"/></div></a></div></div><div class="rp-nav__right"><button class="rp-search-button"><div class="rp-search-button__content"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21" class="rp-search-button__icon"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg><span class="rp-search-button__word">Search</span></div><div class="rp-search-button__hotkey" style="opacity:0"><span></span><span>K</span></div></button><div class="rp-search-button--mobile"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg></div><ul class="rp-nav-menu rp-nav-menu--right"><li class="rp-nav-menu__item"><a href="/en/book/preface.html" class="rp-nav-menu__item__container rp-link">Agent Guide</a></li><li class="rp-nav-menu__item rp-nav-menu__item--active"><a href="/en/harness/1-four-frameworks-comparison.html" class="rp-nav-menu__item__container rp-link">Harness Handbook</a></li></ul><div class="rp-nav__others"><div class="rp-nav-menu__divider"></div><li class="rp-nav-menu__item"><div class="rp-nav-menu__item__container">English<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-menu__item__icon"><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--center"><li class="rp-hover-group__item rp-hover-group__item--active" style="padding-left:8px" data-depth="0"><a href="/en/harness/5-harness-evaluation-handbook.html" class="rp-hover-group__item__link rp-link" aria-label="English" lang="en" hrefLang="en" rel="alternate">English</a></li><li class="rp-hover-group__item" style="padding-left:8px" data-depth="0"><a href="/harness/5-harness-evaluation-handbook.html" class="rp-hover-group__item__link rp-link" aria-label="简体中文" lang="zh" hrefLang="zh" rel="alternate">简体中文</a></li></ul></li><div class="rp-switch-appearance"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" class="rp-switch-appearance__icon rp-switch-appearance__icon--sun"><path fill="currentColor" d="m7.001 15.848-1.226 1.226a.58.58 0 0 0 0 .818.58.58 0 0 0 .818 0l1.226-1.226a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0m-.352-8.735a.584.584 0 0 0 .825-.825L6.237 5.051a.584.584 0 0 0-.825.825zM5.011 11.07h-1.75a.584.584 0 0 0 0 1.167h1.75c.324 0 .584-.26.584-.583a.585.585 0 0 0-.584-.584m7.003-5.835c.324 0 .584-.26.584-.584V2.9a.58.58 0 0 0-.584-.584.58.58 0 0 0-.583.583V4.65c0 .323.262.584.583.584m5.616 1.621 1.226-1.225a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0l-1.226 1.225a.58.58 0 0 0 0 .818.576.576 0 0 0 .818 0m3.138 4.214h-1.75a.58.58 0 0 0-.584.584c0 .324.26.584.583.584h1.751a.584.584 0 1 0 0-1.167m-3.389 5.124a.584.584 0 0 0-.825.825l1.238 1.238a.584.584 0 0 0 .825-.826zm-5.365-9.795a5.256 5.256 0 0 0-5.257 5.258 5.256 5.256 0 0 0 5.257 5.257 5.256 5.256 0 0 0 5.257-5.257 5.256 5.256 0 0 0-5.257-5.258m0 11.675a.58.58 0 0 0-.583.583v1.751a.582.582 0 1 0 1.167 0v-1.75a.584.584 0 0 0-.584-.584"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" viewBox="0 0 19 19" class="rp-switch-appearance__icon rp-switch-appearance__icon--moon"><path fill="currentColor" d="M9.166 0a9.2 9.2 0 0 1 1.857.188.834.834 0 0 1 .042 1.623 4.47 4.47 0 1 0 5.457 5.457l.048-.135a.834.834 0 0 1 1.575.177q.186.902.188 1.856A9.168 9.168 0 1 1 9.166 0"></path></svg></div></div><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__sm"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg></button><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__md"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--right"><div class="rp-nav-menu__others-mobile__container"><div class="rp-nav-hamburger__md__hover-group"><div class="rp-nav-screen-appearance"><div class="rp-nav-screen-appearance__left">Theme</div><div class="rp-nav-screen-appearance__right"></div></div><div class="rp-nav-screen-langs"><div class="rp-nav-screen-langs__left">Languages</div><div class="rp-nav-screen-langs__right">English<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-screen-langs__icon "><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div></div><div class="rp-nav-screen-langs-group" style="display:grid;grid-template-rows:0fr;transition:grid-template-rows 0.2s ease-out"><div class="rp-nav-screen-langs-group__inner"><span class="rp-nav-screen-langs-group__item rp-nav-screen-langs-group__item--active" aria-current="page" aria-disabled="true">English</span><a href="/harness/5-harness-evaluation-handbook.html" class="rp-nav-screen-langs-group__item rp-link" hrefLang="zh" lang="zh" rel="alternate">简体中文</a></div></div><div class="rp-nav-screen-divider"></div></div></div></ul></button></div></header><div class="rp-doc-layout__menu"><div class="rp-sidebar-menu"><button type="button" class="rp-sidebar-menu__left"><svg width="1em" height="1em" viewBox="0 0 32 32"><path fill="currentColor" d="M4 6h24v2H4zm0 18h24v2H4zm0-12h24v2H4zm0 6h24v2H4z"></path></svg><span>Menu</span></button><button type="button" class="rp-sidebar-menu__right"><span class="rp-sidebar-menu__right__text">ON THIS PAGE</span><svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-sidebar-menu__right__icon" style="transform:rotate(0deg);transition:transform 0.2s ease-out"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></button></div></div><div class="rp-doc-layout__container"><aside class="rp-doc-layout__sidebar rp-scrollbar"><a href="/en/harness/1-four-frameworks-comparison.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>Four Frameworks Comparison</span></div><div class="rp-sidebar-item__right"></div></a><a href="/en/harness/2-HarnessEngineering.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>Harness Engineering Practice</span></div><div class="rp-sidebar-item__right"></div></a><a href="/en/harness/3-harness-engineering-handbook.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>Quick Reference Handbook</span></div><div class="rp-sidebar-item__right"></div></a><a href="/en/harness/4-anti-patterns.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>Anti-Patterns Guide</span></div><div class="rp-sidebar-item__right"></div></a><a href="/en/harness/5-harness-evaluation-handbook.html" class="rp-sidebar-item rp-sidebar-item--active rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>Evaluation Handbook</span></div><div class="rp-sidebar-item__right"></div></a><a href="/en/harness/6-hook-patterns.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>Hook Design Patterns</span></div><div class="rp-sidebar-item__right"></div></a><a href="/en/harness/7-team-parallel-development.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>Team Parallel Development</span></div><div class="rp-sidebar-item__right"></div></a></aside><div class="rp-doc-layout__doc"><main class="rp-doc-layout__doc-container"><div class="rp-doc rspress-doc"><!--$--><h1 class="rp-toc-include" id="harness-component-evaluation-handbook-heval-handbook-v10"><a href="#harness-component-evaluation-handbook-heval-handbook-v10" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Harness Component Evaluation Handbook (HEval Handbook v1.0)<!-- --> </h1>
+<blockquote>
+<p>This handbook defines the methodology, dimensions, task sets, and aggregation formulas used by Harness Engineering projects to evaluate AI Agent harness component capabilities.</p>
+<p><strong>Core Position</strong>: HEval is not for scoring LLMs, but for scoring &quot;engineering scaffolding that wraps LLMs&quot; — the evaluation targets are harness frameworks themselves like OpenSpec, Superpowers, gstack, GSD, harness-engineering.</p>
+<p><strong>Historical Context</strong>: This handbook supersedes <a href="/en/harness/1-four-frameworks-comparison.html" class="rp-link">four-frameworks-comparison.md</a> as the authoritative evaluation method. The star matrix is retained as historical archive.</p>
+</blockquote>
+<hr/>
+<h2 class="rp-toc-include" id="table-of-contents"><a href="#table-of-contents" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Table of Contents</h2>
+<ol>
+<li><a href="#1-evaluation-objectives-and-scope" class="rp-link">Evaluation Objectives and Scope</a></li>
+<li><a href="#2-definition-of-evaluation-objects" class="rp-link">Definition of Evaluation Objects</a></li>
+<li><a href="#3-four-layer-evaluation-method-overview" class="rp-link">Four-Layer Evaluation Method Overview</a></li>
+<li><a href="#4-l1-static-analysis" class="rp-link">L1 Static Analysis</a></li>
+<li><a href="#5-l2-structured-scoring-rubric" class="rp-link">L2 Structured Scoring (Rubric)</a></li>
+<li><a href="#6-l3-standard-task-set-benchmark" class="rp-link">L3 Standard Task Set (Benchmark)</a></li>
+<li><a href="#7-l4-user-feedback-and-dogfooding" class="rp-link">L4 User Feedback and Dogfooding</a></li>
+<li><a href="#8-aggregation-formula-and-grades" class="rp-link">Aggregation Formula and Grades</a></li>
+<li><a href="#9-harnessevaluate-automated-evaluation-architecture" class="rp-link"><code>harness:evaluate</code> Automated Evaluation Architecture</a></li>
+<li><a href="#10-report-schema-and-examples" class="rp-link">Report Schema and Examples</a></li>
+<li><a href="#11-evaluator-neutrality-and-bias-resistance" class="rp-link">Evaluator Neutrality and Bias Resistance</a></li>
+<li><a href="#12-validation-case-sample-scores-for-5-existing-harnesses" class="rp-link">Validation Case: Sample Scores for 5 Existing Harnesses</a></li>
+<li><a href="#13-compatibility-with-four-frameworks-comparisonmd" class="rp-link">Compatibility with four-frameworks-comparison.md</a></li>
+<li><a href="#appendix-a-rubric-anchor-complete-definitions" class="rp-link">Appendix A: Complete Rubric Anchor Definitions</a></li>
+<li><a href="#appendix-b-benchmark-task-specifications" class="rp-link">Appendix B: Benchmark Task Specifications</a></li>
+<li><a href="#appendix-c-static-metric-complete-formulas" class="rp-link">Appendix C: Complete Static Metric Formulas</a></li>
+</ol>
+<hr/>
+<h2 class="rp-toc-include" id="1-evaluation-objectives-and-scope"><a href="#1-evaluation-objectives-and-scope" class="rp-header-anchor rp-link" aria-hidden="true">#</a>1. Evaluation Objectives and Scope</h2>
+<h3 class="rp-toc-include" id="11-evaluation-objectives"><a href="#11-evaluation-objectives" class="rp-header-anchor rp-link" aria-hidden="true">#</a>1.1 Evaluation Objectives</h3>
+<p>HEval solves three specific problems:</p>
+<ol>
+<li><strong>Selection Decision</strong>: When teams/individuals choose a harness, they want to see a cross-vendor comparable total score + dimension distribution, rather than self-promotional READMEs.</li>
+<li><strong>Evolution Monitoring</strong>: When a harness evolves from v0.5 → v0.6, need to quantify &quot;which capability changed this upgrade&quot; — can&#x27;t rely solely on changelog adjectives.</li>
+<li><strong>Reference Decision</strong>: When harness-engineering decides which capabilities to borrow from OpenSpec / GSD / gstack / Superpowers, use dimension distribution to identify gaps rather than intuition.</li>
+</ol>
+<h3 class="rp-toc-include" id="12-scope"><a href="#12-scope" class="rp-header-anchor rp-link" aria-hidden="true">#</a>1.2 Scope</h3>
+<p><strong>HEval evaluates</strong>:</p>
+<ul>
+<li>Harness framework (one git repository + one clear methodology)</li>
+<li>Single version (anchored by git tag or commit SHA)</li>
+<li>Default configuration (vendor README recommended installation/enablement method)</li>
+</ul>
+<p><strong>HEval does NOT evaluate</strong>:</p>
+<ul>
+<li>Individual prompt quality (belongs to prompt engineering category)</li>
+<li>Individual LLM model capabilities (SWE-bench / HumanEval / METR already cover this)</li>
+<li>Arbitrary AI programming tools (Cursor / Cline / Aider / Copilot and other IDE/agents are outside scope — they are harness hosts, not harnesses themselves)</li>
+<li>IDE plugins, third-party MCP servers, personal dotfiles</li>
+</ul>
+<h3 class="rp-toc-include" id="13-relationship-with-harnessaudit"><a href="#13-relationship-with-harnessaudit" class="rp-header-anchor rp-link" aria-hidden="true">#</a>1.3 Relationship with harness:audit</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>Tool</th><th>Evaluation Object</th><th>Purpose</th></tr></thead><tbody><tr><td><code>harness:audit</code></td><td>A <strong>user project&#x27;s</strong> harness setup (health of your project&#x27;s CLAUDE.md / Hooks / Skills)</td><td>Optimize your own project</td></tr><tr><td><strong>HEval</strong> / <code>harness:evaluate</code></td><td>A <strong>harness framework itself</strong> (products like OpenSpec / Superpowers)</td><td>Selection and comparison</td></tr></tbody></table></div>
+<p>The two share some dimensions (both cover 6-layer structure, Hook enforcement, documentation completeness), but have different perspectives: audit looks at &quot;how well this project uses harness&quot;, HEval looks at &quot;what capabilities this harness provides&quot;.</p>
+<hr/>
+<h2 class="rp-toc-include" id="2-definition-of-evaluation-objects"><a href="#2-definition-of-evaluation-objects" class="rp-header-anchor rp-link" aria-hidden="true">#</a>2. Definition of Evaluation Objects</h2>
+<h3 class="rp-toc-include" id="21-what-constitutes-a-harness-component"><a href="#21-what-constitutes-a-harness-component" class="rp-header-anchor rp-link" aria-hidden="true">#</a>2.1 What Constitutes a Harness Component</h3>
+<p>A git repository meeting all following conditions qualifies as HEval evaluation object:</p>
+<ul>
+<li><strong>Discoverable</strong>: Has public README explaining purpose and installation method.</li>
+<li><strong>Installable</strong>: Can be deployed to a new project via git clone / npm install / <code>claude plugin install</code> or similar clear method.</li>
+<li><strong>Contains Engineering Capabilities</strong>: Provides at least one of: skill / command / hook / agent / MCP / system prompt template / workflow script. README-only without executable/loadable artifacts doesn&#x27;t qualify.</li>
+<li><strong>Has Methodology Proposition</strong>: README or documentation can extract at least 1 clear SDLC philosophy (&quot;enforce TDD&quot;, &quot;spec as living document&quot;, &quot;fresh context per wave&quot;, &quot;role play&quot; etc.).</li>
+</ul>
+<h3 class="rp-toc-include" id="22-version-binding"><a href="#22-version-binding" class="rp-header-anchor rp-link" aria-hidden="true">#</a>2.2 Version Binding</h3>
+<p>Each evaluation must bind to a specific version:</p>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>&lt;harness-name&gt;@&lt;version-locator&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>Examples:</span></span>
+<span class="line"><span>  superpowers@v0.5.2</span></span>
+<span class="line"><span>  openspec@2026-04-15  (commit short SHA)</span></span>
+<span class="line"><span>  harness-engineering@v1.10.0</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>Report metadata must record:</p>
+<ul>
+<li><code>version_locator</code>: tag or SHA</li>
+<li><code>evaluated_at</code>: evaluation date</li>
+<li><code>benchmark_version</code>: Benchmark task set version used</li>
+<li><code>evaluator_runtime</code>: Claude model version during evaluation (e.g., <code>claude-sonnet-4-6</code>)</li>
+</ul>
+<h3 class="rp-toc-include" id="23-evaluation-time-window"><a href="#23-evaluation-time-window" class="rp-header-anchor rp-link" aria-hidden="true">#</a>2.3 Evaluation Time Window</h3>
+<p>L4 user feedback uses <strong>rolling 90-day window</strong> data. L1/L2/L3 are version snapshots, time-independent.</p>
+<hr/>
+<h2 class="rp-toc-include" id="3-four-layer-evaluation-method-overview"><a href="#3-four-layer-evaluation-method-overview" class="rp-header-anchor rp-link" aria-hidden="true">#</a>3. Four-Layer Evaluation Method Overview</h2>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>                          HES Total Score (0-100, S/A/B/C/D Grade)</span></span>
+<span class="line"><span>                                    │</span></span>
+<span class="line"><span>        ┌───────────────────────────┼───────────────────────────┐</span></span>
+<span class="line"><span>        │           │               │               │</span></span>
+<span class="line"><span>      15%         30%             40%             15%</span></span>
+<span class="line"><span>        │           │               │               │</span></span>
+<span class="line"><span>       L1          L2              L3              L4</span></span>
+<span class="line"><span>     Static     Rubric         Benchmark        Feedback</span></span>
+<span class="line"><span>   Static Analysis   Structured Scoring      Standard Task Set      User Feedback</span></span>
+<span class="line"><span>   (Script)     (Review+LLM)       (Runtime)         (Data Collection)</span></span>
+<span class="line"><span>        │           │               │               │</span></span>
+<span class="line"><span>        ▼           ▼               ▼               ▼</span></span>
+<span class="line"><span>   Repository Structure      7 Dimensions          6 Tasks          GitHub +</span></span>
+<span class="line"><span>   Metadata Indicators       0-5 Anchors        SDLC Benchmark       Dogfooding</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p><strong>Why these four layers</strong>:</p>
+<ul>
+<li><strong>L1 Static</strong>: Anti-cheating anchor. Only looks at mechanically computable facts (skill count, hook types, ADR count), reproducible by any reviewer, but cannot reflect quality.</li>
+<li><strong>L2 Rubric</strong>: Connects subjective and objective. Assign clear anchors to 7 mutually exclusive dimensions, turning &quot;I think this harness is strict&quot; into &quot;It scored 4 in &#x27;Enforcement and Gates&#x27; dimension because it has Stop Hook but no PreToolUse to block force-push&quot;.</li>
+<li><strong>L3 Benchmark</strong>: Behavioral ground truth. Make harness actually run SDLC tasks, see if it maintains quality across long cycles, parallel execution, regression, and archive scenarios. This layer has highest weight.</li>
+<li><strong>L4 Feedback</strong>: Calibrate with real signals. Star count, issue resolution rate, third-party use cases dilute design-phase paper advantages.</li>
+</ul>
+<p>Four layers cross-validate: If L2 gives high score but L3 benchmark fails, Rubric anchors are misaligned with actual capabilities, triggering handbook revision.</p>
+<hr/>
+<h2 class="rp-toc-include" id="4-l1-static-analysis"><a href="#4-l1-static-analysis" class="rp-header-anchor rp-link" aria-hidden="true">#</a>4. L1 Static Analysis</h2>
+<h3 class="rp-toc-include" id="41-design-principles"><a href="#41-design-principles" class="rp-header-anchor rp-link" aria-hidden="true">#</a>4.1 Design Principles</h3>
+<p><strong>L1 only measures &quot;facts&quot;, not &quot;quality&quot;</strong>. Any metric requiring semantic judgment belongs elsewhere. L1 total score is <strong>0-100, weight 15%</strong>.</p>
+<h3 class="rp-toc-include" id="42-metric-matrix"><a href="#42-metric-matrix" class="rp-header-anchor rp-link" aria-hidden="true">#</a>4.2 Metric Matrix</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>Metric</th><th>Measurement Method</th><th>Full Score Condition</th><th>Weight</th></tr></thead><tbody><tr><td>Skill Atomicity</td><td>Number of SKILL.md in <code>skills/</code> ÷ average lines</td><td>≥10 skills with average &lt; 200 lines</td><td>15</td></tr><tr><td>Frontmatter Completeness</td><td>SKILL.md with complete <code>name + description + trigger phrase</code> / total</td><td>100%</td><td>10</td></tr><tr><td>Hook Type Coverage</td><td>Number of hook event types triggered in settings.json</td><td>≥4 types</td><td>15</td></tr><tr><td>Hook Silent Success</td><td>Test hooks produce no output on success path</td><td>100% silent on success</td><td>5</td></tr><tr><td>ADR Count &amp; Time Distribution</td><td><code>docs/decisions/</code> count + updates in last 6 months</td><td>≥5 articles with updates in 6 months</td><td>10</td></tr><tr><td>Documentation Density</td><td>Total words in docs/ + references/ ÷ lines of code</td><td>≥0.5 words/line (manual type)</td><td>10</td></tr><tr><td>Self-test Script</td><td>Whether self-test.sh or equivalent CI exists</td><td>Exists and passes</td><td>10</td></tr><tr><td>Marketplace Discoverability</td><td>Whether available in Anthropic / third-party marketplace</td><td>Listed</td><td>5</td></tr><tr><td>Dependency Hygiene</td><td>Third-party dependency count + license compliance scan</td><td>≤5 non-dev dependencies with compatible licenses</td><td>5</td></tr><tr><td>Meta-test Coverage</td><td>Tests for harness&#x27;s own skill / hook</td><td>≥1 skill category has tests</td><td>5</td></tr></tbody></table></div>
+<p>Total 90 points, normalized proportionally to 0-100. Detailed calculation formulas in Appendix C.</p>
+<h3 class="rp-toc-include" id="43-implementation"><a href="#43-implementation" class="rp-header-anchor rp-link" aria-hidden="true">#</a>4.3 Implementation</h3>
+<p>Produced automatically by static scanner embedded in <code>harness:evaluate</code> (<code>tools/static-scanner.py</code> in design). No LLM involved.</p>
+<hr/>
+<h2 class="rp-toc-include" id="5-l2-structured-scoring-rubric"><a href="#5-l2-structured-scoring-rubric" class="rp-header-anchor rp-link" aria-hidden="true">#</a>5. L2 Structured Scoring (Rubric)</h2>
+<h3 class="rp-toc-include" id="51-7-dimensions"><a href="#51-7-dimensions" class="rp-header-anchor rp-link" aria-hidden="true">#</a>5.1 7 Dimensions</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>Dimension</th><th>Keywords</th><th>One-Sentence Definition</th></tr></thead><tbody><tr><td>D1 Methodology Completeness</td><td>SDLC phase coverage</td><td>Covers clarify / design / plan / code / verify / ship / monitor phases</td></tr><tr><td>D2 Capability Layering</td><td>Six-layer model</td><td>Which layers provided among Memory / Rules / Skills / Agents / Hooks / Tools</td></tr><tr><td>D3 Enforcement and Gates</td><td>rigid / Hook</td><td>Clarity of rigid constraints, Hook enforcement capability, difficulty of bypassing gates</td></tr><tr><td>D4 Traceability and Archive</td><td>Living spec / ADR</td><td>Whether decisions, proposals, changes are persisted to searchable archive</td></tr><tr><td>D5 Context Management and Anti-corrosion</td><td>fresh context / parallel</td><td>Context rot resistance, parallel subagent, long-cycle project support</td></tr><tr><td>D6 Observability and Feedback Loop</td><td>canary / postmortem</td><td>Post-release monitoring, failure feedback improvement, dogfooding evidence</td></tr><tr><td>D7 Ecosystem and Documentation</td><td>marketplace / documentation</td><td>Marketplace discoverability, community ecosystem, documentation completeness, extension mechanism</td></tr></tbody></table></div>
+<h4 class="rp-toc-include" id="511-dimension-attribution-disambiguation-important"><a href="#511-dimension-attribution-disambiguation-important" class="rp-header-anchor rp-link" aria-hidden="true">#</a>5.1.1 Dimension Attribution Disambiguation (Important)</h4>
+<p>Some capabilities touch multiple dimensions. To avoid double-counting or drift, use following <strong>single attribution rule</strong> — each capability can only earn points in its best-fit dimension; other dimensions only serve as corroboration (no double-scoring):</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>Capability</th><th>Default Attribution</th><th>Rationale</th></tr></thead><tbody><tr><td>TDD (Red-Green-Refactor)</td><td><strong>D1</strong> Methodology</td><td>Counts as covered SDLC verify phase; D3 only scores when TDD is Hook-enforced</td></tr><tr><td>TDD Hook Enforcement</td><td><strong>D3</strong> Enforcement</td><td>Distinction from above: D1 sees &quot;process coverage&quot;, D3 sees &quot;process bypassability&quot;</td></tr><tr><td>Parallel Subagent</td><td><strong>D5</strong> Context Management</td><td>Core value is context rot resistance, not D2</td></tr><tr><td>Agents Layer (role subagent)</td><td><strong>D2</strong> Capability Layering</td><td>Counts as D2 when subagent used for role play (CEO/QA/Eng) rather than context isolation</td></tr><tr><td>Real Browser E2E</td><td><strong>D6</strong> Observability</td><td>Test coverage belongs to D1 (methodology verify phase), but end-to-end runtime feedback belongs to D6</td></tr><tr><td>MCP Tool Integration</td><td><strong>D2</strong> Capability Layering</td><td>Tools layer; not D7 (D7 looks at whether harness itself can be hosted by multiple IDEs/tools, unrelated to MCP)</td></tr><tr><td>Spec Archive vs ADR Archive</td><td><strong>D4</strong></td><td>Both belong to D4; D1 methodology only sees &quot;whether spec is produced&quot;, not whether archived</td></tr></tbody></table></div>
+<p><strong>General Discrimination Principle</strong>: A capability <strong>exists</strong> → D2; <strong>is enforced</strong> → D3; <strong>is persisted and searchable</strong> → D4; <strong>used for context reset</strong> → D5; <strong>used for runtime feedback</strong> → D6; <strong>supports marketplace/documentation ecosystem</strong> → D7; none of the above, just SDLC phase coverage → D1.</p>
+<h3 class="rp-toc-include" id="52-scoring-anchors-0245"><a href="#52-scoring-anchors-0245" class="rp-header-anchor rp-link" aria-hidden="true">#</a>5.2 Scoring Anchors (0/2/4/5)</h3>
+<p>Each dimension has explicit definitions at four anchors: 0, 2, 4, 5; 1 and 3 are judgments between adjacent anchors. <strong>Complete anchor matrix in Appendix A</strong>.</p>
+<p>Example (D3 Enforcement and Gates):</p>
+<ul>
+<li><strong>0 points</strong>: Entirely prompt-based constraints, no mechanical enforcement; TDD/destructive command interception entirely model-dependent.</li>
+<li><strong>2 points</strong>: Has some PreToolUse or Stop Hook, but covers single scenario (e.g., only protecting .env).</li>
+<li><strong>4 points</strong>: rigid/flexible explicitly marked in frontmatter; Hooks cover ≥3 events; provides three types of destructive command interception: force-push / DROP TABLE / rm -rf.</li>
+<li><strong>5 points</strong>: Has &quot;gate observability&quot; — gate bypass attempts logged to audit log; rigid skills have meta-tests verifying enforcement path; Hook failures provide executable fix suggestions.</li>
+</ul>
+<h3 class="rp-toc-include" id="53-scoring-process"><a href="#53-scoring-process" class="rp-header-anchor rp-link" aria-hidden="true">#</a>5.3 Scoring Process</h3>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>                  Rubric Scoring Process</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>     Input: harness@version repository</span></span>
+<span class="line"><span>              │</span></span>
+<span class="line"><span>              ▼</span></span>
+<span class="line"><span>   ┌─────────────────────┐</span></span>
+<span class="line"><span>   │ Step 1: Prepare Evidence Package │  Scan repository to extract &quot;evidence&quot; for each dimension</span></span>
+<span class="line"><span>   └─────────────────────┘  (related file paths, key code snippets, document excerpts)</span></span>
+<span class="line"><span>              │</span></span>
+<span class="line"><span>              ▼</span></span>
+<span class="line"><span>   ┌─────────────────────┐</span></span>
+<span class="line"><span>   │ Step 2: LLM Scorer  │  Use Sonnet/Opus to score against anchors</span></span>
+<span class="line"><span>   └─────────────────────┘  Output 7 dimension scores + cited evidence for each</span></span>
+<span class="line"><span>              │</span></span>
+<span class="line"><span>              ▼</span></span>
+<span class="line"><span>   ┌─────────────────────┐</span></span>
+<span class="line"><span>   │ Step 3: External Reviewer │  Human (non-harness author) reviews</span></span>
+<span class="line"><span>   └─────────────────────┘  Arbitrate dimensions with ≥1 point disagreement</span></span>
+<span class="line"><span>              │</span></span>
+<span class="line"><span>              ▼</span></span>
+<span class="line"><span>   ┌─────────────────────┐</span></span>
+<span class="line"><span>   │ Step 4: Lock Snapshot │  scores.json + evidence/*.md</span></span>
+<span class="line"><span>   └─────────────────────┘  Write to eval-reports/</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p><strong>Mandatory Constraints</strong>:</p>
+<ul>
+<li>Step 2 LLM model must be noted in metadata (scores drift across models; cross-version comparisons require same model).</li>
+<li>Step 3 human reviewer <strong>cannot be the harness author or core maintainer</strong>.</li>
+<li>When LLM score differs from human score by ≥2 points, disagreement reason must be recorded in evidence/dispute.md.</li>
+</ul>
+<hr/>
+<h2 class="rp-toc-include" id="6-l3-standard-task-set-benchmark"><a href="#6-l3-standard-task-set-benchmark" class="rp-header-anchor rp-link" aria-hidden="true">#</a>6. L3 Standard Task Set (Benchmark)</h2>
+<h3 class="rp-toc-include" id="61-design-principles"><a href="#61-design-principles" class="rp-header-anchor rp-link" aria-hidden="true">#</a>6.1 Design Principles</h3>
+<p>Benchmark does not test LLM problem-solving ability (SWE-bench already does that), but tests <strong>whether this harness improves the same LLM&#x27;s stability across multi-phase SDLC</strong>.</p>
+<p>Each task runs once in two configurations:</p>
+<ul>
+<li><strong>Baseline</strong>: Naked Claude Code, no harness.</li>
+<li><strong>Treatment</strong>: With harness installed.</li>
+</ul>
+<p>Ultimately care about <strong>Δ = Treatment − Baseline</strong>, the incremental value brought by the harness.</p>
+<h3 class="rp-toc-include" id="62-6-standard-tasks"><a href="#62-6-standard-tasks" class="rp-header-anchor rp-link" aria-hidden="true">#</a>6.2 6 Standard Tasks</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>ID</th><th>Task Name</th><th>Difficulty</th><th>Key Capability Tested</th><th>Time Limit</th></tr></thead><tbody><tr><td>T1</td><td>Micro Bug Fix</td><td>⭐</td><td>Can maintain scope, no over-implementation</td><td>10 min</td></tr><tr><td>T2</td><td>Single Feature CRUD</td><td>⭐⭐</td><td>Complete clarify → plan → TDD → verify pipeline</td><td>30 min</td></tr><tr><td>T3</td><td>Single File Refactoring</td><td>⭐⭐</td><td>Refactoring boundaries, regression protection, clean git history</td><td>30 min</td></tr><tr><td>T4</td><td>Cross-Service Integration</td><td>⭐⭐⭐</td><td>Design ADR, dependency management, contract testing</td><td>60 min</td></tr><tr><td>T5</td><td>5-Feature Mini SaaS</td><td>⭐⭐⭐⭐</td><td>Long-cycle context rot resistance, parallel subagent, archive</td><td>120 min</td></tr><tr><td>T6</td><td>Production Incident Triage + Postmortem</td><td>⭐⭐⭐⭐</td><td>Incident workflow, rollback, blameless summary</td><td>60 min</td></tr></tbody></table></div>
+<blockquote>
+<p><strong>v1.1 Roadmap (identified but not included)</strong>: Three tasks below are explicit gaps in current task set, to be introduced in benchmark v2:</p>
+<ul>
+<li><strong>T7 Security Review Task</strong> — Given PR with SQL injection / credential exposure / privilege escalation, test if harness gives accurate review conclusions; current D3 enforcement runtime verification mainly covered incidentally by T2/T3, coverage weak.</li>
+<li><strong>T8 Performance Regression Task</strong> — Given baseline performance data, introduce slow query, test if harness triggers benchmark / canary; current D6 observability measured only by T6 single shot.</li>
+<li><strong>T9 Documentation-First Task</strong> — Pure documentation task producing only ADR and design doc, test D4 archive capability; current D4 scoring mainly by T2/T4 byproducts, no independent ground truth.</li>
+</ul>
+</blockquote>
+<p>Complete specifications (task.md / setup.sh / verify.sh / oracle.json / fixtures/) for each task in Appendix B and <code>eval/benchmarks/v1/T*/</code> directory (in design).</p>
+<h3 class="rp-toc-include" id="63-metrics-per-task"><a href="#63-metrics-per-task" class="rp-header-anchor rp-link" aria-hidden="true">#</a>6.3 Metrics per Task</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>Metric</th><th>Meaning</th><th>Value</th></tr></thead><tbody><tr><td><code>pass</code></td><td>Whether all verification scripts pass</td><td>0/1</td></tr><tr><td><code>hands_off</code></td><td>Whether human intervention needed during completion</td><td>0/1 (1 = fully automated)</td></tr><tr><td><code>tokens_total</code></td><td>Total token consumption</td><td>int</td></tr><tr><td><code>wall_clock_sec</code></td><td>Total task duration</td><td>int</td></tr><tr><td><code>regression_count</code></td><td>Number of newly failing tests introduced</td><td>int (lower better)</td></tr><tr><td><code>artifacts_produced</code></td><td>Whether spec / ADR / postmortem produced</td><td>0/1 (only relevant tasks)</td></tr><tr><td><code>scope_drift</code></td><td>Actual changed files / task declared files</td><td>float (closer to 1 better)</td></tr></tbody></table></div>
+<h3 class="rp-toc-include" id="64-single-task-score-formula"><a href="#64-single-task-score-formula" class="rp-header-anchor rp-link" aria-hidden="true">#</a>6.4 Single Task Score Formula</h3>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>task_score = pass × (</span></span>
+<span class="line"><span>    50                                          # Base pass score</span></span>
+<span class="line"><span>  + 20 × hands_off                              # Automation bonus</span></span>
+<span class="line"><span>  + 10 × clamp(1 - regression_count / 3, 0, 1)  # Regression penalty</span></span>
+<span class="line"><span>  + 10 × artifacts_produced                     # Documentation bonus</span></span>
+<span class="line"><span>  + 10 × clamp(2 - scope_drift, 0, 1)           # Scope discipline</span></span>
+<span class="line"><span>)</span></span>
+<span class="line"><span># token and wall_clock do not affect single task score; go into efficiency score (separate report, not in HES)</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>Failed tasks score 0 directly. Sum 6 task scores → normalize to 0-100.</p>
+<h3 class="rp-toc-include" id="65-anti-cheating-design"><a href="#65-anti-cheating-design" class="rp-header-anchor rp-link" aria-hidden="true">#</a>6.5 Anti-Cheating Design</h3>
+<ul>
+<li>Task set stored in private repository, only distributed to sandbox during evaluation (prevents harness vendors from pre-storing fixture answers in skills).</li>
+<li>Each task has ≥3 variants (same semantics, different variable names/structures), randomly selected during evaluation, results averaged across variants.</li>
+<li>Benchmark task set itself versioned; when task set v1 → v2, all historical scores rerun to maintain comparability, or explicitly labeled &quot;based on benchmark v1, not directly comparable to v2 scores&quot;.</li>
+</ul>
+<hr/>
+<h2 class="rp-toc-include" id="7-l4-user-feedback-and-dogfooding"><a href="#7-l4-user-feedback-and-dogfooding" class="rp-header-anchor rp-link" aria-hidden="true">#</a>7. L4 User Feedback and Dogfooding</h2>
+<h3 class="rp-toc-include" id="71-data-sources"><a href="#71-data-sources" class="rp-header-anchor rp-link" aria-hidden="true">#</a>7.1 Data Sources</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>Data Source</th><th>Measured Item</th><th>Weight</th></tr></thead><tbody><tr><td>GitHub</td><td>stars / forks / watchers, monthly growth rate</td><td>25</td></tr><tr><td>GitHub</td><td>open issues + average close time + bug:feature ratio</td><td>20</td></tr><tr><td>GitHub</td><td>contributor count + 90-day active PRs</td><td>15</td></tr><tr><td>Third-party Mentions</td><td>Independent blog / video / public practice shares</td><td>15</td></tr><tr><td>Marketplace</td><td>Anthropic or third-party marketplace rating (if available)</td><td>10</td></tr><tr><td>Dogfooding</td><td>Clear evidence of completing ≥3 real projects with this harness</td><td>15</td></tr></tbody></table></div>
+<h3 class="rp-toc-include" id="72-calculation-details"><a href="#72-calculation-details" class="rp-header-anchor rp-link" aria-hidden="true">#</a>7.2 Calculation Details</h3>
+<ul>
+<li>Stars / monthly growth use logarithmic normalization to avoid large projects dominating: <code>log10(stars + 1) / log10(10000) × 100</code>, capped at 100.</li>
+<li>&quot;Average issue close time&quot; has four tiers: &lt;7d / 7-30d / 30-90d / &gt;90d corresponding to 100/75/50/25 points.</li>
+<li>&quot;90-day active PRs&quot; normalized by z-score across all harnesses in current evaluation set (relative metric).</li>
+</ul>
+<h3 class="rp-toc-include" id="73-cold-start-exemption"><a href="#73-cold-start-exemption" class="rp-header-anchor rp-link" aria-hidden="true">#</a>7.3 Cold Start Exemption</h3>
+<p>Harnesses released &lt; 90 days:</p>
+<ul>
+<li>Among L4&#x27;s 6 data sources, &quot;GitHub three items&quot; and &quot;marketplace rating&quot; can be marked N/A.</li>
+<li>L4 total weight temporarily reduced from 15% to 0%, score redistributed to L3 (weight increased to 55%).</li>
+<li>Evaluation report must explicitly mark <code>feedback_status: cold_start</code>.</li>
+</ul>
+<h3 class="rp-toc-include" id="74-anti-gaming-design"><a href="#74-anti-gaming-design" class="rp-header-anchor rp-link" aria-hidden="true">#</a>7.4 Anti-Gaming Design</h3>
+<ul>
+<li>Star/fork historical data examined as curves, not absolute values — pull 90-day daily increments from GitHub Archive, identify and exclude obvious &quot;batch star&quot; events.</li>
+<li>Third-party mentions must include URL and author identification; own blog, employee blog, paid promotion excluded.</li>
+<li>Dogfooding evidence must be <strong>publicly verifiable</strong> projects (open source repositories or verified private screenshots).</li>
+</ul>
+<hr/>
+<h2 class="rp-toc-include" id="8-aggregation-formula-and-grades"><a href="#8-aggregation-formula-and-grades" class="rp-header-anchor rp-link" aria-hidden="true">#</a>8. Aggregation Formula and Grades</h2>
+<h3 class="rp-toc-include" id="81-formula"><a href="#81-formula" class="rp-header-anchor rp-link" aria-hidden="true">#</a>8.1 Formula</h3>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>HES = L1_score × 0.15</span></span>
+<span class="line"><span>    + L2_score × 0.30</span></span>
+<span class="line"><span>    + L3_score × 0.40</span></span>
+<span class="line"><span>    + L4_score × 0.15</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>Where each layer&#x27;s score already normalized to 0-100.</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>Cold start harnesses (&lt;90 days old, sparse L4 data):</p>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>HES_cold = L1 × 0.20   # +5%</span></span>
+<span class="line"><span>         + L2 × 0.40   # +10%</span></span>
+<span class="line"><span>         + L3 × 0.40   # unchanged</span></span>
+<span class="line"><span>         + L4 × 0.00   # marked as cold_start</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p><strong>Why not merge all L4 into L3</strong>: Benchmark scores for cold start harnesses have highest variance (task set may not align with harness design expectations). Putting all 15% weight on L3 would let single points determine grade. Instead, distribute to L1 (factual metrics stable) + L2 (reviews have human calibration), making cold start scores nearly as stable as mature harnesses.</p>
+<h3 class="rp-toc-include" id="82-grade-mapping"><a href="#82-grade-mapping" class="rp-header-anchor rp-link" aria-hidden="true">#</a>8.2 Grade Mapping</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>Grade</th><th>HES Range</th><th>Meaning</th></tr></thead><tbody><tr><td><strong>S</strong></td><td>90-100</td><td>Leading across all dimensions; recommended as team default</td></tr><tr><td><strong>A</strong></td><td>80-89</td><td>Strong; may have gaps in specific dimensions, need supplements</td></tr><tr><td><strong>B</strong></td><td>70-79</td><td>Mainstream usable; significant improvement over baseline</td></tr><tr><td><strong>C</strong></td><td>60-69</td><td>Conceptually usable, but engineering immaturity; suitable for early adopters</td></tr><tr><td><strong>D</strong></td><td>&lt; 60</td><td>Not recommended for production, or only suitable for specific scenarios (e.g., demos only)</td></tr></tbody></table></div>
+<h3 class="rp-toc-include" id="83-dimension-radar-chart"><a href="#83-dimension-radar-chart" class="rp-header-anchor rp-link" aria-hidden="true">#</a>8.3 Dimension Radar Chart</h3>
+<p>In addition to HES total, report must include <strong>dimension radar chart</strong> showing L2&#x27;s 7 dimension distribution — two harnesses with same total score may have completely different dimension profiles (e.g., both 80 points, one balanced, one with D3/D4 perfect but D7 missing), radar chart enables selection decisions based on dimensions.</p>
+<hr/>
+<h2 class="rp-toc-include" id="9-harnessevaluate-automated-evaluation-architecture"><a href="#9-harnessevaluate-automated-evaluation-architecture" class="rp-header-anchor rp-link" aria-hidden="true">#</a>9. <code>harness:evaluate</code> Automated Evaluation Architecture</h2>
+<h3 class="rp-toc-include" id="91-design-overview-not-implemented-in-current-phase-only-finalized"><a href="#91-design-overview-not-implemented-in-current-phase-only-finalized" class="rp-header-anchor rp-link" aria-hidden="true">#</a>9.1 Design Overview (Not implemented in current phase, only finalized)</h3>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>┌─────────────────────────────────────────────────────────────────┐</span></span>
+<span class="line"><span>│                     harness:evaluate                              │</span></span>
+<span class="line"><span>│                                                                  │</span></span>
+<span class="line"><span>│  Input:  --target &lt;git-url&gt;@&lt;ref&gt;  --benchmark &lt;version&gt;          │</span></span>
+<span class="line"><span>│  Output: eval-reports/&lt;harness&gt;@&lt;version&gt;/{report.md,scores.json} │</span></span>
+<span class="line"><span>│                                                                  │</span></span>
+<span class="line"><span>│   ┌──────────────┐   ┌──────────────┐   ┌──────────────┐         │</span></span>
+<span class="line"><span>│   │ 1. Static    │   │ 2. Rubric    │   │ 3. Benchmark │         │</span></span>
+<span class="line"><span>│   │    Scanner   │   │    Evaluator │   │    Runner    │         │</span></span>
+<span class="line"><span>│   │  (no LLM)    │   │  (LLM agent) │   │  (sandbox)   │         │</span></span>
+<span class="line"><span>│   └──────┬───────┘   └──────┬───────┘   └──────┬───────┘         │</span></span>
+<span class="line"><span>│          │                  │                  │                  │</span></span>
+<span class="line"><span>│          └──────────────────┼──────────────────┘                  │</span></span>
+<span class="line"><span>│                             │                                     │</span></span>
+<span class="line"><span>│                ┌────────────▼────────────┐                        │</span></span>
+<span class="line"><span>│                │  4. Feedback Collector  │                        │</span></span>
+<span class="line"><span>│                │  (GitHub API / manual)  │                        │</span></span>
+<span class="line"><span>│                └────────────┬────────────┘                        │</span></span>
+<span class="line"><span>│                             │                                     │</span></span>
+<span class="line"><span>│                ┌────────────▼────────────┐                        │</span></span>
+<span class="line"><span>│                │  5. Aggregator          │                        │</span></span>
+<span class="line"><span>│                │  (formula → HES)        │                        │</span></span>
+<span class="line"><span>│                └────────────┬────────────┘                        │</span></span>
+<span class="line"><span>│                             │                                     │</span></span>
+<span class="line"><span>│                ┌────────────▼────────────┐                        │</span></span>
+<span class="line"><span>│                │  6. Report Generator    │                        │</span></span>
+<span class="line"><span>│                │  (md + json + radar)    │                        │</span></span>
+<span class="line"><span>│                └─────────────────────────┘                        │</span></span>
+<span class="line"><span>└─────────────────────────────────────────────────────────────────┘</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<h3 class="rp-toc-include" id="92-module-responsibilities"><a href="#92-module-responsibilities" class="rp-header-anchor rp-link" aria-hidden="true">#</a>9.2 Module Responsibilities</h3>
+<h4 class="rp-toc-include" id="module-1-static-scanner-no-llm"><a href="#module-1-static-scanner-no-llm" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Module 1: Static Scanner (No LLM)</h4>
+<ul>
+<li>Input: Local clone of harness repository.</li>
+<li>Processing: Scan SKILL.md / settings.json / hooks/ / docs/decisions/, calculate all metrics defined in Appendix C.</li>
+<li>Output: <code>l1.json</code>, structured metrics + calculated 0-100 score.</li>
+<li>Implementation: Pure Python/shell script, no LLM, results fully reproducible.</li>
+</ul>
+<h4 class="rp-toc-include" id="module-2-rubric-evaluator-llm-driven"><a href="#module-2-rubric-evaluator-llm-driven" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Module 2: Rubric Evaluator (LLM-driven)</h4>
+<ul>
+<li>Input: Harness repository + 7-dimensional anchors from handbook.</li>
+<li>Processing: Two phases:
+<ul>
+<li>Stage A — Evidence Collection: For each dimension, extract ≤5 evidence fragments (file path + cited code/document) from repository.</li>
+<li>Stage B — Anchor Matching: Use Sonnet/Opus to compare evidence against anchor definitions, give 0-5 score with rationale.</li>
+</ul>
+</li>
+<li>Output: <code>l2.json</code> + <code>l2-evidence/&lt;dim&gt;.md</code>.</li>
+<li>Key Constraint: External human reviewer must arbitrate when disagreement ≥2 points, arbitration result overrides LLM output.</li>
+</ul>
+<h4 class="rp-toc-include" id="module-3-benchmark-runner-sandbox"><a href="#module-3-benchmark-runner-sandbox" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Module 3: Benchmark Runner (Sandbox)</h4>
+<ul>
+<li>Input: Harness repository + Benchmark task set v1.</li>
+<li>Processing: Each task runs baseline and treatment once in clean docker sandbox (variant random), record all metrics.</li>
+<li>Output: <code>l3.json</code> + <code>l3-traces/&lt;task&gt;/{baseline,treatment}/{transcript.md, diff.patch}</code>.</li>
+<li>Key Constraints:
+<ul>
+<li>Sandbox has token budget limit, over budget = task failure.</li>
+<li>Sandbox outbound network only allows allowlist (git / npm / pip / Anthropic API), prevents task cheating by searching online.</li>
+<li>Complete transcript for each run, enabling post-hoc audit.</li>
+</ul>
+</li>
+</ul>
+<h4 class="rp-toc-include" id="module-4-feedback-collector"><a href="#module-4-feedback-collector" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Module 4: Feedback Collector</h4>
+<ul>
+<li>Input: Harness repository URL + 90-day time window.</li>
+<li>Processing: Call GitHub GraphQL API to pull data; semi-automatic process for third-party mentions / dogfooding (search + human review).</li>
+<li>Output: <code>l4.json</code>.</li>
+<li>Key Constraint: Must distinguish &quot;raw data&quot; from &quot;calculated score&quot; — l4.json retains both for easy review.</li>
+</ul>
+<h4 class="rp-toc-include" id="module-5-aggregator"><a href="#module-5-aggregator" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Module 5: Aggregator</h4>
+<ul>
+<li>Input: l1 / l2 / l3 / l4 scores.</li>
+<li>Processing: Apply formula → HES + grade.</li>
+<li>Output: <code>scores.json</code>.</li>
+</ul>
+<h4 class="rp-toc-include" id="module-6-report-generator"><a href="#module-6-report-generator" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Module 6: Report Generator</h4>
+<ul>
+<li>Input: All upstream json + evidence.</li>
+<li>Processing: Render markdown report + radar chart (svg/png) + grade badge.</li>
+<li>Output: <code>report.md</code>.</li>
+</ul>
+<h3 class="rp-toc-include" id="93-integration-points-with-existing-harness-engineering"><a href="#93-integration-points-with-existing-harness-engineering" class="rp-header-anchor rp-link" aria-hidden="true">#</a>9.3 Integration Points with Existing harness-engineering</h3>
+<ul>
+<li>New skill: <code>skills/evaluate/SKILL.md</code> (using ADR-0001&#x27;s skill-based architecture).</li>
+<li>New command: <code>commands/evaluate.md</code> → <code>/harness:evaluate</code>.</li>
+<li>Benchmark task set independent directory: <code>eval/benchmarks/v1/</code>.</li>
+<li>Evaluation report archive: <code>eval/reports/&lt;harness&gt;@&lt;version&gt;/</code>, following ADR (to be created) archive conventions, git mv preserves history.</li>
+<li>Cross-reference in existing <code>harness:audit</code>: When user asks &quot;which harness should I choose&quot;, audit guides to evaluate report.</li>
+</ul>
+<h3 class="rp-toc-include" id="94-cost-estimation-reference"><a href="#94-cost-estimation-reference" class="rp-header-anchor rp-link" aria-hidden="true">#</a>9.4 Cost Estimation (Reference)</h3>
+<ul>
+<li>Single evaluation:
+<ul>
+<li>L2 ~200K tokens (7 dimensions × evidence collection + scoring).</li>
+<li>L3 ~6 tasks × baseline+treatment × <strong>3 variants</strong> (§6.5 anti-cheating requirement) × 50K tokens ≈ <strong>1.8M tokens</strong>.</li>
+<li>Total single evaluation ≈ 2M tokens.</li>
+</ul>
+</li>
+<li>Calculation time: L1/L4 &lt; 5 min; L2 ≈ 30 min; L3 ≈ 12-18 hours (including sandbox startup + variant parallel).</li>
+<li>Recommended evaluation frequency: <strong>Once per harness minor version release + quarterly unified evaluation</strong>.</li>
+<li>Throttling strategy: Variant sampling can reduce to 1 (sacrifice anti-cheating), reducing single evaluation to ~600K tokens / 4-6 hours; full evaluation for important releases, sampling for regular health checks.</li>
+</ul>
+<hr/>
+<h2 class="rp-toc-include" id="10-report-schema-and-examples"><a href="#10-report-schema-and-examples" class="rp-header-anchor rp-link" aria-hidden="true">#</a>10. Report Schema and Examples</h2>
+<h3 class="rp-toc-include" id="101-scoresjson-schema"><a href="#101-scoresjson-schema" class="rp-header-anchor rp-link" aria-hidden="true">#</a>10.1 scores.json Schema</h3>
+<div class="rp-codeblock language-json"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="json"><code><span class="line"><span style="color:var(--shiki-foreground)">{</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;harness&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;superpowers&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;version_locator&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;v0.5.2&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;evaluated_at&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;2026-05-03T08:00:00Z&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;benchmark_version&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;v1&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;evaluator_runtime&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> {</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;L2_rubric_model&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;claude-sonnet-4-6&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;L3_benchmark_model&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;claude-sonnet-4-6&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;note&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;Example placeholder, fill actual model string for official evaluation&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">  }</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;feedback_status&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;active&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;L1_static&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> {</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;score&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 82</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;metrics&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> {</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;skill_atomicity&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 14</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;frontmatter_complete_pct&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 100</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;hook_event_types&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 4</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;...&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;...&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    }</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">  }</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;L2_rubric&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> {</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;score&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 76</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;dimensions&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> {</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;D1_methodology&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 5</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;D2_layering&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 3</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;D3_enforcement&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 5</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;D4_traceability&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 2</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;D5_context_hygiene&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 4</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;D6_observability&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 3</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;D7_ecosystem&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 5</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    }</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;human_reviewer&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;external-reviewer-a&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;llm_human_disputes&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">  }</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;L3_benchmark&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> {</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;score&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 66</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;tasks&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> {</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;T1_bugfix&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)">      {</span><span style="color:var(--shiki-token-keyword)">&quot;pass&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;hands_off&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;regression_count&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;scope_drift&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1.0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;artifacts_produced&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;score&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 90</span><span style="color:var(--shiki-foreground)">}</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;T2_crud&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)">        {</span><span style="color:var(--shiki-token-keyword)">&quot;pass&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;hands_off&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;regression_count&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;scope_drift&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1.2</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;artifacts_produced&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;score&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 88</span><span style="color:var(--shiki-foreground)">}</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;T3_refactor&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)">    {</span><span style="color:var(--shiki-token-keyword)">&quot;pass&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;hands_off&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;regression_count&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;scope_drift&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1.0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;artifacts_produced&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;score&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 90</span><span style="color:var(--shiki-foreground)">}</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;T4_integration&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> {</span><span style="color:var(--shiki-token-keyword)">&quot;pass&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;hands_off&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;regression_count&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;scope_drift&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 2.5</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;artifacts_produced&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;score&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 60</span><span style="color:var(--shiki-foreground)">}</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;T5_5feature&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)">    {</span><span style="color:var(--shiki-token-keyword)">&quot;pass&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;hands_off&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;regression_count&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;scope_drift&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 2.5</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;artifacts_produced&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;score&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 70</span><span style="color:var(--shiki-foreground)">}</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;T6_incident&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)">    {</span><span style="color:var(--shiki-token-keyword)">&quot;pass&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;score&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-foreground)">}</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    }</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;_note&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;L3.score = mean(task_scores) = (90+88+90+60+70+0)/6 = 66.3&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">  }</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;L4_feedback&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> {</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;score&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 88</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;github&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> {</span><span style="color:var(--shiki-token-keyword)">&quot;stars&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 4200</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;forks&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 310</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;issue_close_p50_days&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 12</span><span style="color:var(--shiki-foreground)">}</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;third_party_mentions&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 18</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;dogfooding_evidence&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> [</span><span style="color:var(--shiki-token-string-expression)">&quot;url1&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-string-expression)"> &quot;url2&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-string-expression)"> &quot;url3&quot;</span><span style="color:var(--shiki-foreground)">]</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">  }</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;HES&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 74.7</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;grade&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;B&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;radar_chart&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;report-assets/radar.svg&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">}</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<h3 class="rp-toc-include" id="102-reportmd-structure"><a href="#102-reportmd-structure" class="rp-header-anchor rp-link" aria-hidden="true">#</a>10.2 report.md Structure</h3>
+<div class="rp-codeblock language-markdown"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="markdown"><code><span class="line"><span style="color:var(--shiki-foreground);font-weight:bold"># HEval Report — superpowers@v0.5.2</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-foreground);font-weight:bold">**Total HES**</span><span style="color:var(--shiki-foreground)">: 74.7  </span><span style="color:var(--shiki-foreground);font-weight:bold">**Grade**</span><span style="color:var(--shiki-foreground)">: B</span></span>
+<span class="line"><span style="color:var(--shiki-foreground);font-weight:bold">**Evaluated**</span><span style="color:var(--shiki-foreground)">: 2026-05-03 (benchmark v1, claude-sonnet-4-6)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-foreground);font-weight:bold">## One-Sentence Summary</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">Purest methodology, strictest gates; archive and incident workflow need supplement.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-foreground);font-weight:bold">## Dimension Radar</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">[</span><span style="color:var(--shiki-token-keyword)">radar.svg</span><span style="color:var(--shiki-foreground)">]</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-foreground);font-weight:bold">## Layer Scores</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">- L1 Static     82</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">- L2 Rubric     76</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">- L3 Benchmark  66</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">- L4 Feedback   88</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-foreground)">Formula Recalculation: 0.15×82 + 0.30×76 + 0.40×66 + 0.15×88 = 12.3 + 22.8 + 26.4 + 13.2 = 74.7</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-foreground);font-weight:bold">## Key Findings</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">1. T6 Production Incident task failed: Missing incident workflow skill.</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">2. D4 Traceability only 2 points: No spec archive mechanism.</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">3. D7 Ecosystem perfect score: Listed on Anthropic marketplace + complete documentation.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-foreground);font-weight:bold">## Recommended References</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">- Want D3 enforcement perfect capability → Reference superpowers&#x27; rigid/flexible frontmatter.</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">- Don&#x27;t treat T6 failure as fatal — can combine with gstack&#x27;s /careful series to supplement.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-foreground);font-weight:bold">## Complete Evidence</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">- </span><span style="color:var(--shiki-token-link);text-decoration:underline">[</span><span style="color:var(--shiki-token-keyword);text-decoration:underline">L2 Dimension Evidence</span><span style="color:var(--shiki-token-link);text-decoration:underline">](./l2-evidence/)</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">- </span><span style="color:var(--shiki-token-link);text-decoration:underline">[</span><span style="color:var(--shiki-token-keyword);text-decoration:underline">L3 Task Transcripts</span><span style="color:var(--shiki-token-link);text-decoration:underline">](./l3-traces/)</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<hr/>
+<h2 class="rp-toc-include" id="11-evaluator-neutrality-and-bias-resistance"><a href="#11-evaluator-neutrality-and-bias-resistance" class="rp-header-anchor rp-link" aria-hidden="true">#</a>11. Evaluator Neutrality and Bias Resistance</h2>
+<p>HEval directly addresses Harness Engineering Principle 2: <strong>Never let creators independently review their own output</strong>.</p>
+<h3 class="rp-toc-include" id="111-special-rules-for-evaluating-harness-engineering-itself"><a href="#111-special-rules-for-evaluating-harness-engineering-itself" class="rp-header-anchor rp-link" aria-hidden="true">#</a>11.1 Special Rules for Evaluating harness-engineering Itself</h3>
+<ul>
+<li>L2 Rubric requires at least 2 external reviewers (non-harness-engineering maintainers), when disagreement ≥1 point, discuss and take average, not highest.</li>
+<li>L3 Benchmark run by other harness vendors on same task set to form comparison baseline, avoiding task set implicit bias toward our own.</li>
+<li>Report must be publicly published in repository, including complete evidence/ and traces/, allowing anyone to rerun and refute.</li>
+</ul>
+<h3 class="rp-toc-include" id="112-neutralization-when-evaluating-across-harnesses"><a href="#112-neutralization-when-evaluating-across-harnesses" class="rp-header-anchor rp-link" aria-hidden="true">#</a>11.2 Neutralization When Evaluating Across Harnesses</h3>
+<ul>
+<li>L2 LLM scorer uses same prompt template for all harnesses, only replacing &quot;harness under evaluation&quot; parameter.</li>
+<li>L3 sandbox configuration identical (same LLM, same token budget, same network allowlist, same variant seed).</li>
+<li>L4 data collection pulls same time window for all harnesses simultaneously.</li>
+</ul>
+<h3 class="rp-toc-include" id="113-public-objection-mechanism"><a href="#113-public-objection-mechanism" class="rp-header-anchor rp-link" aria-hidden="true">#</a>11.3 Public Objection Mechanism</h3>
+<p>Any harness vendor disagreeing with their HEval score can follow &quot;evidence → re-evaluation&quot; process:</p>
+<ol>
+<li>Submit issue pointing out specific dimension&#x27;s missing evidence or anchor misjudgment.</li>
+<li>Handbook maintainer responds within 24h whether re-evaluation needed.</li>
+<li>If re-evaluated, original report marked superseded, new report references old report in metadata.</li>
+</ol>
+<hr/>
+<h2 class="rp-toc-include" id="12-validation-case-sample-scores-for-5-existing-harnesses"><a href="#12-validation-case-sample-scores-for-5-existing-harnesses" class="rp-header-anchor rp-link" aria-hidden="true">#</a>12. Validation Case: Sample Scores for 5 Existing Harnesses</h2>
+<blockquote>
+<p>This section is a dry-run to verify 7 dimensions have discriminative power (not all 5 harnesses get 4 points).
+Data source: This repository <code>references/four-frameworks-comparison.md</code> + reading each harness&#x27;s public repository.
+<strong>Formal scoring must follow complete §3-§9 process</strong>; this section only for design validation, not authoritative ranking.</p>
+</blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>Dimension</th><th>OpenSpec</th><th>Superpowers</th><th>gstack</th><th>GSD</th><th>harness-engineering</th></tr></thead><tbody><tr><td>D1 Methodology Completeness</td><td>3</td><td>5</td><td>3</td><td>4</td><td>4</td></tr><tr><td>D2 Capability Layering</td><td>2</td><td>4</td><td>4</td><td>3</td><td>4</td></tr><tr><td>D3 Enforcement and Gates</td><td>1</td><td>5</td><td>4</td><td>3</td><td>4</td></tr><tr><td>D4 Traceability and Archive</td><td>5</td><td>1</td><td>1</td><td>4</td><td>3</td></tr><tr><td>D5 Context Management</td><td>3</td><td>3</td><td>2</td><td>5</td><td>4</td></tr><tr><td>D6 Observability</td><td>2</td><td>3</td><td>5</td><td>3</td><td>3</td></tr><tr><td>D7 Ecosystem</td><td>3</td><td>5</td><td>3</td><td>2</td><td>4</td></tr><tr><td><strong>L2 Total (normalized to 100)</strong></td><td><strong>54</strong></td><td><strong>74</strong></td><td><strong>63</strong></td><td><strong>69</strong></td><td><strong>74</strong></td></tr></tbody></table></div>
+<p>Observations:</p>
+<ul>
+<li><strong>OpenSpec</strong> scores perfect D4 (living spec archive is its killer feature) but only 1 point D3 (no enforcement hooks), extremely skewed distribution — this is quantitative evidence for four-frameworks-comparison.md&#x27;s judgment that &quot;OpenSpec needs other frameworks to be complete&quot;.</li>
+<li><strong>Superpowers</strong> perfect in D1/D3/D7, but only 1 point D4 — exactly matching original star matrix&#x27;s weakness of &quot;no living spec archive&quot;.</li>
+<li><strong>gstack</strong> perfect D6 (exclusive real browser QA + canary + benchmark), but 1 point D4 — typical &quot;strong productization, weak methodology&quot; profile.</li>
+<li><strong>GSD</strong> perfect D5 (fresh context is its core proposition), D2 only 3 points (weak role/agent layer).</li>
+<li><strong>harness-engineering</strong> ties Superpowers at 74 points, different distribution — latter sharper in methodology purity (D1/D3/D7), former more balanced in layering (D2) + context management (D5) + archive (D4). harness-engineering has no killer feature by design, needs P1/P2 borrowings from OpenSpec&#x27;s D4 and gstack&#x27;s D6 to fill gaps.</li>
+<li><strong>D2 scoring neutrality check</strong>: harness-engineering gave itself 4 points (not 5) for D2 because although six-layer model is complete, inter-layer dependency rule automation verification (one D2 perfect condition) currently relies on manual review, not mechanical checking. This self-restraint demonstrates §11.1 neutrality rules in action.</li>
+</ul>
+<p><strong>Discriminative Conclusion</strong>: Among 7 dimensions × 5 harnesses = 35 scores, 1-5 points all appear, no single dimension fully scored or under-scored, discriminative power acceptable. Design OK.</p>
+<hr/>
+<h2 class="rp-toc-include" id="13-compatibility-with-four-frameworks-comparisonmd"><a href="#13-compatibility-with-four-frameworks-comparisonmd" class="rp-header-anchor rp-link" aria-hidden="true">#</a>13. Compatibility with four-frameworks-comparison.md</h2>
+<h3 class="rp-toc-include" id="131-dimension-mapping"><a href="#131-dimension-mapping" class="rp-header-anchor rp-link" aria-hidden="true">#</a>13.1 Dimension Mapping</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>four-frameworks Old Dimension</th><th>HEval New Dimension</th></tr></thead><tbody><tr><td>Spec Archive</td><td>D4 Traceability and Archive</td></tr><tr><td>Long-cycle Context Rot Resistance</td><td>D5 Context Management</td></tr><tr><td>TDD Strictness</td><td>D3 Enforcement and Gates (partial) + D1 Methodology (partial)</td></tr><tr><td>Parallel Execution</td><td>D5 Context Management (merged)</td></tr><tr><td>Product/Scope Challenge</td><td>D1 Methodology Completeness (covers clarify phase)</td></tr><tr><td>Real Browser E2E</td><td>D6 Observability (merged)</td></tr><tr><td>Destructive Action Protection</td><td>D3 Enforcement and Gates (merged)</td></tr><tr><td>Production Release &amp; Monitoring</td><td>D6 Observability (merged)</td></tr><tr><td>Methodology Purity</td><td>D1 Methodology Completeness</td></tr></tbody></table></div>
+<p>Old 9 dimensions partially overlapped (e.g., &quot;TDD Strictness&quot; and &quot;Methodology Purity&quot; influenced each other), HEval merged to 7 mutually exclusive dimensions.</p>
+<h3 class="rp-toc-include" id="132-old-document-retention"><a href="#132-old-document-retention" class="rp-header-anchor rp-link" aria-hidden="true">#</a>13.2 Old Document Retention</h3>
+<ul>
+<li><code>four-frameworks-comparison.md</code> <strong>retained</strong> as historical context, but top must add deprecation note pointing to this handbook and HEval reports.</li>
+<li>Any external harness selection recommendation must use HEval reports, no longer use old star matrix.</li>
+<li>Old document&#x27;s Section III &quot;Project Reference Recommendations&quot; P0/P1/P2 roadmap retained, but needs reordering after first HEval reports produced (use dimension gaps instead of intuition).</li>
+</ul>
+<hr/>
+<h2 class="rp-toc-include" id="appendix-a-complete-rubric-anchor-definitions"><a href="#appendix-a-complete-rubric-anchor-definitions" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Appendix A: Complete Rubric Anchor Definitions</h2>
+<blockquote>
+<p>Each dimension gives explicit 0 / 2 / 4 / 5 definitions. Levels 1 and 3 determined by scorer judgment (between adjacent anchors).</p>
+</blockquote>
+<h3 class="rp-toc-include" id="d1-methodology-completeness"><a href="#d1-methodology-completeness" class="rp-header-anchor rp-link" aria-hidden="true">#</a>D1 Methodology Completeness</h3>
+<ul>
+<li><strong>0</strong>: No explicit methodology proposition, just tool collection.</li>
+<li><strong>2</strong>: Covers 2-3 SDLC phases (e.g., only plan + code), no explicit artifacts for other phases.</li>
+<li><strong>4</strong>: Covers 5+ phases (clarify / design / plan / code / verify), each phase has identifiable entry point (skill / command / document section).</li>
+<li><strong>5</strong>: Covers complete SDLC (including ship / monitor), with explicit contracts between phases (one phase&#x27;s output = next phase&#x27;s input), methodology explicitly stated as philosophical statement in README.</li>
+</ul>
+<h3 class="rp-toc-include" id="d2-capability-layering"><a href="#d2-capability-layering" class="rp-header-anchor rp-link" aria-hidden="true">#</a>D2 Capability Layering</h3>
+<blockquote>
+<p><strong>Important Neutrality Note</strong>: Six-layer model itself is a harness-engineering concept; to avoid D2 anchors directly rewarding &quot;adoption of harness-engineering terminology&quot;, this dimension judges &quot;types of capabilities provided&quot; rather than specific layer names. Any harness expressing equivalent capabilities in its own terminology (e.g., superpowers&#x27; skill + agent + hook classification) counts toward corresponding layer.</p>
+</blockquote>
+<ul>
+<li><strong>0</strong>: Only 1 type of capability (e.g., just prompt templates).</li>
+<li><strong>2</strong>: Covers 2-3 types of capabilities.</li>
+<li><strong>4</strong>: Covers 4-5 types of capabilities <strong>or</strong> covers all 6 types but inter-layer dependency rules not explicit.</li>
+<li><strong>5</strong>: Covers all 6 types (static memory / deterministic rules / on-demand skills / isolated agents / enforcement hooks / tool extensions), <strong>and</strong> has explicit inter-layer dependency rules (which layer cannot depend on which), <strong>and</strong> this rule is automatically verified (not just documented).</li>
+</ul>
+<h3 class="rp-toc-include" id="d3-enforcement-and-gates"><a href="#d3-enforcement-and-gates" class="rp-header-anchor rp-link" aria-hidden="true">#</a>D3 Enforcement and Gates</h3>
+<ul>
+<li><strong>0</strong>: Entirely prompt-based constraints, no mechanical enforcement.</li>
+<li><strong>2</strong>: Has some PreToolUse or Stop Hook, covering single scenario (e.g., only protecting .env).</li>
+<li><strong>4</strong>: rigid/flexible explicitly marked in frontmatter; Hooks cover ≥3 event types; provides at least 2 types of destructive command interception (force-push / DROP TABLE / rm -rf etc.).</li>
+<li><strong>5</strong>: Has &quot;gate observability&quot; — gate bypass attempts logged to audit log; rigid skills have meta-tests verifying enforcement path; Hook failures provide executable fix suggestions.</li>
+</ul>
+<h3 class="rp-toc-include" id="d4-traceability-and-archive"><a href="#d4-traceability-and-archive" class="rp-header-anchor rp-link" aria-hidden="true">#</a>D4 Traceability and Archive</h3>
+<ul>
+<li><strong>0</strong>: No persistence mechanism for spec / decisions / progress.</li>
+<li><strong>2</strong>: Has ADR or progress file, but no archive mechanism (old records directly overwritten).</li>
+<li><strong>4</strong>: Has spec and ADR archive mechanism (e.g., changes/ → archive/), archive retains git history.</li>
+<li><strong>5</strong>: Archive mechanism complete and searchable; provides query / dump skills; archive schema explicitly defined; progress file has both machine-readable and human-readable formats.</li>
+</ul>
+<h3 class="rp-toc-include" id="d5-context-management-and-anti-corrosion"><a href="#d5-context-management-and-anti-corrosion" class="rp-header-anchor rp-link" aria-hidden="true">#</a>D5 Context Management and Anti-corrosion</h3>
+<ul>
+<li><strong>0</strong>: No context management strategy; context naturally grows until overflow.</li>
+<li><strong>2</strong>: Has trim / clear operations but all manually invoked; no parallel subagent.</li>
+<li><strong>4</strong>: Has explicit &quot;fresh context per phase&quot; mechanism; provides parallel subagent skill; can restore progress between sessions.</li>
+<li><strong>5</strong>: Context health continuously monitored (token usage baseline comparison); parallel/serial dependency graph automatically inferred; context rot detection triggers automatic reset.</li>
+</ul>
+<h3 class="rp-toc-include" id="d6-observability-and-feedback-loop"><a href="#d6-observability-and-feedback-loop" class="rp-header-anchor rp-link" aria-hidden="true">#</a>D6 Observability and Feedback Loop</h3>
+<ul>
+<li><strong>0</strong>: Ends after release, no post-release monitoring; failures don&#x27;t feed back to improvement.</li>
+<li><strong>2</strong>: Has habit of recording failures to ADR / postmortem, but entirely manual.</li>
+<li><strong>4</strong>: Has automated monitoring for any of canary / benchmark / E2E; postmortem process explicit.</li>
+<li><strong>5</strong>: Covers all three: canary + benchmark + E2E automated feedback; failure-to-harness-improvement feedback path explicitly documented and dogfooded (has real cases).</li>
+</ul>
+<h3 class="rp-toc-include" id="d7-ecosystem-and-documentation"><a href="#d7-ecosystem-and-documentation" class="rp-header-anchor rp-link" aria-hidden="true">#</a>D7 Ecosystem and Documentation</h3>
+<ul>
+<li><strong>0</strong>: Paths hardcoded, no documentation.</li>
+<li><strong>2</strong>: Documentation exists but scattered; not listed in any marketplace.</li>
+<li><strong>4</strong>: Listed in ≥1 marketplace; documentation layered (README / handbook / ADR); architecture diagram + ADR system complete.</li>
+<li><strong>5</strong>: ≥3 naturally growing installs in marketplace; ≥10 community contributors; provides &quot;extend itself&quot; skill (writing-skills or equivalent).</li>
+</ul>
+<hr/>
+<h2 class="rp-toc-include" id="appendix-b-benchmark-task-specifications"><a href="#appendix-b-benchmark-task-specifications" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Appendix B: Benchmark Task Specifications</h2>
+<blockquote>
+<p>Complete task.md / setup.sh / verify.sh / oracle.json in <code>eval/benchmarks/v1/T*/</code> directory. This appendix gives design intent and verification points for each task.</p>
+</blockquote>
+<h3 class="rp-toc-include" id="t1--micro-bug-fix"><a href="#t1--micro-bug-fix" class="rp-header-anchor rp-link" aria-hidden="true">#</a>T1 — Micro Bug Fix</h3>
+<p><strong>Setup</strong>: Given 50-line small service with 1 failing unit test (off-by-one error).
+<strong>Task</strong>: Have harness fix it, <strong>must not</strong> modify any code unrelated to the bug.
+<strong>Verify</strong>:</p>
+<ul>
+<li>Failed test turns green.</li>
+<li><code>git diff</code> affects ≤ 5 lines and only in original failing function.</li>
+<li>No new files created.</li>
+</ul>
+<p><strong>Tests</strong>: Scope discipline + minimal changes. Most harnesses should score perfect here; failure indicates over-implementation tendency.</p>
+<h3 class="rp-toc-include" id="t2--single-feature-crud"><a href="#t2--single-feature-crud" class="rp-header-anchor rp-link" aria-hidden="true">#</a>T2 — Single Feature CRUD</h3>
+<p><strong>Setup</strong>: Todo app skeleton (user table exists), task is to add &quot;filter by tag&quot; feature.
+<strong>Verify</strong>:</p>
+<ul>
+<li>New API matches OpenAPI contract in oracle.json.</li>
+<li>Has corresponding unit + integration tests.</li>
+<li>Produces documentation artifacts like spec / plan (D4 bonus).</li>
+</ul>
+<p><strong>Tests</strong>: Complete SDLC pipeline + archive artifact production.</p>
+<h3 class="rp-toc-include" id="t3--single-file-refactoring"><a href="#t3--single-file-refactoring" class="rp-header-anchor rp-link" aria-hidden="true">#</a>T3 — Single File Refactoring</h3>
+<p><strong>Setup</strong>: 600-line single-file service, needs splitting into ≥3 modules.
+<strong>Verify</strong>:</p>
+<ul>
+<li>All original tests still pass (regression_count = 0).</li>
+<li>Refactoring and feature changes are separate commits in git history.</li>
+<li>Module boundaries and split rationale documented in ADR or design doc.</li>
+</ul>
+<p><strong>Tests</strong>: Refactoring discipline (no feature creep) + decision recording.</p>
+<h3 class="rp-toc-include" id="t4--cross-service-integration"><a href="#t4--cross-service-integration" class="rp-header-anchor rp-link" aria-hidden="true">#</a>T4 — Cross-Service Integration</h3>
+<p><strong>Setup</strong>: Two independent services A and B, need integration via message queue; client calls A first, A asynchronously notifies B.
+<strong>Verify</strong>:</p>
+<ul>
+<li>Integration tests cover happy path + 1 failure retry scenario.</li>
+<li>Has ADR recording &quot;why MQ instead of sync HTTP&quot;.</li>
+<li>Contract tests (what A sends, what B receives) exist separately.</li>
+</ul>
+<p><strong>Tests</strong>: Cross-boundary design + ADR process.</p>
+<h3 class="rp-toc-include" id="t5--5-feature-mini-saas-long-cycle"><a href="#t5--5-feature-mini-saas-long-cycle" class="rp-header-anchor rp-link" aria-hidden="true">#</a>T5 — 5-Feature Mini SaaS (Long-Cycle)</h3>
+<p><strong>Setup</strong>: From scratch, fully develop according to 5-feature spec list: user registration, login, posting, liking, notifications.
+<strong>Verify</strong>:</p>
+<ul>
+<li>All 5 features pass end-to-end tests.</li>
+<li>No feature missed due to context overflow during task.</li>
+<li>Has progress persistence file allowing task to resume from midpoint after interruption.</li>
+<li>Parallel doesn&#x27;t block dependencies (liking depends on posting, but posting and login can run parallel).</li>
+</ul>
+<p><strong>Tests</strong>: Long-cycle context rot resistance, parallel subagent, archive mechanism — this best distinguishes harness engineering depth.</p>
+<h3 class="rp-toc-include" id="t6--production-incident-triage--postmortem"><a href="#t6--production-incident-triage--postmortem" class="rp-header-anchor rp-link" aria-hidden="true">#</a>T6 — Production Incident Triage + Postmortem</h3>
+<p><strong>Setup</strong>: Given &quot;launched&quot; service (simulated by script), oracle injects production incident (database connection pool exhaustion causing 5xx spike).
+<strong>Verify</strong>:</p>
+<ul>
+<li>Complete triage: identify root cause, locate code position.</li>
+<li>Complete fix: connection pool configuration or code-level fix.</li>
+<li>Complete postmortem: blameless documentation + action items + harness improvement items.</li>
+</ul>
+<p><strong>Tests</strong>: Whether incident workflow is covered, whether can close loop to harness improvement.</p>
+<hr/>
+<h2 class="rp-toc-include" id="appendix-c-complete-static-metric-formulas"><a href="#appendix-c-complete-static-metric-formulas" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Appendix C: Complete Static Metric Formulas</h2>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span># Skill Atomicity (full 15 points)</span></span>
+<span class="line"><span>skill_count = COUNT(skills/**/SKILL.md)</span></span>
+<span class="line"><span>avg_skill_lines = AVG(LINES(skills/**/SKILL.md))</span></span>
+<span class="line"><span>score_atomicity = clamp(</span></span>
+<span class="line"><span>  (skill_count / 10) * 0.5 + (1 - clamp(avg_skill_lines / 200, 0, 1)) * 0.5,</span></span>
+<span class="line"><span>  0, 1</span></span>
+<span class="line"><span>) * 15</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Frontmatter Completeness (full 10 points)</span></span>
+<span class="line"><span>fm_complete = COUNT(skills with name+description+trigger phrase) / skill_count</span></span>
+<span class="line"><span>score_frontmatter = fm_complete * 10</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Hook Event Type Coverage (full 15 points)</span></span>
+<span class="line"><span>hook_event_types = UNIQUE(event field in settings.json hooks.*)</span></span>
+<span class="line"><span>score_hook_coverage = clamp(LEN(hook_event_types) / 4, 0, 1) * 15</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Hook Silent Success (full 5 points)</span></span>
+<span class="line"><span>score_hook_silent = (all hooks have no stdout on success path in dry-run) ? 5 : 0</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># ADR Count and Freshness (full 10 points)</span></span>
+<span class="line"><span>adr_count = COUNT(docs/decisions/0*.md)</span></span>
+<span class="line"><span>recent_adr = COUNT(docs/decisions/*.md WHERE mtime &gt; now - 180d)</span></span>
+<span class="line"><span>score_adr = clamp(adr_count / 5, 0, 1) * 5 + clamp(recent_adr, 0, 1) * 5</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Documentation Density (full 10 points)</span></span>
+<span class="line"><span>doc_words = WORDCOUNT(docs/**, references/**)</span></span>
+<span class="line"><span>code_lines = LINES(skills/**, hooks/**, scripts/**)</span></span>
+<span class="line"><span>score_doc_density = clamp((doc_words / max(code_lines, 1)) / 0.5, 0, 1) * 10</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Self-test (full 10 points)</span></span>
+<span class="line"><span>score_selftest = (EXISTS(self-test.sh) AND PASSES) ? 10 : 0</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Marketplace Discoverability (full 5 points)</span></span>
+<span class="line"><span>score_marketplace = (listed in ≥1 marketplace) ? 5 : 0</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Dependency Hygiene (full 5 points)</span></span>
+<span class="line"><span>non_dev_deps = COUNT(package.json/dependencies + equivalent)</span></span>
+<span class="line"><span>licenses_ok = ALL(deps WHERE license IN allowlist)</span></span>
+<span class="line"><span>score_deps = (non_dev_deps &lt;= 5 AND licenses_ok) ? 5 : 0</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Meta-tests (full 5 points)</span></span>
+<span class="line"><span>score_meta_tests = (≥1 skill category has tests) ? 5 : 0</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># L1 Total Score (0-100)</span></span>
+<span class="line"><span>L1_score = SUM(all score_*)</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<hr/>
+<h2 class="rp-toc-include" id="changelog"><a href="#changelog" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Changelog</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>Date</th><th>Version</th><th>Change</th></tr></thead><tbody><tr><td>2026-05-03</td><td>v1.0</td><td>Initial release; 7 dimensions + 6 tasks + 4-layer evaluation framework finalized</td></tr></tbody></table></div>
+<blockquote>
+<p>Any modification to dimension anchors, task set, or aggregation weights must leave changelog entry here, and update &quot;next review trigger condition&quot; in ADR-0006.</p>
+</blockquote><!--/$--></div><footer class="rp-doc-footer"><div class="rp-doc-footer__edit"></div><div class="rp-doc-footer__divider"></div><div class="rp-prev-next-page"><a href="/en/harness/4-anti-patterns.html" class="rp-prev-next-page__item rp-prev-next-page__prev rp-link"><span class="rp-prev-next-page__item__desc">Previous page</span><span class="rp-prev-next-page__item__title"><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon rp-prev-next-page__rotate_180"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg><span>Anti-Patterns Guide</span></span></a><a href="/en/harness/6-hook-patterns.html" class="rp-prev-next-page__item rp-prev-next-page__next rp-link"><span class="rp-prev-next-page__item__desc">Next page</span><span class="rp-prev-next-page__item__title"><span>Hook Design Patterns</span><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></span></a></div></footer></main></div><aside class="rp-doc-layout__outline rp-scrollbar"><div class="rp-outline"><div class="rp-outline__title">ON THIS PAGE<svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg></div><nav class="rp-outline__toc rp-scrollbar"><a href="#table-of-contents" class="rp-toc-item rp-link" title="Table of Contents" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">Table of Contents</span></a><a href="#1-evaluation-objectives-and-scope" class="rp-toc-item rp-link" title="1. Evaluation Objectives and Scope" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">1. Evaluation Objectives and Scope</span></a><a href="#11-evaluation-objectives" class="rp-toc-item rp-link" title="1.1 Evaluation Objectives" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">1.1 Evaluation Objectives</span></a><a href="#12-scope" class="rp-toc-item rp-link" title="1.2 Scope" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">1.2 Scope</span></a><a href="#13-relationship-with-harnessaudit" class="rp-toc-item rp-link" title="1.3 Relationship with harness:audit" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">1.3 Relationship with harness:audit</span></a><a href="#2-definition-of-evaluation-objects" class="rp-toc-item rp-link" title="2. Definition of Evaluation Objects" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">2. Definition of Evaluation Objects</span></a><a href="#21-what-constitutes-a-harness-component" class="rp-toc-item rp-link" title="2.1 What Constitutes a Harness Component" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">2.1 What Constitutes a Harness Component</span></a><a href="#22-version-binding" class="rp-toc-item rp-link" title="2.2 Version Binding" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">2.2 Version Binding</span></a><a href="#23-evaluation-time-window" class="rp-toc-item rp-link" title="2.3 Evaluation Time Window" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">2.3 Evaluation Time Window</span></a><a href="#3-four-layer-evaluation-method-overview" class="rp-toc-item rp-link" title="3. Four-Layer Evaluation Method Overview" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">3. Four-Layer Evaluation Method Overview</span></a><a href="#4-l1-static-analysis" class="rp-toc-item rp-link" title="4. L1 Static Analysis" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">4. L1 Static Analysis</span></a><a href="#41-design-principles" class="rp-toc-item rp-link" title="4.1 Design Principles" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">4.1 Design Principles</span></a><a href="#42-metric-matrix" class="rp-toc-item rp-link" title="4.2 Metric Matrix" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">4.2 Metric Matrix</span></a><a href="#43-implementation" class="rp-toc-item rp-link" title="4.3 Implementation" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">4.3 Implementation</span></a><a href="#5-l2-structured-scoring-rubric" class="rp-toc-item rp-link" title="5. L2 Structured Scoring (Rubric)" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">5. L2 Structured Scoring (Rubric)</span></a><a href="#51-7-dimensions" class="rp-toc-item rp-link" title="5.1 7 Dimensions" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">5.1 7 Dimensions</span></a><a href="#511-dimension-attribution-disambiguation-important" class="rp-toc-item rp-link" title="5.1.1 Dimension Attribution Disambiguation (Important)" style="padding-left:24px" data-depth="2"><span class="rp-toc-item__text rp-doc">5.1.1 Dimension Attribution Disambiguation (Important)</span></a><a href="#52-scoring-anchors-0245" class="rp-toc-item rp-link" title="5.2 Scoring Anchors (0/2/4/5)" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">5.2 Scoring Anchors (0/2/4/5)</span></a><a href="#53-scoring-process" class="rp-toc-item rp-link" title="5.3 Scoring Process" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">5.3 Scoring Process</span></a><a href="#6-l3-standard-task-set-benchmark" class="rp-toc-item rp-link" title="6. L3 Standard Task Set (Benchmark)" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">6. L3 Standard Task Set (Benchmark)</span></a><a href="#61-design-principles" class="rp-toc-item rp-link" title="6.1 Design Principles" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">6.1 Design Principles</span></a><a href="#62-6-standard-tasks" class="rp-toc-item rp-link" title="6.2 6 Standard Tasks" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">6.2 6 Standard Tasks</span></a><a href="#63-metrics-per-task" class="rp-toc-item rp-link" title="6.3 Metrics per Task" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">6.3 Metrics per Task</span></a><a href="#64-single-task-score-formula" class="rp-toc-item rp-link" title="6.4 Single Task Score Formula" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">6.4 Single Task Score Formula</span></a><a href="#65-anti-cheating-design" class="rp-toc-item rp-link" title="6.5 Anti-Cheating Design" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">6.5 Anti-Cheating Design</span></a><a href="#7-l4-user-feedback-and-dogfooding" class="rp-toc-item rp-link" title="7. L4 User Feedback and Dogfooding" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">7. L4 User Feedback and Dogfooding</span></a><a href="#71-data-sources" class="rp-toc-item rp-link" title="7.1 Data Sources" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">7.1 Data Sources</span></a><a href="#72-calculation-details" class="rp-toc-item rp-link" title="7.2 Calculation Details" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">7.2 Calculation Details</span></a><a href="#73-cold-start-exemption" class="rp-toc-item rp-link" title="7.3 Cold Start Exemption" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">7.3 Cold Start Exemption</span></a><a href="#74-anti-gaming-design" class="rp-toc-item rp-link" title="7.4 Anti-Gaming Design" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">7.4 Anti-Gaming Design</span></a><a href="#8-aggregation-formula-and-grades" class="rp-toc-item rp-link" title="8. Aggregation Formula and Grades" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">8. Aggregation Formula and Grades</span></a><a href="#81-formula" class="rp-toc-item rp-link" title="8.1 Formula" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">8.1 Formula</span></a><a href="#82-grade-mapping" class="rp-toc-item rp-link" title="8.2 Grade Mapping" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">8.2 Grade Mapping</span></a><a href="#83-dimension-radar-chart" class="rp-toc-item rp-link" title="8.3 Dimension Radar Chart" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">8.3 Dimension Radar Chart</span></a><a href="#9-harnessevaluate-automated-evaluation-architecture" class="rp-toc-item rp-link" title="9. harness:evaluate Automated Evaluation Architecture" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">9. <code>harness:evaluate</code> Automated Evaluation Architecture</span></a><a href="#91-design-overview-not-implemented-in-current-phase-only-finalized" class="rp-toc-item rp-link" title="9.1 Design Overview (Not implemented in current phase, only finalized)" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">9.1 Design Overview (Not implemented in current phase, only finalized)</span></a><a href="#92-module-responsibilities" class="rp-toc-item rp-link" title="9.2 Module Responsibilities" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">9.2 Module Responsibilities</span></a><a href="#module-1-static-scanner-no-llm" class="rp-toc-item rp-link" title="Module 1: Static Scanner (No LLM)" style="padding-left:24px" data-depth="2"><span class="rp-toc-item__text rp-doc">Module 1: Static Scanner (No LLM)</span></a><a href="#module-2-rubric-evaluator-llm-driven" class="rp-toc-item rp-link" title="Module 2: Rubric Evaluator (LLM-driven)" style="padding-left:24px" data-depth="2"><span class="rp-toc-item__text rp-doc">Module 2: Rubric Evaluator (LLM-driven)</span></a><a href="#module-3-benchmark-runner-sandbox" class="rp-toc-item rp-link" title="Module 3: Benchmark Runner (Sandbox)" style="padding-left:24px" data-depth="2"><span class="rp-toc-item__text rp-doc">Module 3: Benchmark Runner (Sandbox)</span></a><a href="#module-4-feedback-collector" class="rp-toc-item rp-link" title="Module 4: Feedback Collector" style="padding-left:24px" data-depth="2"><span class="rp-toc-item__text rp-doc">Module 4: Feedback Collector</span></a><a href="#module-5-aggregator" class="rp-toc-item rp-link" title="Module 5: Aggregator" style="padding-left:24px" data-depth="2"><span class="rp-toc-item__text rp-doc">Module 5: Aggregator</span></a><a href="#module-6-report-generator" class="rp-toc-item rp-link" title="Module 6: Report Generator" style="padding-left:24px" data-depth="2"><span class="rp-toc-item__text rp-doc">Module 6: Report Generator</span></a><a href="#93-integration-points-with-existing-harness-engineering" class="rp-toc-item rp-link" title="9.3 Integration Points with Existing harness-engineering" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">9.3 Integration Points with Existing harness-engineering</span></a><a href="#94-cost-estimation-reference" class="rp-toc-item rp-link" title="9.4 Cost Estimation (Reference)" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">9.4 Cost Estimation (Reference)</span></a><a href="#10-report-schema-and-examples" class="rp-toc-item rp-link" title="10. Report Schema and Examples" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">10. Report Schema and Examples</span></a><a href="#101-scoresjson-schema" class="rp-toc-item rp-link" title="10.1 scores.json Schema" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">10.1 scores.json Schema</span></a><a href="#102-reportmd-structure" class="rp-toc-item rp-link" title="10.2 report.md Structure" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">10.2 report.md Structure</span></a><a href="#11-evaluator-neutrality-and-bias-resistance" class="rp-toc-item rp-link" title="11. Evaluator Neutrality and Bias Resistance" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">11. Evaluator Neutrality and Bias Resistance</span></a><a href="#111-special-rules-for-evaluating-harness-engineering-itself" class="rp-toc-item rp-link" title="11.1 Special Rules for Evaluating harness-engineering Itself" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">11.1 Special Rules for Evaluating harness-engineering Itself</span></a><a href="#112-neutralization-when-evaluating-across-harnesses" class="rp-toc-item rp-link" title="11.2 Neutralization When Evaluating Across Harnesses" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">11.2 Neutralization When Evaluating Across Harnesses</span></a><a href="#113-public-objection-mechanism" class="rp-toc-item rp-link" title="11.3 Public Objection Mechanism" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">11.3 Public Objection Mechanism</span></a><a href="#12-validation-case-sample-scores-for-5-existing-harnesses" class="rp-toc-item rp-link" title="12. Validation Case: Sample Scores for 5 Existing Harnesses" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">12. Validation Case: Sample Scores for 5 Existing Harnesses</span></a><a href="#13-compatibility-with-four-frameworks-comparisonmd" class="rp-toc-item rp-link" title="13. Compatibility with four-frameworks-comparison.md" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">13. Compatibility with four-frameworks-comparison.md</span></a><a href="#131-dimension-mapping" class="rp-toc-item rp-link" title="13.1 Dimension Mapping" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">13.1 Dimension Mapping</span></a><a href="#132-old-document-retention" class="rp-toc-item rp-link" title="13.2 Old Document Retention" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">13.2 Old Document Retention</span></a><a href="#appendix-a-complete-rubric-anchor-definitions" class="rp-toc-item rp-link" title="Appendix A: Complete Rubric Anchor Definitions" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">Appendix A: Complete Rubric Anchor Definitions</span></a><a href="#d1-methodology-completeness" class="rp-toc-item rp-link" title="D1 Methodology Completeness" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">D1 Methodology Completeness</span></a><a href="#d2-capability-layering" class="rp-toc-item rp-link" title="D2 Capability Layering" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">D2 Capability Layering</span></a><a href="#d3-enforcement-and-gates" class="rp-toc-item rp-link" title="D3 Enforcement and Gates" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">D3 Enforcement and Gates</span></a><a href="#d4-traceability-and-archive" class="rp-toc-item rp-link" title="D4 Traceability and Archive" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">D4 Traceability and Archive</span></a><a href="#d5-context-management-and-anti-corrosion" class="rp-toc-item rp-link" title="D5 Context Management and Anti-corrosion" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">D5 Context Management and Anti-corrosion</span></a><a href="#d6-observability-and-feedback-loop" class="rp-toc-item rp-link" title="D6 Observability and Feedback Loop" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">D6 Observability and Feedback Loop</span></a><a href="#d7-ecosystem-and-documentation" class="rp-toc-item rp-link" title="D7 Ecosystem and Documentation" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">D7 Ecosystem and Documentation</span></a><a href="#appendix-b-benchmark-task-specifications" class="rp-toc-item rp-link" title="Appendix B: Benchmark Task Specifications" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">Appendix B: Benchmark Task Specifications</span></a><a href="#t1--micro-bug-fix" class="rp-toc-item rp-link" title="T1 — Micro Bug Fix" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">T1 — Micro Bug Fix</span></a><a href="#t2--single-feature-crud" class="rp-toc-item rp-link" title="T2 — Single Feature CRUD" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">T2 — Single Feature CRUD</span></a><a href="#t3--single-file-refactoring" class="rp-toc-item rp-link" title="T3 — Single File Refactoring" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">T3 — Single File Refactoring</span></a><a href="#t4--cross-service-integration" class="rp-toc-item rp-link" title="T4 — Cross-Service Integration" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">T4 — Cross-Service Integration</span></a><a href="#t5--5-feature-mini-saas-long-cycle" class="rp-toc-item rp-link" title="T5 — 5-Feature Mini SaaS (Long-Cycle)" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">T5 — 5-Feature Mini SaaS (Long-Cycle)</span></a><a href="#t6--production-incident-triage--postmortem" class="rp-toc-item rp-link" title="T6 — Production Incident Triage + Postmortem" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">T6 — Production Incident Triage + Postmortem</span></a><a href="#appendix-c-complete-static-metric-formulas" class="rp-toc-item rp-link" title="Appendix C: Complete Static Metric Formulas" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">Appendix C: Complete Static Metric Formulas</span></a><a href="#changelog" class="rp-toc-item rp-link" title="Changelog" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">Changelog</span></a></nav><div class="rp-outline__divider"></div><div class="rp-outline__bottom"></div></div></aside></div></div>
+    <div id="__rspress_modal_container"></div>
+  </body>
+</html>

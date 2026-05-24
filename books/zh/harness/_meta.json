@@ -1,0 +1,37 @@
+[
+  {
+    "type": "file",
+    "name": "1-four-frameworks-comparison",
+    "label": "四大框架对比"
+  },
+  {
+    "type": "file",
+    "name": "2-HarnessEngineering",
+    "label": "Harness工程实践"
+  },
+  {
+    "type": "file",
+    "name": "3-harness-engineering-handbook",
+    "label": "快速参考手册"
+  },
+  {
+    "type": "file",
+    "name": "4-anti-patterns",
+    "label": "反模式指南"
+  },
+  {
+    "type": "file",
+    "name": "5-harness-evaluation-handbook",
+    "label": "评估手册"
+  },
+  {
+    "type": "file",
+    "name": "6-hook-patterns",
+    "label": "Hook设计模式"
+  },
+  {
+    "type": "file",
+    "name": "7-team-parallel-development",
+    "label": "团队并行开发"
+  }
+]

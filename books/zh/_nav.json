@@ -3,5 +3,10 @@
     "text": "Agent指南",
     "link": "/book/preface",
     "activeMatch": "/book/"
+  },
+  {
+    "text": "Harness手册",
+    "link": "/harness/1-four-frameworks-comparison",
+    "activeMatch": "/harness/"
   }
 ]

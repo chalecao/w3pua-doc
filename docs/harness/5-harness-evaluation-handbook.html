@@ -1,0 +1,1180 @@
+<!doctype html>
+<html lang="zh">
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness 组件评价手册（HEval Handbook v1.0）</title>
+<script>{;const saved = localStorage.getItem('rspress-theme-appearance');const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;const isDark = !saved || saved === 'auto' ? preferDark : saved === 'dark';document.documentElement.classList.toggle('dark', isDark);document.documentElement.classList.toggle('rp-dark', isDark);document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';}</script>
+<script>window.onload=function(){document.title='「万维飘」w3pua.com';setTimeout(function(){var imgs=document.querySelectorAll('img.rp-home-hero__image-img');imgs.forEach(function(img){var num=Math.floor(Math.random()*19)+1;img.src='/logo/'+num+'.svg';});},100);};</script>
+<link href="/static/css/styles.a9ece97661.css" rel="stylesheet">
+<script defer src="/static/js/styles.c905503ecf.js"></script>
+<script defer src="/static/js/lib-react.06aa503779.js"></script>
+<script defer src="/static/js/lib-router.a7a83a8399.js"></script>
+<script defer src="/static/js/6665.f15cceccdb.js"></script>
+<script defer src="/static/js/index.529caf5c59.js"></script>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Rspress v2.0.11">
+<link rel="icon" href="/logo.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Harness 组件评价手册（HEval Handbook v1.0）">
+<meta name="description" content="本手册定义 Harness Engineering 项目用于评价 AI Agent harness 组件能力的方法论、维度、任务集和聚合公式。核心定位：HEval 不是给 LLM 打分，而是给&quot;包裹 LLM 的工程脚手架&quot;打分——评测对象是 OpenSpec、Superpowers、gstack、GSD、harness-engineering 这一类 harness 框架本身的工程能力。历史上下文：本手册取代 four-frameworks-comparison.md 作为权威评价方法。星矩阵保留为历史档案。">
+<meta property="og:description" content="本手册定义 Harness Engineering 项目用于评价 AI Agent harness 组件能力的方法论、维度、任务集和聚合公式。核心定位：HEval 不是给 LLM 打分，而是给&quot;包裹 LLM 的工程脚手架&quot;打分——评测对象是 OpenSpec、Superpowers、gstack、GSD、harness-engineering 这一类 harness 框架本身的工程能力。历史上下文：本手册取代 four-frameworks-comparison.md 作为权威评价方法。星矩阵保留为历史档案。"></head>
+
+  <body>
+    <div id="__rspress_root"><link rel="preload" as="image" href="/logo.png"/><header class="rp-nav"><div class="rp-nav__left"><div class="rp-nav__title"><a href="/" class="rp-nav__title__link rp-link"><div class="rp-nav__title__logo"><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--light"/><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--dark"/></div></a></div></div><div class="rp-nav__right"><button class="rp-search-button"><div class="rp-search-button__content"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21" class="rp-search-button__icon"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg><span class="rp-search-button__word">搜索</span></div><div class="rp-search-button__hotkey" style="opacity:0"><span></span><span>K</span></div></button><div class="rp-search-button--mobile"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg></div><ul class="rp-nav-menu rp-nav-menu--right"><li class="rp-nav-menu__item"><a href="/book/preface.html" class="rp-nav-menu__item__container rp-link">Agent指南</a></li><li class="rp-nav-menu__item rp-nav-menu__item--active"><a href="/harness/1-four-frameworks-comparison.html" class="rp-nav-menu__item__container rp-link">Harness手册</a></li></ul><div class="rp-nav__others"><div class="rp-nav-menu__divider"></div><li class="rp-nav-menu__item"><div class="rp-nav-menu__item__container">简体中文<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-menu__item__icon"><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--center"><li class="rp-hover-group__item" style="padding-left:8px" data-depth="0"><a href="/en/harness/5-harness-evaluation-handbook.html" class="rp-hover-group__item__link rp-link" aria-label="English" lang="en" hrefLang="en" rel="alternate">English</a></li><li class="rp-hover-group__item rp-hover-group__item--active" style="padding-left:8px" data-depth="0"><a href="/5-harness-evaluation-handbook.html" class="rp-hover-group__item__link rp-link" aria-label="简体中文" lang="zh" hrefLang="zh" rel="alternate">简体中文</a></li></ul></li><div class="rp-switch-appearance"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" class="rp-switch-appearance__icon rp-switch-appearance__icon--sun"><path fill="currentColor" d="m7.001 15.848-1.226 1.226a.58.58 0 0 0 0 .818.58.58 0 0 0 .818 0l1.226-1.226a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0m-.352-8.735a.584.584 0 0 0 .825-.825L6.237 5.051a.584.584 0 0 0-.825.825zM5.011 11.07h-1.75a.584.584 0 0 0 0 1.167h1.75c.324 0 .584-.26.584-.583a.585.585 0 0 0-.584-.584m7.003-5.835c.324 0 .584-.26.584-.584V2.9a.58.58 0 0 0-.584-.584.58.58 0 0 0-.583.583V4.65c0 .323.262.584.583.584m5.616 1.621 1.226-1.225a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0l-1.226 1.225a.58.58 0 0 0 0 .818.576.576 0 0 0 .818 0m3.138 4.214h-1.75a.58.58 0 0 0-.584.584c0 .324.26.584.583.584h1.751a.584.584 0 1 0 0-1.167m-3.389 5.124a.584.584 0 0 0-.825.825l1.238 1.238a.584.584 0 0 0 .825-.826zm-5.365-9.795a5.256 5.256 0 0 0-5.257 5.258 5.256 5.256 0 0 0 5.257 5.257 5.256 5.256 0 0 0 5.257-5.257 5.256 5.256 0 0 0-5.257-5.258m0 11.675a.58.58 0 0 0-.583.583v1.751a.582.582 0 1 0 1.167 0v-1.75a.584.584 0 0 0-.584-.584"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" viewBox="0 0 19 19" class="rp-switch-appearance__icon rp-switch-appearance__icon--moon"><path fill="currentColor" d="M9.166 0a9.2 9.2 0 0 1 1.857.188.834.834 0 0 1 .042 1.623 4.47 4.47 0 1 0 5.457 5.457l.048-.135a.834.834 0 0 1 1.575.177q.186.902.188 1.856A9.168 9.168 0 1 1 9.166 0"></path></svg></div></div><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__sm"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg></button><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__md"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--right"><div class="rp-nav-menu__others-mobile__container"><div class="rp-nav-hamburger__md__hover-group"><div class="rp-nav-screen-appearance"><div class="rp-nav-screen-appearance__left">主题</div><div class="rp-nav-screen-appearance__right"></div></div><div class="rp-nav-screen-langs"><div class="rp-nav-screen-langs__left">语言</div><div class="rp-nav-screen-langs__right">简体中文<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-screen-langs__icon "><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div></div><div class="rp-nav-screen-langs-group" style="display:grid;grid-template-rows:0fr;transition:grid-template-rows 0.2s ease-out"><div class="rp-nav-screen-langs-group__inner"><a href="/en/harness/5-harness-evaluation-handbook.html" class="rp-nav-screen-langs-group__item rp-link" hrefLang="en" lang="en" rel="alternate">English</a><span class="rp-nav-screen-langs-group__item rp-nav-screen-langs-group__item--active" aria-current="page" aria-disabled="true">简体中文</span></div></div><div class="rp-nav-screen-divider"></div></div></div></ul></button></div></header><div class="rp-doc-layout__menu"><div class="rp-sidebar-menu"><button type="button" class="rp-sidebar-menu__left"><svg width="1em" height="1em" viewBox="0 0 32 32"><path fill="currentColor" d="M4 6h24v2H4zm0 18h24v2H4zm0-12h24v2H4zm0 6h24v2H4z"></path></svg><span>菜单</span></button><button type="button" class="rp-sidebar-menu__right"><span class="rp-sidebar-menu__right__text">目录</span><svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-sidebar-menu__right__icon" style="transform:rotate(0deg);transition:transform 0.2s ease-out"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></button></div></div><div class="rp-doc-layout__container"><aside class="rp-doc-layout__sidebar rp-scrollbar"><a href="/harness/1-four-frameworks-comparison.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>四大框架对比</span></div><div class="rp-sidebar-item__right"></div></a><a href="/harness/2-HarnessEngineering.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>Harness工程实践</span></div><div class="rp-sidebar-item__right"></div></a><a href="/harness/3-harness-engineering-handbook.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>快速参考手册</span></div><div class="rp-sidebar-item__right"></div></a><a href="/harness/4-anti-patterns.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>反模式指南</span></div><div class="rp-sidebar-item__right"></div></a><a href="/harness/5-harness-evaluation-handbook.html" class="rp-sidebar-item rp-sidebar-item--active rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>评估手册</span></div><div class="rp-sidebar-item__right"></div></a><a href="/harness/6-hook-patterns.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>Hook设计模式</span></div><div class="rp-sidebar-item__right"></div></a><a href="/harness/7-team-parallel-development.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>团队并行开发</span></div><div class="rp-sidebar-item__right"></div></a></aside><div class="rp-doc-layout__doc"><main class="rp-doc-layout__doc-container"><div class="rp-doc rspress-doc"><!--$--><h1 class="rp-toc-include" id="harness-组件评价手册heval-handbook-v10"><a href="#harness-组件评价手册heval-handbook-v10" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Harness 组件评价手册（HEval Handbook v1.0）<!-- --> </h1>
+<blockquote>
+<p>本手册定义 Harness Engineering 项目用于评价 AI Agent harness 组件能力的方法论、维度、任务集和聚合公式。</p>
+<p><strong>核心定位</strong>：HEval 不是给 LLM 打分，而是给&quot;包裹 LLM 的工程脚手架&quot;打分——评测对象是 OpenSpec、Superpowers、gstack、GSD、harness-engineering 这一类 harness 框架本身的工程能力。</p>
+<p><strong>历史上下文</strong>：本手册取代 <a href="/harness/1-four-frameworks-comparison.html" class="rp-link">four-frameworks-comparison.md</a> 作为权威评价方法。星矩阵保留为历史档案。</p>
+</blockquote>
+<hr/>
+<h2 class="rp-toc-include" id="目录"><a href="#目录" class="rp-header-anchor rp-link" aria-hidden="true">#</a>目录</h2>
+<ol>
+<li><a href="#1-%E8%AF%84%E4%BB%B7%E7%9B%AE%E6%A0%87%E4%B8%8E%E8%8C%83%E5%9B%B4" class="rp-link">评价目标与范围</a></li>
+<li><a href="#2-%E8%AF%84%E4%BB%B7%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%AE%9A%E4%B9%89" class="rp-link">评价对象的定义</a></li>
+<li><a href="#3-%E5%9B%9B%E5%B1%82%E8%AF%84%E4%BB%B7%E6%96%B9%E6%B3%95%E6%A6%82%E8%A7%88" class="rp-link">四层评价方法概览</a></li>
+<li><a href="#4-l1-%E9%9D%99%E6%80%81%E5%88%86%E6%9E%90static" class="rp-link">L1 静态分析（Static）</a></li>
+<li><a href="#5-l2-%E7%BB%93%E6%9E%84%E5%8C%96%E8%AF%84%E5%88%86rubric" class="rp-link">L2 结构化评分（Rubric）</a></li>
+<li><a href="#6-l3-%E6%A0%87%E5%87%86%E4%BB%BB%E5%8A%A1%E9%9B%86benchmark" class="rp-link">L3 标准任务集（Benchmark）</a></li>
+<li><a href="#7-l4-%E7%94%A8%E6%88%B7%E5%8F%8D%E9%A6%88%E4%B8%8E-dogfoodingfeedback" class="rp-link">L4 用户反馈与 dogfooding（Feedback）</a></li>
+<li><a href="#8-%E8%81%9A%E5%90%88%E5%85%AC%E5%BC%8F%E4%B8%8E%E7%AD%89%E7%BA%A7" class="rp-link">聚合公式与等级</a></li>
+<li><a href="#9-harnessevaluate-%E8%87%AA%E5%8A%A8%E5%8C%96%E8%AF%84%E6%B5%8B%E6%9E%B6%E6%9E%84" class="rp-link"><code>harness:evaluate</code> 自动化评测架构</a></li>
+<li><a href="#10-%E6%8A%A5%E5%91%8A-schema-%E4%B8%8E%E7%A4%BA%E4%BE%8B" class="rp-link">报告 schema 与示例</a></li>
+<li><a href="#11-%E8%AF%84%E4%BB%B7%E8%80%85%E4%B8%AD%E7%AB%8B%E6%80%A7%E4%B8%8E%E6%8A%97%E5%81%8F%E8%A7%81" class="rp-link">评价者中立性与抗偏见</a></li>
+<li><a href="#12-%E9%AA%8C%E8%AF%81%E6%A1%88%E4%BE%8B5-%E6%AC%BE%E7%8E%B0%E6%9C%89-harness-%E7%9A%84%E6%A0%B7%E4%BE%8B%E8%AF%84%E5%88%86" class="rp-link">验证案例：5 款现有 harness 的样例评分</a></li>
+<li><a href="#13-%E4%B8%8E-four-frameworks-comparisonmd-%E7%9A%84%E5%85%BC%E5%AE%B9%E6%80%A7" class="rp-link">与 four-frameworks-comparison.md 的兼容性</a></li>
+<li><a href="#%E9%99%84%E5%BD%95-arubric-%E9%94%9A%E7%82%B9%E5%AE%8C%E6%95%B4%E5%AE%9A%E4%B9%89" class="rp-link">附录 A：Rubric 锚点完整定义</a></li>
+<li><a href="#%E9%99%84%E5%BD%95-bbenchmark-%E4%BB%BB%E5%8A%A1%E8%A7%84%E6%A0%BC" class="rp-link">附录 B：Benchmark 任务规格</a></li>
+<li><a href="#%E9%99%84%E5%BD%95-cstatic-%E6%8C%87%E6%A0%87%E5%AE%8C%E6%95%B4%E5%85%AC%E5%BC%8F" class="rp-link">附录 C：Static 指标完整公式</a></li>
+</ol>
+<hr/>
+<h2 class="rp-toc-include" id="1-评价目标与范围"><a href="#1-评价目标与范围" class="rp-header-anchor rp-link" aria-hidden="true">#</a>1. 评价目标与范围</h2>
+<h3 class="rp-toc-include" id="11-评价目标"><a href="#11-评价目标" class="rp-header-anchor rp-link" aria-hidden="true">#</a>1.1 评价目标</h3>
+<p>HEval 解决三个具体问题：</p>
+<ol>
+<li><strong>选型决策</strong>：团队/个人选 harness 时，希望看到一个跨厂商可比的总分 + 维度分布，而不是各家自卖自夸的 README。</li>
+<li><strong>演进监控</strong>：harness 自身从 v0.5 → v0.6 时，需要量化&quot;这次升级到底动了哪个能力&quot;——不能只靠 changelog 的形容词。</li>
+<li><strong>借鉴决策</strong>：harness-engineering 决定从 OpenSpec / GSD / gstack / Superpowers 借鉴哪些能力时，用维度分布定位差距而不是凭直觉。</li>
+</ol>
+<h3 class="rp-toc-include" id="12-范围"><a href="#12-范围" class="rp-header-anchor rp-link" aria-hidden="true">#</a>1.2 范围</h3>
+<p><strong>HEval 评价</strong>：</p>
+<ul>
+<li>harness 框架（一个 git 仓库 + 一份明确的方法论）</li>
+<li>单一版本（git tag 或 commit SHA 锚定）</li>
+<li>默认配置（厂商 README 推荐的安装/启用方式）</li>
+</ul>
+<p><strong>HEval 不评价</strong>：</p>
+<ul>
+<li>单个 prompt 的质量（属于 prompt engineering 范畴）</li>
+<li>单个 LLM 模型的能力（SWE-bench / HumanEval / METR 已有覆盖）</li>
+<li>任意 AI 编程工具（Cursor / Cline / Aider / Copilot 等 IDE/agent 不在范围内——它们是 harness 的宿主，不是 harness 本身）</li>
+<li>IDE 插件、第三方 MCP server、个人 dotfiles</li>
+</ul>
+<h3 class="rp-toc-include" id="13-与-harnessaudit-的关系"><a href="#13-与-harnessaudit-的关系" class="rp-header-anchor rp-link" aria-hidden="true">#</a>1.3 与 harness:audit 的关系</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>工具</th><th>评价对象</th><th>用途</th></tr></thead><tbody><tr><td><code>harness:audit</code></td><td>一个<strong>用户项目</strong>的 harness 设置（你的项目里的 CLAUDE.md / Hooks / Skills 健康度）</td><td>优化自己的项目</td></tr><tr><td><strong>HEval</strong> / <code>harness:evaluate</code></td><td>一个 <strong>harness 框架本身</strong>（OpenSpec / Superpowers 这种产品）</td><td>选型与对比</td></tr></tbody></table></div>
+<p>二者维度有部分重叠（都涉及 6 层结构、Hook 强制、文档完备度），但视角不同：audit 看&quot;这个项目用 harness 用得怎么样&quot;，HEval 看&quot;这个 harness 提供了什么能力&quot;。</p>
+<hr/>
+<h2 class="rp-toc-include" id="2-评价对象的定义"><a href="#2-评价对象的定义" class="rp-header-anchor rp-link" aria-hidden="true">#</a>2. 评价对象的定义</h2>
+<h3 class="rp-toc-include" id="21-什么算一个-harness-组件"><a href="#21-什么算一个-harness-组件" class="rp-header-anchor rp-link" aria-hidden="true">#</a>2.1 什么算一个 Harness 组件</h3>
+<p>满足以下所有条件的 git 仓库可作为 HEval 评价对象：</p>
+<ul>
+<li><strong>可发现</strong>：有公开 README，说明用途与安装方式。</li>
+<li><strong>可安装</strong>：能通过 git clone / npm install / <code>claude plugin install</code> 等明确方式部署到一个新项目。</li>
+<li><strong>包含工程能力</strong>：至少提供以下任一：skill / command / hook / agent / MCP / 系统提示词模板 / 工作流脚本。仅有 README 但没有可执行/可加载工件的不算。</li>
+<li><strong>有方法论主张</strong>：README 或文档中能提炼出至少 1 条明确的 SDLC 哲学（&quot;强制 TDD&quot;、&quot;spec 即活文档&quot;、&quot;fresh context per wave&quot;、&quot;角色拟人化&quot;等）。</li>
+</ul>
+<h3 class="rp-toc-include" id="22-版本绑定"><a href="#22-版本绑定" class="rp-header-anchor rp-link" aria-hidden="true">#</a>2.2 版本绑定</h3>
+<p>每次评测必须绑定到具体版本：</p>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>&lt;harness-name&gt;@&lt;version-locator&gt;</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>例：</span></span>
+<span class="line"><span>  superpowers@v0.5.2</span></span>
+<span class="line"><span>  openspec@2026-04-15  (commit short SHA)</span></span>
+<span class="line"><span>  harness-engineering@v1.10.0</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>报告 metadata 中必须记录：</p>
+<ul>
+<li><code>version_locator</code>：tag 或 SHA</li>
+<li><code>evaluated_at</code>：评测日期</li>
+<li><code>benchmark_version</code>：使用的 Benchmark 任务集版本</li>
+<li><code>evaluator_runtime</code>：评测时的 Claude 模型版本（如 <code>claude-sonnet-4-6</code>）</li>
+</ul>
+<h3 class="rp-toc-include" id="23-评测时间窗"><a href="#23-评测时间窗" class="rp-header-anchor rp-link" aria-hidden="true">#</a>2.3 评测时间窗</h3>
+<p>L4 用户反馈采用 <strong>过去 90 天滚动窗口</strong> 的数据。L1/L2/L3 是版本快照，与时间无关。</p>
+<hr/>
+<h2 class="rp-toc-include" id="3-四层评价方法概览"><a href="#3-四层评价方法概览" class="rp-header-anchor rp-link" aria-hidden="true">#</a>3. 四层评价方法概览</h2>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>                          HES 总分（0-100，S/A/B/C/D 等级）</span></span>
+<span class="line"><span>                                    │</span></span>
+<span class="line"><span>        ┌───────────────────────────┼───────────────────────────┐</span></span>
+<span class="line"><span>        │           │               │               │</span></span>
+<span class="line"><span>      15%         30%             40%             15%</span></span>
+<span class="line"><span>        │           │               │               │</span></span>
+<span class="line"><span>       L1          L2              L3              L4</span></span>
+<span class="line"><span>     Static     Rubric         Benchmark        Feedback</span></span>
+<span class="line"><span>   静态分析    结构化评分      标准任务集        用户反馈</span></span>
+<span class="line"><span>   (脚本)     (评审+LLM)       (运行时)         (数据采集)</span></span>
+<span class="line"><span>        │           │               │               │</span></span>
+<span class="line"><span>        ▼           ▼               ▼               ▼</span></span>
+<span class="line"><span>   仓库结构      7 维度          6 任务          GitHub +</span></span>
+<span class="line"><span>   元指标       0-5 锚点        SDLC 跑分       dogfooding</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p><strong>为什么是这四层</strong>：</p>
+<ul>
+<li><strong>L1 Static</strong>：抗作弊 anchor。只看可机械计算的事实（skill 数量、hook 类型、ADR 个数），任何评分员都能复现，但无法反映质量。</li>
+<li><strong>L2 Rubric</strong>：连接主观与客观。给 7 个互斥维度配明文锚点，让&quot;我觉得这个 harness 严格&quot;变成&quot;它在『强制性与门禁』维度得了 4 分，因为有 Stop Hook 但没 PreToolUse 拦截 force-push&quot;。</li>
+<li><strong>L3 Benchmark</strong>：行为 ground truth。让 harness 真的跑 SDLC 任务，看能不能在长周期、并行、回归、归档场景下保持质量。这一层权重最大。</li>
+<li><strong>L4 Feedback</strong>：用真实信号校准。star 数量、issue 解决率、第三方使用案例稀释设计期纸面优势。</li>
+</ul>
+<p>四层互相校验：如果 L2 给了高分但 L3 跑分失败，说明 Rubric 锚点没对齐实际能力，触发 handbook 修订。</p>
+<hr/>
+<h2 class="rp-toc-include" id="4-l1-静态分析static"><a href="#4-l1-静态分析static" class="rp-header-anchor rp-link" aria-hidden="true">#</a>4. L1 静态分析（Static）</h2>
+<h3 class="rp-toc-include" id="41-设计原则"><a href="#41-设计原则" class="rp-header-anchor rp-link" aria-hidden="true">#</a>4.1 设计原则</h3>
+<p><strong>L1 只衡量&quot;事实&quot;，不衡量&quot;质量&quot;</strong>。任何需要语义判断的指标都不放在 L1。L1 的总分是 <strong>0-100，权重 15%</strong>。</p>
+<h3 class="rp-toc-include" id="42-指标矩阵"><a href="#42-指标矩阵" class="rp-header-anchor rp-link" aria-hidden="true">#</a>4.2 指标矩阵</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>指标</th><th>测量方式</th><th>满分条件</th><th>权重</th></tr></thead><tbody><tr><td>Skill 原子化度</td><td><code>skills/</code> 目录下 SKILL.md 数量 ÷ 平均行数</td><td>≥10 个 skill 且平均 &lt; 200 行</td><td>15</td></tr><tr><td>Frontmatter 完整率</td><td>含完整 <code>name + description + 触发短语</code> 的 SKILL.md / 总数</td><td>100%</td><td>10</td></tr><tr><td>Hook 类型覆盖</td><td>settings.json 中触发的 hook 事件类型数（PreToolUse / PostToolUse / Stop / SessionStart / UserPromptSubmit）</td><td>≥4 类</td><td>15</td></tr><tr><td>Hook 静默成功</td><td>测试 hook 在成功路径无输出</td><td>100% silent on success</td><td>5</td></tr><tr><td>ADR 数量与时间分布</td><td><code>docs/decisions/</code> 数量 + 最近 6 个月有更新</td><td>≥5 篇且 6 个月内有更新</td><td>10</td></tr><tr><td>文档密度</td><td>docs/ + references/ 总字数 ÷ 代码行数</td><td>≥0.5 字/行（手册型）</td><td>10</td></tr><tr><td>Self-test 脚本</td><td>是否存在 self-test.sh 或等价 CI</td><td>存在且运行通过</td><td>10</td></tr><tr><td>Marketplace 可发现性</td><td>是否在 Anthropic / 第三方 marketplace 可装</td><td>已上架</td><td>5</td></tr><tr><td>依赖卫生</td><td>第三方依赖数量 + license 合规扫描</td><td>≤5 个非 dev 依赖且 license 兼容</td><td>5</td></tr><tr><td>元测试覆盖率</td><td>harness 自身的 skill / hook 的测试</td><td>≥1 类 skill 有测试</td><td>5</td></tr></tbody></table></div>
+<p>总分 90 分，按比例标准化到 0-100。详细计算公式见附录 C。</p>
+<h3 class="rp-toc-include" id="43-实现方式"><a href="#43-实现方式" class="rp-header-anchor rp-link" aria-hidden="true">#</a>4.3 实现方式</h3>
+<p>由 <code>harness:evaluate</code> 内嵌的静态扫描器 (<code>tools/static-scanner.py</code> 设计中) 自动产出。无需 LLM 介入。</p>
+<hr/>
+<h2 class="rp-toc-include" id="5-l2-结构化评分rubric"><a href="#5-l2-结构化评分rubric" class="rp-header-anchor rp-link" aria-hidden="true">#</a>5. L2 结构化评分（Rubric）</h2>
+<h3 class="rp-toc-include" id="51-7-个维度"><a href="#51-7-个维度" class="rp-header-anchor rp-link" aria-hidden="true">#</a>5.1 7 个维度</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>维度</th><th>关键词</th><th>一句话定义</th></tr></thead><tbody><tr><td>D1 方法论完整度</td><td>SDLC 阶段覆盖</td><td>从 clarify / design / plan / code / verify / ship / monitor，覆盖几个阶段</td></tr><tr><td>D2 能力分层结构</td><td>六层模型</td><td>Memory / Rules / Skills / Agents / Hooks / Tools 中提供了哪几层</td></tr><tr><td>D3 强制性与门禁</td><td>rigid / Hook</td><td>rigid 约束清晰度、Hook 强制能力、绕过门禁的难度</td></tr><tr><td>D4 可追溯性与归档</td><td>活规格 / ADR</td><td>决策、proposal、变更是否被持久化到可检索归档</td></tr><tr><td>D5 上下文管理与抗腐蚀</td><td>fresh context / parallel</td><td>context rot、并行 subagent、长周期项目支持</td></tr><tr><td>D6 可观测性与反馈闭环</td><td>canary / postmortem</td><td>发布后监测、失败回流改进、dogfooding 证据</td></tr><tr><td>D7 生态与文档</td><td>marketplace / 文档</td><td>marketplace 可发现性、社区生态、文档完备度、扩展机制</td></tr></tbody></table></div>
+<h4 class="rp-toc-include" id="511-维度归属歧义消解重要"><a href="#511-维度归属歧义消解重要" class="rp-header-anchor rp-link" aria-hidden="true">#</a>5.1.1 维度归属歧义消解（重要）</h4>
+<p>某些能力会同时触及多个维度。为避免重复计分或漂移，使用以下<strong>单一归属规则</strong>——每个能力只能在它最契合的维度上加分，其他维度只作为佐证（不重复打分）：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>能力</th><th>默认归属</th><th>判断依据</th></tr></thead><tbody><tr><td>TDD（红绿重构）</td><td><strong>D1</strong> 方法论</td><td>只要 SDLC 中有 verify 阶段就算覆盖；D3 仅在 TDD 被 Hook 强制时才加分</td></tr><tr><td>TDD Hook 强制</td><td><strong>D3</strong> 强制性</td><td>与上一行区分：D1 看&quot;流程是否覆盖&quot;、D3 看&quot;流程是否可绕过&quot;</td></tr><tr><td>并行 subagent</td><td><strong>D5</strong> 上下文管理</td><td>并行的核心价值是 context rot 抵御，不计 D2</td></tr><tr><td>Agents 层（角色 subagent）</td><td><strong>D2</strong> 能力分层</td><td>当 subagent 用于角色拟人化（CEO/QA/Eng）而非 context 隔离时算 D2</td></tr><tr><td>真浏览器 E2E</td><td><strong>D6</strong> 可观测性</td><td>测试覆盖归 D1（方法论 verify 阶段），但端到端运行时反馈归 D6</td></tr><tr><td>MCP 工具集成</td><td><strong>D2</strong> 能力分层</td><td>Tools 层；不计 D7（D7 看的是 harness 自身能否被多 IDE/工具承载，与 MCP 无关）</td></tr><tr><td>Spec 归档 vs ADR 归档</td><td><strong>D4</strong></td><td>都归 D4；D1 方法论只看&quot;是否产出 spec&quot;，不看是否归档</td></tr></tbody></table></div>
+<p><strong>通用判别原则</strong>：一个能力<strong>存在</strong> → D2；<strong>被强制</strong> → D3；<strong>被持久化检索</strong> → D4；<strong>用于 context 复位</strong> → D5；<strong>用于运行时反馈</strong> → D6；<strong>支持 marketplace/文档生态</strong> → D7；上述都不沾、只是 SDLC 阶段覆盖 → D1。</p>
+<h3 class="rp-toc-include" id="52-评分锚点0245"><a href="#52-评分锚点0245" class="rp-header-anchor rp-link" aria-hidden="true">#</a>5.2 评分锚点（0/2/4/5）</h3>
+<p>每个维度在 0、2、4、5 四个锚点上有明文定义；1 与 3 是介于相邻锚点之间的判断。<strong>完整锚点矩阵见附录 A</strong>。</p>
+<p>举例（D3 强制性与门禁）：</p>
+<ul>
+<li><strong>0 分</strong>：完全靠提示词约束，没有任何机械强制；TDD/破坏性命令拦截全靠模型自觉。</li>
+<li><strong>2 分</strong>：有部分 PreToolUse 或 Stop Hook，但覆盖单一场景（仅保护 .env 等）。</li>
+<li><strong>4 分</strong>：rigid/flexible 在 frontmatter 显式标注；Hook 覆盖 ≥3 个事件；提供 force-push / DROP TABLE / rm -rf 三类破坏性命令拦截。</li>
+<li><strong>5 分</strong>：有&quot;门禁可观测性&quot;——绕过门禁会被记录到 audit log；rigid skill 自带元测试验证强制路径；Hook 失败时给出可执行的修复建议。</li>
+</ul>
+<h3 class="rp-toc-include" id="53-评分流程"><a href="#53-评分流程" class="rp-header-anchor rp-link" aria-hidden="true">#</a>5.3 评分流程</h3>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>                  Rubric 评分流程</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>     输入：harness@version 仓库</span></span>
+<span class="line"><span>              │</span></span>
+<span class="line"><span>              ▼</span></span>
+<span class="line"><span>   ┌─────────────────────┐</span></span>
+<span class="line"><span>   │ Step 1: 准备证据包  │  扫描仓库提取每个维度的&quot;证据&quot;</span></span>
+<span class="line"><span>   └─────────────────────┘  (相关文件路径、关键代码片段、文档摘录)</span></span>
+<span class="line"><span>              │</span></span>
+<span class="line"><span>              ▼</span></span>
+<span class="line"><span>   ┌─────────────────────┐</span></span>
+<span class="line"><span>   │ Step 2: LLM 评分员  │  用 Sonnet/Opus 按锚点打分</span></span>
+<span class="line"><span>   └─────────────────────┘  输出 7 个维度分 + 每分的引用证据</span></span>
+<span class="line"><span>              │</span></span>
+<span class="line"><span>              ▼</span></span>
+<span class="line"><span>   ┌─────────────────────┐</span></span>
+<span class="line"><span>   │ Step 3: 外部评审人   │  人类（非该 harness 作者）复核</span></span>
+<span class="line"><span>   └─────────────────────┘  对分歧 ≥1 分的维度做仲裁</span></span>
+<span class="line"><span>              │</span></span>
+<span class="line"><span>              ▼</span></span>
+<span class="line"><span>   ┌─────────────────────┐</span></span>
+<span class="line"><span>   │ Step 4: 锁定快照     │  scores.json + evidence/*.md</span></span>
+<span class="line"><span>   └─────────────────────┘  写入 eval-reports/</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p><strong>强制约束</strong>：</p>
+<ul>
+<li>Step 2 的 LLM 模型必须在 metadata 中注明（不同模型分会漂移，跨版本对比时同模型才可比）。</li>
+<li>Step 3 的人类评审人<strong>不能是该 harness 的作者或核心维护者</strong>。</li>
+<li>当 LLM 评分与人类评分相差 ≥2 分时，必须在 evidence/dispute.md 中记录分歧理由。</li>
+</ul>
+<hr/>
+<h2 class="rp-toc-include" id="6-l3-标准任务集benchmark"><a href="#6-l3-标准任务集benchmark" class="rp-header-anchor rp-link" aria-hidden="true">#</a>6. L3 标准任务集（Benchmark）</h2>
+<h3 class="rp-toc-include" id="61-设计原则"><a href="#61-设计原则" class="rp-header-anchor rp-link" aria-hidden="true">#</a>6.1 设计原则</h3>
+<p>Benchmark 不是测 LLM 解题能力（SWE-bench 已经做了），而是测<strong>这套 harness 是否提升了同一 LLM 在多阶段 SDLC 中的稳定性</strong>。</p>
+<p>每个任务在两种配置下各跑一次：</p>
+<ul>
+<li><strong>Baseline</strong>：裸 Claude Code，无 harness。</li>
+<li><strong>Treatment</strong>：装上待评 harness。</li>
+</ul>
+<p>最终关心的是 <strong>Δ = Treatment − Baseline</strong>，即 harness 带来的增量价值。</p>
+<h3 class="rp-toc-include" id="62-6-个标准任务"><a href="#62-6-个标准任务" class="rp-header-anchor rp-link" aria-hidden="true">#</a>6.2 6 个标准任务</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>编号</th><th>任务名</th><th>难度</th><th>关键能力测试</th><th>时长上限</th></tr></thead><tbody><tr><td>T1</td><td>微改 bug fix</td><td>⭐</td><td>能否守住 scope，不过度实现</td><td>10 min</td></tr><tr><td>T2</td><td>单 feature CRUD</td><td>⭐⭐</td><td>clarify → plan → TDD → verify 完整链路</td><td>30 min</td></tr><tr><td>T3</td><td>单文件重构</td><td>⭐⭐</td><td>重构边界、回归保护、git history 整洁</td><td>30 min</td></tr><tr><td>T4</td><td>跨服务集成</td><td>⭐⭐⭐</td><td>设计 ADR、依赖管理、契约测试</td><td>60 min</td></tr><tr><td>T5</td><td>5-feature mini SaaS</td><td>⭐⭐⭐⭐</td><td>长周期抗 context rot、并行 subagent、归档</td><td>120 min</td></tr><tr><td>T6</td><td>Prod incident triage + postmortem</td><td>⭐⭐⭐⭐</td><td>incident workflow、回滚、blameless 总结</td><td>60 min</td></tr></tbody></table></div>
+<blockquote>
+<p><strong>v1.1 路线图（已识别但本期不收）</strong>：以下三个任务是当前任务集的明确缺口，将在 benchmark v2 引入：</p>
+<ul>
+<li><strong>T7 安全审查任务</strong> —— 给定 PR 含 SQL 注入 / 凭据明文 / 越权读取，测 harness 能否给出准确审查结论；当前 D3 强制性的运行时验证主要靠 T2/T3 顺带，覆盖弱。</li>
+<li><strong>T8 性能回归任务</strong> —— 给定 baseline 性能数据，引入慢查询，测 harness 是否触发 benchmark / canary；当前 D6 可观测性仅靠 T6 single shot 测量。</li>
+<li><strong>T9 文档优先任务</strong> —— 仅产出 ADR 与 design doc 的纯文档任务，测 D4 归档能力；当前 D4 评分主要靠 T2/T4 的副产物，没有独立 ground truth。</li>
+</ul>
+</blockquote>
+<p>每个任务的完整规格（task.md / setup.sh / verify.sh / oracle.json / fixtures/）见附录 B 与 <code>eval/benchmarks/v1/T*/</code> 目录（设计中）。</p>
+<h3 class="rp-toc-include" id="63-每个任务的指标"><a href="#63-每个任务的指标" class="rp-header-anchor rp-link" aria-hidden="true">#</a>6.3 每个任务的指标</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>指标</th><th>含义</th><th>取值</th></tr></thead><tbody><tr><td><code>pass</code></td><td>验证脚本是否全部通过</td><td>0/1</td></tr><tr><td><code>hands_off</code></td><td>完成过程中是否需要人工干预</td><td>0/1（1=完全自动）</td></tr><tr><td><code>tokens_total</code></td><td>总 token 消耗</td><td>int</td></tr><tr><td><code>wall_clock_sec</code></td><td>任务总耗时</td><td>int</td></tr><tr><td><code>regression_count</code></td><td>引入了多少新失败的测试</td><td>int（越低越好）</td></tr><tr><td><code>artifacts_produced</code></td><td>是否产出 spec / ADR / postmortem</td><td>0/1（仅相关任务记）</td></tr><tr><td><code>scope_drift</code></td><td>实际改动文件数 / 任务声明文件数</td><td>float（接近 1 最好）</td></tr></tbody></table></div>
+<h3 class="rp-toc-include" id="64-单任务得分公式"><a href="#64-单任务得分公式" class="rp-header-anchor rp-link" aria-hidden="true">#</a>6.4 单任务得分公式</h3>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>task_score = pass × (</span></span>
+<span class="line"><span>    50                                          # 通过率基础分</span></span>
+<span class="line"><span>  + 20 × hands_off                              # 自动化加分</span></span>
+<span class="line"><span>  + 10 × clamp(1 - regression_count / 3, 0, 1)  # 回归惩罚</span></span>
+<span class="line"><span>  + 10 × artifacts_produced                     # 文档加分</span></span>
+<span class="line"><span>  + 10 × clamp(2 - scope_drift, 0, 1)           # scope 守纪</span></span>
+<span class="line"><span>)</span></span>
+<span class="line"><span># token 与 wall_clock 不进单任务分；进效率分（独立报告，不计入 HES）</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>未通过的任务直接 0 分。6 个任务总分相加 → 标准化到 0-100。</p>
+<h3 class="rp-toc-include" id="65-抗作弊设计"><a href="#65-抗作弊设计" class="rp-header-anchor rp-link" aria-hidden="true">#</a>6.5 抗作弊设计</h3>
+<ul>
+<li>任务集放在私有仓库，仅在评测时下发到沙箱（避免 harness 厂商把 fixture 答案预置到 skill 里）。</li>
+<li>每个任务有 ≥3 个变体（同语义、不同变量名/结构），评测时随机选一个，结果用变体平均。</li>
+<li>Benchmark 任务集本身有版本号；当任务集 v1 → v2 时，所有历史评分会重新跑一遍以保持可比性，或显式标注&quot;基于 benchmark v1，不与 v2 评分直接比较&quot;。</li>
+</ul>
+<hr/>
+<h2 class="rp-toc-include" id="7-l4-用户反馈与-dogfoodingfeedback"><a href="#7-l4-用户反馈与-dogfoodingfeedback" class="rp-header-anchor rp-link" aria-hidden="true">#</a>7. L4 用户反馈与 dogfooding（Feedback）</h2>
+<h3 class="rp-toc-include" id="71-数据源"><a href="#71-数据源" class="rp-header-anchor rp-link" aria-hidden="true">#</a>7.1 数据源</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>数据源</th><th>测量项</th><th>权重</th></tr></thead><tbody><tr><td>GitHub</td><td>star / fork / watcher、月增长率</td><td>25</td></tr><tr><td>GitHub</td><td>open issue 数 + 平均关闭时长 + bug:feature 比</td><td>20</td></tr><tr><td>GitHub</td><td>贡献者数 + 90 天活跃 PR 数</td><td>15</td></tr><tr><td>第三方提及</td><td>独立 blog / 视频 / 公开实践分享数</td><td>15</td></tr><tr><td>Marketplace</td><td>Anthropic 或第三方 marketplace 评分（如有）</td><td>10</td></tr><tr><td>Dogfooding</td><td>用此 harness 完成过 ≥3 个真实项目的明确证据</td><td>15</td></tr></tbody></table></div>
+<h3 class="rp-toc-include" id="72-计算细节"><a href="#72-计算细节" class="rp-header-anchor rp-link" aria-hidden="true">#</a>7.2 计算细节</h3>
+<ul>
+<li>star / 月增长率使用对数标准化，避免大型项目通吃：<code>log10(stars + 1) / log10(10000) × 100</code>，封顶 100。</li>
+<li>「issue 平均关闭时长」分四档：&lt; 7d / 7-30d / 30-90d / &gt;90d 对应 100/75/50/25 分。</li>
+<li>「90 天活跃 PR 数」用 z-score 跨当前评测集所有 harness 标准化（这是相对指标）。</li>
+</ul>
+<h3 class="rp-toc-include" id="73-冷启动豁免"><a href="#73-冷启动豁免" class="rp-header-anchor rp-link" aria-hidden="true">#</a>7.3 冷启动豁免</h3>
+<p>新发布 &lt; 90 天的 harness：</p>
+<ul>
+<li>L4 的 6 个数据源中，「GitHub 三项」与「marketplace 评分」可置 N/A。</li>
+<li>L4 总权重从 15% 暂降为 0%，分数补回到 L3（权重升至 55%）。</li>
+<li>评测报告必须显式标注 <code>feedback_status: cold_start</code>。</li>
+</ul>
+<h3 class="rp-toc-include" id="74-抗刷分设计"><a href="#74-抗刷分设计" class="rp-header-anchor rp-link" aria-hidden="true">#</a>7.4 抗刷分设计</h3>
+<ul>
+<li>star/fork 历史数据要看曲线，不看绝对值——用 GitHub Archive 拉 90 天日增数据，识别明显的&quot;批量 star&quot;事件并排除。</li>
+<li>第三方提及必须有 URL 与作者识别，自家博客、自家员工博客、付费推广不计入。</li>
+<li>Dogfooding 证据必须是 <strong>公开可验证</strong> 的项目（开源仓库或带证明的私有截图）。</li>
+</ul>
+<hr/>
+<h2 class="rp-toc-include" id="8-聚合公式与等级"><a href="#8-聚合公式与等级" class="rp-header-anchor rp-link" aria-hidden="true">#</a>8. 聚合公式与等级</h2>
+<h3 class="rp-toc-include" id="81-公式"><a href="#81-公式" class="rp-header-anchor rp-link" aria-hidden="true">#</a>8.1 公式</h3>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>HES = L1_score × 0.15</span></span>
+<span class="line"><span>    + L2_score × 0.30</span></span>
+<span class="line"><span>    + L3_score × 0.40</span></span>
+<span class="line"><span>    + L4_score × 0.15</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>其中每层 score 已标准化到 0-100。</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>冷启动 harness（&lt; 90 天发布、L4 数据稀疏）：</p>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>HES_cold = L1 × 0.20   # +5%</span></span>
+<span class="line"><span>         + L2 × 0.40   # +10%</span></span>
+<span class="line"><span>         + L3 × 0.40   # 不变</span></span>
+<span class="line"><span>         + L4 × 0.00   # 标记为 cold_start</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p><strong>为何不把 L4 全部并入 L3</strong>：冷启动 harness 的 benchmark 跑分本身波动最大（任务集与 harness 设计预期不一定对齐），把 15% 全压到 L3 会让 grade 由单点决定。改为分散到 L1（事实指标稳定）+ L2（评审有人类校准），让冷启动评分的稳定性接近成熟 harness。</p>
+<h3 class="rp-toc-include" id="82-等级映射"><a href="#82-等级映射" class="rp-header-anchor rp-link" aria-hidden="true">#</a>8.2 等级映射</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>等级</th><th>HES 区间</th><th>含义</th></tr></thead><tbody><tr><td><strong>S</strong></td><td>90-100</td><td>全维度领先；可作为团队默认推荐</td></tr><tr><td><strong>A</strong></td><td>80-89</td><td>强；具体维度可能有空缺，需补</td></tr><tr><td><strong>B</strong></td><td>70-79</td><td>主流可用；与 baseline 相比有显著提升</td></tr><tr><td><strong>C</strong></td><td>60-69</td><td>概念可用，但工程化不成熟；适合早期采用者</td></tr><tr><td><strong>D</strong></td><td>&lt; 60</td><td>不建议生产使用，或仅适合特定场景（如纯 demo）</td></tr></tbody></table></div>
+<h3 class="rp-toc-include" id="83-维度雷达图"><a href="#83-维度雷达图" class="rp-header-anchor rp-link" aria-hidden="true">#</a>8.3 维度雷达图</h3>
+<p>报告中除了 HES 总分，必须出<strong>维度雷达图</strong>展示 L2 的 7 个维度分布——总分相同的两款 harness 可能在维度分布上完全不同（例如同 80 分，一款均衡，一款 D3/D4 满分但 D7 缺位），雷达图让选型决策能落在维度上。</p>
+<hr/>
+<h2 class="rp-toc-include" id="9-harnessevaluate-自动化评测架构"><a href="#9-harnessevaluate-自动化评测架构" class="rp-header-anchor rp-link" aria-hidden="true">#</a>9. <code>harness:evaluate</code> 自动化评测架构</h2>
+<h3 class="rp-toc-include" id="91-设计概览不在本期实现仅定型"><a href="#91-设计概览不在本期实现仅定型" class="rp-header-anchor rp-link" aria-hidden="true">#</a>9.1 设计概览（不在本期实现，仅定型）</h3>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>┌─────────────────────────────────────────────────────────────────┐</span></span>
+<span class="line"><span>│                     harness:evaluate                              │</span></span>
+<span class="line"><span>│                                                                  │</span></span>
+<span class="line"><span>│  Input:  --target &lt;git-url&gt;@&lt;ref&gt;  --benchmark &lt;version&gt;          │</span></span>
+<span class="line"><span>│  Output: eval-reports/&lt;harness&gt;@&lt;version&gt;/{report.md,scores.json} │</span></span>
+<span class="line"><span>│                                                                  │</span></span>
+<span class="line"><span>│   ┌──────────────┐   ┌──────────────┐   ┌──────────────┐         │</span></span>
+<span class="line"><span>│   │ 1. Static    │   │ 2. Rubric    │   │ 3. Benchmark │         │</span></span>
+<span class="line"><span>│   │    Scanner   │   │    Evaluator │   │    Runner    │         │</span></span>
+<span class="line"><span>│   │  (no LLM)    │   │  (LLM agent) │   │  (sandbox)   │         │</span></span>
+<span class="line"><span>│   └──────┬───────┘   └──────┬───────┘   └──────┬───────┘         │</span></span>
+<span class="line"><span>│          │                  │                  │                  │</span></span>
+<span class="line"><span>│          └──────────────────┼──────────────────┘                  │</span></span>
+<span class="line"><span>│                             │                                     │</span></span>
+<span class="line"><span>│                ┌────────────▼────────────┐                        │</span></span>
+<span class="line"><span>│                │  4. Feedback Collector  │                        │</span></span>
+<span class="line"><span>│                │  (GitHub API / manual)  │                        │</span></span>
+<span class="line"><span>│                └────────────┬────────────┘                        │</span></span>
+<span class="line"><span>│                             │                                     │</span></span>
+<span class="line"><span>│                ┌────────────▼────────────┐                        │</span></span>
+<span class="line"><span>│                │  5. Aggregator          │                        │</span></span>
+<span class="line"><span>│                │  (formula → HES)        │                        │</span></span>
+<span class="line"><span>│                └────────────┬────────────┘                        │</span></span>
+<span class="line"><span>│                             │                                     │</span></span>
+<span class="line"><span>│                ┌────────────▼────────────┐                        │</span></span>
+<span class="line"><span>│                │  6. Report Generator    │                        │</span></span>
+<span class="line"><span>│                │  (md + json + radar)    │                        │</span></span>
+<span class="line"><span>│                └─────────────────────────┘                        │</span></span>
+<span class="line"><span>└─────────────────────────────────────────────────────────────────┘</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<h3 class="rp-toc-include" id="92-各模块职责"><a href="#92-各模块职责" class="rp-header-anchor rp-link" aria-hidden="true">#</a>9.2 各模块职责</h3>
+<h4 class="rp-toc-include" id="module-1-static-scanner无-llm"><a href="#module-1-static-scanner无-llm" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Module 1: Static Scanner（无 LLM）</h4>
+<ul>
+<li>输入：harness 仓库本地 clone。</li>
+<li>处理：扫 SKILL.md / settings.json / hooks/ / docs/decisions/，统计附录 C 定义的全部指标。</li>
+<li>输出：<code>l1.json</code>，结构化指标 + 计算后的 0-100 分。</li>
+<li>实现：纯 Python/shell 脚本，无 LLM，结果完全可复现。</li>
+</ul>
+<h4 class="rp-toc-include" id="module-2-rubric-evaluatorllm-驱动"><a href="#module-2-rubric-evaluatorllm-驱动" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Module 2: Rubric Evaluator（LLM 驱动）</h4>
+<ul>
+<li>输入：harness 仓库 + handbook 中的 7 维度锚点。</li>
+<li>处理：分两阶段：
+<ul>
+<li>Stage A — 证据收集：对每个维度，从仓库提取 ≤5 个证据片段（文件路径 + 引用代码/文档）。</li>
+<li>Stage B — 锚点匹配：用 Sonnet/Opus 比对证据与锚点定义，给出 0-5 分及理由。</li>
+</ul>
+</li>
+<li>输出：<code>l2.json</code> + <code>l2-evidence/&lt;dim&gt;.md</code>。</li>
+<li>关键约束：必须有外部人类评审人在分歧 ≥2 分时介入仲裁，仲裁结果覆盖 LLM 输出。</li>
+</ul>
+<h4 class="rp-toc-include" id="module-3-benchmark-runner沙箱"><a href="#module-3-benchmark-runner沙箱" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Module 3: Benchmark Runner（沙箱）</h4>
+<ul>
+<li>输入：harness 仓库 + Benchmark 任务集 v1。</li>
+<li>处理：每个任务在干净的 docker 沙箱中跑 baseline 和 treatment 各一次（变体随机），记录全部指标。</li>
+<li>输出：<code>l3.json</code> + <code>l3-traces/&lt;task&gt;/{baseline,treatment}/{transcript.md, diff.patch}</code>。</li>
+<li>关键约束：
+<ul>
+<li>沙箱有 token 预算上限，超额视为任务失败。</li>
+<li>沙箱网络出站只允许 allowlist（git / npm / pip / Anthropic API），防止任务作弊上网搜答案。</li>
+<li>每次跑分有完整 transcript，方便事后审计。</li>
+</ul>
+</li>
+</ul>
+<h4 class="rp-toc-include" id="module-4-feedback-collector"><a href="#module-4-feedback-collector" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Module 4: Feedback Collector</h4>
+<ul>
+<li>输入：harness 仓库 URL + 90 天时间窗。</li>
+<li>处理：调 GitHub GraphQL API 拉数据；对第三方提及 / dogfooding 走半自动流程（搜索 + 人工审核）。</li>
+<li>输出：<code>l4.json</code>。</li>
+<li>关键约束：必须区分&quot;原始数据&quot;与&quot;计算分数&quot;——l4.json 同时保留两者，方便复审。</li>
+</ul>
+<h4 class="rp-toc-include" id="module-5-aggregator"><a href="#module-5-aggregator" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Module 5: Aggregator</h4>
+<ul>
+<li>输入：l1 / l2 / l3 / l4 的 score。</li>
+<li>处理：套公式 → HES + 等级。</li>
+<li>输出：<code>scores.json</code>。</li>
+</ul>
+<h4 class="rp-toc-include" id="module-6-report-generator"><a href="#module-6-report-generator" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Module 6: Report Generator</h4>
+<ul>
+<li>输入：所有上游 json + evidence。</li>
+<li>处理：渲染 markdown 报告 + 雷达图（svg/png）+ 等级徽章。</li>
+<li>输出：<code>report.md</code>。</li>
+</ul>
+<h3 class="rp-toc-include" id="93-与现有-harness-engineering-的集成点"><a href="#93-与现有-harness-engineering-的集成点" class="rp-header-anchor rp-link" aria-hidden="true">#</a>9.3 与现有 harness-engineering 的集成点</h3>
+<ul>
+<li>新增 skill：<code>skills/evaluate/SKILL.md</code>（用 ADR-0001 的 skill-based 架构）。</li>
+<li>新增 command：<code>commands/evaluate.md</code> → <code>/harness:evaluate</code>。</li>
+<li>Benchmark 任务集独立目录：<code>eval/benchmarks/v1/</code>。</li>
+<li>评测报告归档：<code>eval/reports/&lt;harness&gt;@&lt;version&gt;/</code>，遵循 ADR（待建）的归档规范，git mv 保留历史。</li>
+<li>在现有 <code>harness:audit</code> 中加交叉引用：用户问&quot;我该选什么 harness&quot;时，audit 引导到 evaluate 报告。</li>
+</ul>
+<h3 class="rp-toc-include" id="94-代价估算参考"><a href="#94-代价估算参考" class="rp-header-anchor rp-link" aria-hidden="true">#</a>9.4 代价估算（参考）</h3>
+<ul>
+<li>单次评测：
+<ul>
+<li>L2 约 200K tokens（7 维度 × 证据收集 + 评分）。</li>
+<li>L3 约 6 任务 × baseline+treatment × <strong>3 变体</strong>（§6.5 抗作弊要求） × 50K tokens ≈ <strong>1.8M tokens</strong>。</li>
+<li>合计单次评测 ≈ 2M tokens 量级。</li>
+</ul>
+</li>
+<li>计算时长：L1/L4 &lt; 5 min；L2 ≈ 30 min；L3 ≈ 12-18 小时（含沙箱启动 + 变体并行）。</li>
+<li>推荐评测频率：<strong>harness 每发布 minor 版本时一次 + 季度统一评测一次</strong>。</li>
+<li>节流策略：变体抽样可降至 1（牺牲抗作弊度），把单次评测压到 600K tokens / 4-6 小时；重要发版用全量，常规体检用抽样。</li>
+</ul>
+<hr/>
+<h2 class="rp-toc-include" id="10-报告-schema-与示例"><a href="#10-报告-schema-与示例" class="rp-header-anchor rp-link" aria-hidden="true">#</a>10. 报告 schema 与示例</h2>
+<h3 class="rp-toc-include" id="101-scoresjson-schema"><a href="#101-scoresjson-schema" class="rp-header-anchor rp-link" aria-hidden="true">#</a>10.1 scores.json schema</h3>
+<div class="rp-codeblock language-json"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="json"><code><span class="line"><span style="color:var(--shiki-foreground)">{</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;harness&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;superpowers&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;version_locator&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;v0.5.2&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;evaluated_at&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;2026-05-03T08:00:00Z&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;benchmark_version&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;v1&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;evaluator_runtime&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> {</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;L2_rubric_model&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;claude-sonnet-4-6&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;L3_benchmark_model&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;claude-sonnet-4-6&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;note&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;示例占位，正式评测应填实际模型字符串&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">  }</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;feedback_status&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;active&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;L1_static&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> {</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;score&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 82</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;metrics&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> {</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;skill_atomicity&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 14</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;frontmatter_complete_pct&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 100</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;hook_event_types&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 4</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;...&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;...&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    }</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">  }</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;L2_rubric&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> {</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;score&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 76</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;dimensions&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> {</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;D1_methodology&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 5</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;D2_layering&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 3</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;D3_enforcement&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 5</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;D4_traceability&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 2</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;D5_context_hygiene&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 4</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;D6_observability&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 3</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;D7_ecosystem&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 5</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    }</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;human_reviewer&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;external-reviewer-a&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;llm_human_disputes&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">  }</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;L3_benchmark&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> {</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;score&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 66</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;tasks&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> {</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;T1_bugfix&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)">      {</span><span style="color:var(--shiki-token-keyword)">&quot;pass&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;hands_off&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;regression_count&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;scope_drift&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1.0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;artifacts_produced&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;score&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 90</span><span style="color:var(--shiki-foreground)">}</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;T2_crud&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)">        {</span><span style="color:var(--shiki-token-keyword)">&quot;pass&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;hands_off&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;regression_count&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;scope_drift&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1.2</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;artifacts_produced&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;score&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 88</span><span style="color:var(--shiki-foreground)">}</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;T3_refactor&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)">    {</span><span style="color:var(--shiki-token-keyword)">&quot;pass&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;hands_off&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;regression_count&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;scope_drift&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1.0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;artifacts_produced&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;score&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 90</span><span style="color:var(--shiki-foreground)">}</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;T4_integration&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> {</span><span style="color:var(--shiki-token-keyword)">&quot;pass&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;hands_off&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;regression_count&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;scope_drift&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 2.5</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;artifacts_produced&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;score&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 60</span><span style="color:var(--shiki-foreground)">}</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;T5_5feature&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)">    {</span><span style="color:var(--shiki-token-keyword)">&quot;pass&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;hands_off&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;regression_count&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;scope_drift&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 2.5</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;artifacts_produced&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 1</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;score&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 70</span><span style="color:var(--shiki-foreground)">}</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">      &quot;T6_incident&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)">    {</span><span style="color:var(--shiki-token-keyword)">&quot;pass&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;score&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-foreground)">}</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    }</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;_note&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;L3.score = mean(task_scores) = (90+88+90+60+70+0)/6 = 66.3&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">  }</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;L4_feedback&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> {</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;score&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 88</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;github&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> {</span><span style="color:var(--shiki-token-keyword)">&quot;stars&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 4200</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;forks&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 310</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> &quot;issue_close_p50_days&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 12</span><span style="color:var(--shiki-foreground)">}</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;third_party_mentions&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 18</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;dogfooding_evidence&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> [</span><span style="color:var(--shiki-token-string-expression)">&quot;url1&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-string-expression)"> &quot;url2&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-string-expression)"> &quot;url3&quot;</span><span style="color:var(--shiki-foreground)">]</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">  }</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;HES&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> 74.7</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;grade&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;B&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;radar_chart&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;report-assets/radar.svg&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">}</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<h3 class="rp-toc-include" id="102-reportmd-结构"><a href="#102-reportmd-结构" class="rp-header-anchor rp-link" aria-hidden="true">#</a>10.2 report.md 结构</h3>
+<div class="rp-codeblock language-markdown"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="markdown"><code><span class="line"><span style="color:var(--shiki-foreground);font-weight:bold"># HEval Report — superpowers@v0.5.2</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-foreground);font-weight:bold">**Total HES**</span><span style="color:var(--shiki-foreground)">: 74.7  </span><span style="color:var(--shiki-foreground);font-weight:bold">**Grade**</span><span style="color:var(--shiki-foreground)">: B</span></span>
+<span class="line"><span style="color:var(--shiki-foreground);font-weight:bold">**Evaluated**</span><span style="color:var(--shiki-foreground)">: 2026-05-03 (benchmark v1, claude-sonnet-4-6)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-foreground);font-weight:bold">## 一句话总结</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">方法论最纯，门禁最严；归档与 incident 工作流待补。</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-foreground);font-weight:bold">## 维度雷达</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">[</span><span style="color:var(--shiki-token-keyword)">radar.svg</span><span style="color:var(--shiki-foreground)">]</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-foreground);font-weight:bold">## 各层得分</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">- L1 Static     82</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">- L2 Rubric     76</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">- L3 Benchmark  66</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">- L4 Feedback   88</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-foreground)">公式回算：0.15×82 + 0.30×76 + 0.40×66 + 0.15×88 = 12.3 + 22.8 + 26.4 + 13.2 = 74.7</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-foreground);font-weight:bold">## 关键发现</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">1. T6 Prod incident 任务失败：缺 incident workflow skill。</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">2. D4 Traceability 仅 2 分：无 spec 归档机制。</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">3. D7 Ecosystem 满分：已上 Anthropic marketplace + 完备文档。</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-foreground);font-weight:bold">## 建议借鉴方</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">- 想要 D3 强制性满分能力 → 借鉴 superpowers 的 rigid/flexible frontmatter。</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">- 不要把 T6 的失败当作硬伤——可以与 gstack 的 /careful 系列结合补齐。</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-foreground);font-weight:bold">## 完整证据</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">- </span><span style="color:var(--shiki-token-link);text-decoration:underline">[</span><span style="color:var(--shiki-token-keyword);text-decoration:underline">L2 维度证据</span><span style="color:var(--shiki-token-link);text-decoration:underline">](./l2-evidence/)</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">- </span><span style="color:var(--shiki-token-link);text-decoration:underline">[</span><span style="color:var(--shiki-token-keyword);text-decoration:underline">L3 任务 transcript</span><span style="color:var(--shiki-token-link);text-decoration:underline">](./l3-traces/)</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<hr/>
+<h2 class="rp-toc-include" id="11-评价者中立性与抗偏见"><a href="#11-评价者中立性与抗偏见" class="rp-header-anchor rp-link" aria-hidden="true">#</a>11. 评价者中立性与抗偏见</h2>
+<p>HEval 直接落到 Harness Engineering 第 2 原则上：<strong>永远不要让创建者独立评审自己的产出</strong>。</p>
+<h3 class="rp-toc-include" id="111-评价-harness-engineering-自身的特殊规则"><a href="#111-评价-harness-engineering-自身的特殊规则" class="rp-header-anchor rp-link" aria-hidden="true">#</a>11.1 评价 harness-engineering 自身的特殊规则</h3>
+<ul>
+<li>L2 Rubric 至少需要 2 个外部评审人（非 harness-engineering 维护者），分歧 ≥1 分时讨论后取均值，不取最高方。</li>
+<li>L3 Benchmark 由其他 harness 厂商也跑一遍同任务集形成对比 baseline，避免我们的任务集隐性偏向自己。</li>
+<li>报告必须公开发布到仓库，包含完整 evidence/ 与 traces/，允许任何人复跑反驳。</li>
+</ul>
+<h3 class="rp-toc-include" id="112-跨-harness-评价时的中立化"><a href="#112-跨-harness-评价时的中立化" class="rp-header-anchor rp-link" aria-hidden="true">#</a>11.2 跨 harness 评价时的中立化</h3>
+<ul>
+<li>L2 LLM 评分员对所有 harness 用同一个 prompt 模板，仅替换&quot;待评 harness&quot;参数。</li>
+<li>L3 sandbox 配置完全一致（同 LLM、同 token 预算、同网络 allowlist、同变体 seed）。</li>
+<li>L4 数据采集同时对所有 harness 拉同一时间窗。</li>
+</ul>
+<h3 class="rp-toc-include" id="113-公开异议机制"><a href="#113-公开异议机制" class="rp-header-anchor rp-link" aria-hidden="true">#</a>11.3 公开异议机制</h3>
+<p>任何 harness 厂商对自己的 HEval 评分不服，可走&quot;举证 → 重评&quot;流程：</p>
+<ol>
+<li>提交 issue 指出具体维度的证据缺失或锚点误判。</li>
+<li>handbook 维护者 24 h 内回复是否需要重评。</li>
+<li>如重评，原报告标记 superseded，新报告 metadata 中 reference 旧报告。</li>
+</ol>
+<hr/>
+<h2 class="rp-toc-include" id="12-验证案例5-款现有-harness-的样例评分"><a href="#12-验证案例5-款现有-harness-的样例评分" class="rp-header-anchor rp-link" aria-hidden="true">#</a>12. 验证案例：5 款现有 harness 的样例评分</h2>
+<blockquote>
+<p>本节是 dry-run，目的是验证 7 个维度有区分度（不会让 5 款 harness 全部得 4 分）。
+数据来源：本仓库 <code>references/four-frameworks-comparison.md</code> + 各 harness 公开仓库阅读。
+<strong>正式评分必须走 §3-§9 完整流程</strong>；本节仅作设计验证，不构成权威排名。</p>
+</blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>维度</th><th>OpenSpec</th><th>Superpowers</th><th>gstack</th><th>GSD</th><th>harness-engineering</th></tr></thead><tbody><tr><td>D1 方法论完整度</td><td>3</td><td>5</td><td>3</td><td>4</td><td>4</td></tr><tr><td>D2 能力分层结构</td><td>2</td><td>4</td><td>4</td><td>3</td><td>4</td></tr><tr><td>D3 强制性与门禁</td><td>1</td><td>5</td><td>4</td><td>3</td><td>4</td></tr><tr><td>D4 可追溯性与归档</td><td>5</td><td>1</td><td>1</td><td>4</td><td>3</td></tr><tr><td>D5 上下文管理与抗腐蚀</td><td>3</td><td>3</td><td>2</td><td>5</td><td>4</td></tr><tr><td>D6 可观测性与反馈闭环</td><td>2</td><td>3</td><td>5</td><td>3</td><td>3</td></tr><tr><td>D7 生态与文档</td><td>3</td><td>5</td><td>3</td><td>2</td><td>4</td></tr><tr><td><strong>L2 总分（标准化到 100）</strong></td><td><strong>54</strong></td><td><strong>74</strong></td><td><strong>63</strong></td><td><strong>69</strong></td><td><strong>74</strong></td></tr></tbody></table></div>
+<p>观察：</p>
+<ul>
+<li><strong>OpenSpec</strong> 在 D4 满分（活规格归档是它的杀手锏）但 D3 仅 1 分（没有任何强制 hook），分布极度偏科——这正是 four-frameworks-comparison.md 中&quot;OpenSpec 需要配合其他框架才完整&quot;判断的量化证据。</li>
+<li><strong>Superpowers</strong> 在 D1/D3/D7 三项满分，但 D4 仅 1 分——和原星矩阵中&quot;没有活规格归档&quot;的弱点完全吻合。</li>
+<li><strong>gstack</strong> 在 D6 满分（独占真浏览器 QA + canary + benchmark），但 D4 1 分——典型的&quot;产品化强、方法论弱&quot;特征。</li>
+<li><strong>GSD</strong> 在 D5 满分（fresh context 是它的核心主张），D2 仅 3 分（角色/agent 层薄弱）。</li>
+<li><strong>harness-engineering</strong> 与 Superpowers 同为 74 分，分布不同——后者在方法论纯度（D1/D3/D7）上更尖锐，前者在分层结构（D2）+ context 管理（D5）+ 归档（D4）上更均衡。harness-engineering 设计上没有任何一项是杀手锏，需要靠 P1/P2 借鉴 OpenSpec 的 D4 和 gstack 的 D6 补齐。</li>
+<li><strong>D2 评分中立性自查</strong>：harness-engineering 在 D2 给 4 分（不给 5），因为虽然六层模型完整，但层间依赖规则的自动化校验（D2 满分必要条件之一）目前依赖人工 review，不是机械检查。这处自我克制是 §11.1 中立性规则的具体应用。</li>
+</ul>
+<p><strong>区分度结论</strong>：在 7 维度 × 5 harness = 35 个评分中，1-5 分均有出现，无单一维度被全部打满或打低，区分度合格。设计 OK。</p>
+<hr/>
+<h2 class="rp-toc-include" id="13-与-four-frameworks-comparisonmd-的兼容性"><a href="#13-与-four-frameworks-comparisonmd-的兼容性" class="rp-header-anchor rp-link" aria-hidden="true">#</a>13. 与 four-frameworks-comparison.md 的兼容性</h2>
+<h3 class="rp-toc-include" id="131-维度映射"><a href="#131-维度映射" class="rp-header-anchor rp-link" aria-hidden="true">#</a>13.1 维度映射</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>four-frameworks 旧维度</th><th>HEval 新维度</th></tr></thead><tbody><tr><td>规格归档</td><td>D4 可追溯性与归档</td></tr><tr><td>长周期抗 context rot</td><td>D5 上下文管理与抗腐蚀</td></tr><tr><td>TDD 严格度</td><td>D3 强制性与门禁（部分） + D1 方法论（部分）</td></tr><tr><td>并行执行</td><td>D5 上下文管理（合并）</td></tr><tr><td>产品/scope 挑战</td><td>D1 方法论完整度（覆盖到 clarify 阶段）</td></tr><tr><td>真浏览器 E2E</td><td>D6 可观测性（合并）</td></tr><tr><td>破坏性动作防护</td><td>D3 强制性与门禁（合并）</td></tr><tr><td>生产发布与监测</td><td>D6 可观测性（合并）</td></tr><tr><td>方法论纯度</td><td>D1 方法论完整度</td></tr></tbody></table></div>
+<p>旧的 9 维度部分重叠（如&quot;TDD 严格度&quot;和&quot;方法论纯度&quot;互相影响），HEval 合并到 7 个互斥维度。</p>
+<h3 class="rp-toc-include" id="132-旧文档的去留"><a href="#132-旧文档的去留" class="rp-header-anchor rp-link" aria-hidden="true">#</a>13.2 旧文档的去留</h3>
+<ul>
+<li><code>four-frameworks-comparison.md</code> <strong>保留</strong>作为 historical context，但顶部需加 deprecation note 指向本 handbook 与 HEval 报告。</li>
+<li>任何引用对外推荐 harness 选型的场合，必须用 HEval 报告，不再用旧星矩阵。</li>
+<li>旧文档第三节&quot;本项目可借鉴建议&quot;的 P0/P1/P2 路线图保留，但首批 HEval 报告产出后需要重排（用维度差距而不是凭直觉排）。</li>
+</ul>
+<hr/>
+<h2 class="rp-toc-include" id="附录-arubric-锚点完整定义"><a href="#附录-arubric-锚点完整定义" class="rp-header-anchor rp-link" aria-hidden="true">#</a>附录 A：Rubric 锚点完整定义</h2>
+<blockquote>
+<p>每个维度给出 0 / 2 / 4 / 5 四档明文定义。1、3 档由评分员判断（介于相邻锚点之间）。</p>
+</blockquote>
+<h3 class="rp-toc-include" id="d1-方法论完整度"><a href="#d1-方法论完整度" class="rp-header-anchor rp-link" aria-hidden="true">#</a>D1 方法论完整度</h3>
+<ul>
+<li><strong>0</strong>：无明确方法论主张，仅是工具集合。</li>
+<li><strong>2</strong>：覆盖 SDLC 中 2-3 个阶段（如仅 plan + code），其他阶段无显式工件。</li>
+<li><strong>4</strong>：覆盖 5+ 阶段（clarify / design / plan / code / verify），每阶段有可识别的入口（skill / command / 文档 section）。</li>
+<li><strong>5</strong>：覆盖完整 SDLC（含 ship / monitor），且阶段间有显式契约（一阶段输出 = 下一阶段输入），方法论在 README 中以哲学陈述明文表达。</li>
+</ul>
+<h3 class="rp-toc-include" id="d2-能力分层结构"><a href="#d2-能力分层结构" class="rp-header-anchor rp-link" aria-hidden="true">#</a>D2 能力分层结构</h3>
+<blockquote>
+<p><strong>重要中立性说明</strong>：六层模型本身是 harness-engineering 项目的概念；为避免 D2 锚点直接奖励&quot;采用 harness-engineering 的语言&quot;，本维度的判断标准是&quot;承载的能力<strong>类型</strong>数量&quot;而非具体层名。任何 harness 用自己的语言表达同等能力（例如 superpowers 的 skill + agent + hook 分类）都计入相应层。</p>
+</blockquote>
+<ul>
+<li><strong>0</strong>：仅有 1 类能力（如只有 prompt 模板）。</li>
+<li><strong>2</strong>：覆盖 2-3 类能力。</li>
+<li><strong>4</strong>：覆盖 4-5 类能力 <strong>或</strong> 覆盖 6 类但层间依赖规则不显式。</li>
+<li><strong>5</strong>：覆盖完整 6 类能力（静态记忆 / 确定性规则 / 按需技能 / 隔离智能体 / 强制钩子 / 工具扩展），<strong>且</strong>有显式的层间依赖规则（哪层禁止依赖哪层），<strong>且</strong>这条规则被自动化校验（不是空文档）。</li>
+</ul>
+<h3 class="rp-toc-include" id="d3-强制性与门禁"><a href="#d3-强制性与门禁" class="rp-header-anchor rp-link" aria-hidden="true">#</a>D3 强制性与门禁</h3>
+<ul>
+<li><strong>0</strong>：完全靠提示词约束，无机械强制。</li>
+<li><strong>2</strong>：有部分 PreToolUse 或 Stop Hook，覆盖单一场景（如仅保护 .env）。</li>
+<li><strong>4</strong>：rigid/flexible 在 frontmatter 显式标注；Hook 覆盖 ≥3 个事件类型；提供至少 2 类破坏性命令拦截（force-push / DROP TABLE / rm -rf 等）。</li>
+<li><strong>5</strong>：有&quot;门禁可观测性&quot;——绕过门禁可被记录到 audit log；rigid skill 有元测试验证强制路径；Hook 失败时给出可执行的修复建议。</li>
+</ul>
+<h3 class="rp-toc-include" id="d4-可追溯性与归档"><a href="#d4-可追溯性与归档" class="rp-header-anchor rp-link" aria-hidden="true">#</a>D4 可追溯性与归档</h3>
+<ul>
+<li><strong>0</strong>：无任何 spec / 决策 / 进度的持久化机制。</li>
+<li><strong>2</strong>：有 ADR 或 progress 文件，但归档机制缺失（旧记录直接被覆盖）。</li>
+<li><strong>4</strong>：有 spec 与 ADR 的归档机制（如 changes/ → archive/），归档保留 git history。</li>
+<li><strong>5</strong>：归档机制完整且可被自动化检索；提供 query / dump 的 skill；归档 schema 明文定义；进度文件机器可读 + 人类可读双格式。</li>
+</ul>
+<h3 class="rp-toc-include" id="d5-上下文管理与抗腐蚀"><a href="#d5-上下文管理与抗腐蚀" class="rp-header-anchor rp-link" aria-hidden="true">#</a>D5 上下文管理与抗腐蚀</h3>
+<ul>
+<li><strong>0</strong>：无任何 context 管理策略；context 自然膨胀直至崩溃。</li>
+<li><strong>2</strong>：有 trim / clear 类操作但全靠人工调用；无并行 subagent。</li>
+<li><strong>4</strong>：有显式的&quot;fresh context per phase&quot;机制；提供并行 subagent skill；session 间能恢复进度。</li>
+<li><strong>5</strong>：context 健康度被持续监测（token 用量基线对比）；并行/串行依赖图自动推断；context rot 检测能触发自动重置。</li>
+</ul>
+<h3 class="rp-toc-include" id="d6-可观测性与反馈闭环"><a href="#d6-可观测性与反馈闭环" class="rp-header-anchor rp-link" aria-hidden="true">#</a>D6 可观测性与反馈闭环</h3>
+<ul>
+<li><strong>0</strong>：发布后即结束，无任何后续监测；失败不回流改进。</li>
+<li><strong>2</strong>：有失败记录到 ADR / postmortem 的习惯，但全靠人工。</li>
+<li><strong>4</strong>：有 canary / benchmark / E2E 任一项的自动化监测；postmortem 流程显式。</li>
+<li><strong>5</strong>：覆盖 canary + benchmark + E2E 三类自动化反馈；失败到 harness 改进的回流路径在文档中显式描述并 dogfooded（有真实案例）。</li>
+</ul>
+<h3 class="rp-toc-include" id="d7-生态与文档"><a href="#d7-生态与文档" class="rp-header-anchor rp-link" aria-hidden="true">#</a>D7 生态与文档</h3>
+<ul>
+<li><strong>0</strong>：路径硬编码，无文档。</li>
+<li><strong>2</strong>：文档存在但分散；未上架任何 marketplace。</li>
+<li><strong>4</strong>：上架 ≥1 marketplace；文档分层（README / handbook / ADR）；架构图 + ADR 体系完整。</li>
+<li><strong>5</strong>：marketplace 有 ≥3 自然增长 install；社区贡献者 ≥10；提供&quot;扩展自身&quot;的 skill（writing-skills 或等价物）。</li>
+</ul>
+<hr/>
+<h2 class="rp-toc-include" id="附录-bbenchmark-任务规格"><a href="#附录-bbenchmark-任务规格" class="rp-header-anchor rp-link" aria-hidden="true">#</a>附录 B：Benchmark 任务规格</h2>
+<blockquote>
+<p>每个任务的 task.md / setup.sh / verify.sh / oracle.json 在 <code>eval/benchmarks/v1/T*/</code> 目录下完整化。本附录给出每个任务的设计意图与验证要点。</p>
+</blockquote>
+<h3 class="rp-toc-include" id="t1--微改-bug-fix"><a href="#t1--微改-bug-fix" class="rp-header-anchor rp-link" aria-hidden="true">#</a>T1 — 微改 bug fix</h3>
+<p><strong>Setup</strong>：给定一个 50 行的小服务，单元测试中有 1 个失败（off-by-one）。
+<strong>任务</strong>：让 harness 修复，并且<strong>不能</strong>改任何与 bug 无关的代码。
+<strong>Verify</strong>：</p>
+<ul>
+<li>失败测试转绿。</li>
+<li><code>git diff</code> 影响行数 ≤ 5 行且仅在原失败函数。</li>
+<li>不引入新文件。</li>
+</ul>
+<p><strong>测什么</strong>：scope 守纪 + 最小改动。多数 harness 应该在这里满分；不及格说明它有过度实现倾向。</p>
+<h3 class="rp-toc-include" id="t2--单-feature-crud"><a href="#t2--单-feature-crud" class="rp-header-anchor rp-link" aria-hidden="true">#</a>T2 — 单 feature CRUD</h3>
+<p><strong>Setup</strong>：一个 todo app 的骨架（已有用户表），任务是加&quot;按 tag 过滤&quot;功能。
+<strong>Verify</strong>：</p>
+<ul>
+<li>新接口符合 oracle.json 中的 OpenAPI 契约。</li>
+<li>有对应的单元 + 集成测试。</li>
+<li>出现 spec / plan 之类的文档工件（D4 加分）。</li>
+</ul>
+<p><strong>测什么</strong>：完整 SDLC 链路 + 是否产出归档工件。</p>
+<h3 class="rp-toc-include" id="t3--单文件重构"><a href="#t3--单文件重构" class="rp-header-anchor rp-link" aria-hidden="true">#</a>T3 — 单文件重构</h3>
+<p><strong>Setup</strong>：一个 600 行的单文件服务，需要拆成 ≥3 个模块。
+<strong>Verify</strong>：</p>
+<ul>
+<li>所有原有测试仍通过（regression_count = 0）。</li>
+<li>git history 中重构与功能改动是分开的 commit。</li>
+<li>模块边界与拆分理由有 ADR 或 design doc 记录。</li>
+</ul>
+<p><strong>测什么</strong>：重构纪律（不夹带功能）+ 决策记录。</p>
+<h3 class="rp-toc-include" id="t4--跨服务集成"><a href="#t4--跨服务集成" class="rp-header-anchor rp-link" aria-hidden="true">#</a>T4 — 跨服务集成</h3>
+<p><strong>Setup</strong>：两个独立服务 A、B，要求通过 message queue 集成；客户端先调 A，A 异步通知 B。
+<strong>Verify</strong>：</p>
+<ul>
+<li>集成测试覆盖 happy path + 1 个失败重试场景。</li>
+<li>有 ADR 记录&quot;为什么用 MQ 而不是 sync HTTP&quot;。</li>
+<li>契约测试（A 发什么、B 接什么）单独存在。</li>
+</ul>
+<p><strong>测什么</strong>：跨边界设计 + ADR 流程。</p>
+<h3 class="rp-toc-include" id="t5--5-feature-mini-saas长周期"><a href="#t5--5-feature-mini-saas长周期" class="rp-header-anchor rp-link" aria-hidden="true">#</a>T5 — 5-feature mini SaaS（长周期）</h3>
+<p><strong>Setup</strong>：从空白起，按一个 5-feature spec 列表完整开发：用户注册、登录、发帖、点赞、通知。
+<strong>Verify</strong>：</p>
+<ul>
+<li>5 个 feature 全部通过端到端测试。</li>
+<li>任务过程中没有出现因 context 满而漏掉某个 feature。</li>
+<li>有进度持久化文件能让任务被中断后从中点继续。</li>
+<li>并行不阻塞依赖（点赞依赖发帖，但发帖与登录可并行）。</li>
+</ul>
+<p><strong>测什么</strong>：长周期 context 抗腐蚀、并行 subagent、归档机制——这一项最区分 harness 的工程深度。</p>
+<h3 class="rp-toc-include" id="t6--prod-incident-triage--postmortem"><a href="#t6--prod-incident-triage--postmortem" class="rp-header-anchor rp-link" aria-hidden="true">#</a>T6 — Prod incident triage + postmortem</h3>
+<p><strong>Setup</strong>：给定一个已经&quot;上线&quot;的服务（脚本模拟），oracle 注入一条 prod incident（数据库连接池耗尽导致 5xx 飙升）。
+<strong>Verify</strong>：</p>
+<ul>
+<li>完成 triage：识别根因、定位代码位置。</li>
+<li>完成 fix：连接池配置或代码层面的修复。</li>
+<li>完成 postmortem：blameless 文档 + action items + harness 改进项。</li>
+</ul>
+<p><strong>测什么</strong>：incident workflow 是否覆盖、是否能闭环到 harness 改进。</p>
+<hr/>
+<h2 class="rp-toc-include" id="附录-cstatic-指标完整公式"><a href="#附录-cstatic-指标完整公式" class="rp-header-anchor rp-link" aria-hidden="true">#</a>附录 C：Static 指标完整公式</h2>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span># Skill 原子化度（满分 15）</span></span>
+<span class="line"><span>skill_count = COUNT(skills/**/SKILL.md)</span></span>
+<span class="line"><span>avg_skill_lines = AVG(LINES(skills/**/SKILL.md))</span></span>
+<span class="line"><span>score_atomicity = clamp(</span></span>
+<span class="line"><span>  (skill_count / 10) * 0.5 + (1 - clamp(avg_skill_lines / 200, 0, 1)) * 0.5,</span></span>
+<span class="line"><span>  0, 1</span></span>
+<span class="line"><span>) * 15</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Frontmatter 完整率（满分 10）</span></span>
+<span class="line"><span>fm_complete = COUNT(skills 中含 name+description+触发短语) / skill_count</span></span>
+<span class="line"><span>score_frontmatter = fm_complete * 10</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Hook 事件类型覆盖（满分 15）</span></span>
+<span class="line"><span>hook_event_types = UNIQUE(settings.json 中 hooks.* 的 event 字段)</span></span>
+<span class="line"><span>score_hook_coverage = clamp(LEN(hook_event_types) / 4, 0, 1) * 15</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Hook 静默成功（满分 5）</span></span>
+<span class="line"><span>score_hook_silent = (在 dry-run 中所有 hook 成功路径无 stdout) ? 5 : 0</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># ADR 数量与新鲜度（满分 10）</span></span>
+<span class="line"><span>adr_count = COUNT(docs/decisions/0*.md)</span></span>
+<span class="line"><span>recent_adr = COUNT(docs/decisions/*.md WHERE mtime &gt; now - 180d)</span></span>
+<span class="line"><span>score_adr = clamp(adr_count / 5, 0, 1) * 5 + clamp(recent_adr, 0, 1) * 5</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># 文档密度（满分 10）</span></span>
+<span class="line"><span>doc_words = WORDCOUNT(docs/**, references/**)</span></span>
+<span class="line"><span>code_lines = LINES(skills/**, hooks/**, scripts/**)</span></span>
+<span class="line"><span>score_doc_density = clamp((doc_words / max(code_lines, 1)) / 0.5, 0, 1) * 10</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Self-test（满分 10）</span></span>
+<span class="line"><span>score_selftest = (EXISTS(self-test.sh) AND PASSES) ? 10 : 0</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># Marketplace 可发现性（满分 5）</span></span>
+<span class="line"><span>score_marketplace = (在 ≥1 marketplace 上架) ? 5 : 0</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># 依赖卫生（满分 5）</span></span>
+<span class="line"><span>non_dev_deps = COUNT(package.json/dependencies + 等价)</span></span>
+<span class="line"><span>licenses_ok = ALL(deps WHERE license IN allowlist)</span></span>
+<span class="line"><span>score_deps = (non_dev_deps &lt;= 5 AND licenses_ok) ? 5 : 0</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># 元测试（满分 5）</span></span>
+<span class="line"><span>score_meta_tests = (≥1 类 skill 有 tests) ? 5 : 0</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># L1 总分（0-100）</span></span>
+<span class="line"><span>L1_score = SUM(全部 score_*)</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<hr/>
+<h2 class="rp-toc-include" id="变更日志"><a href="#变更日志" class="rp-header-anchor rp-link" aria-hidden="true">#</a>变更日志</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>日期</th><th>版本</th><th>变更</th></tr></thead><tbody><tr><td>2026-05-03</td><td>v1.0</td><td>初版发布；7 维度 + 6 任务 + 4 层评价框架定型</td></tr></tbody></table></div>
+<blockquote>
+<p>维度锚点、任务集、聚合权重的任何修改必须在此处留 changelog，并同步更新 ADR-0006 的&quot;下次 review 触发条件&quot;。</p>
+</blockquote><!--/$--></div><footer class="rp-doc-footer"><div class="rp-doc-footer__edit"></div><div class="rp-doc-footer__divider"></div><div class="rp-prev-next-page"><a href="/harness/4-anti-patterns.html" class="rp-prev-next-page__item rp-prev-next-page__prev rp-link"><span class="rp-prev-next-page__item__desc">上一页</span><span class="rp-prev-next-page__item__title"><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon rp-prev-next-page__rotate_180"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg><span>反模式指南</span></span></a><a href="/harness/6-hook-patterns.html" class="rp-prev-next-page__item rp-prev-next-page__next rp-link"><span class="rp-prev-next-page__item__desc">下一页</span><span class="rp-prev-next-page__item__title"><span>Hook设计模式</span><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></span></a></div></footer></main></div><aside class="rp-doc-layout__outline rp-scrollbar"><div class="rp-outline"><div class="rp-outline__title">目录<svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg></div><nav class="rp-outline__toc rp-scrollbar"><a href="#目录" class="rp-toc-item rp-link" title="目录" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">目录</span></a><a href="#1-评价目标与范围" class="rp-toc-item rp-link" title="1. 评价目标与范围" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">1. 评价目标与范围</span></a><a href="#11-评价目标" class="rp-toc-item rp-link" title="1.1 评价目标" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">1.1 评价目标</span></a><a href="#12-范围" class="rp-toc-item rp-link" title="1.2 范围" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">1.2 范围</span></a><a href="#13-与-harnessaudit-的关系" class="rp-toc-item rp-link" title="1.3 与 harness:audit 的关系" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">1.3 与 harness:audit 的关系</span></a><a href="#2-评价对象的定义" class="rp-toc-item rp-link" title="2. 评价对象的定义" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">2. 评价对象的定义</span></a><a href="#21-什么算一个-harness-组件" class="rp-toc-item rp-link" title="2.1 什么算一个 Harness 组件" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">2.1 什么算一个 Harness 组件</span></a><a href="#22-版本绑定" class="rp-toc-item rp-link" title="2.2 版本绑定" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">2.2 版本绑定</span></a><a href="#23-评测时间窗" class="rp-toc-item rp-link" title="2.3 评测时间窗" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">2.3 评测时间窗</span></a><a href="#3-四层评价方法概览" class="rp-toc-item rp-link" title="3. 四层评价方法概览" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">3. 四层评价方法概览</span></a><a href="#4-l1-静态分析static" class="rp-toc-item rp-link" title="4. L1 静态分析（Static）" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">4. L1 静态分析（Static）</span></a><a href="#41-设计原则" class="rp-toc-item rp-link" title="4.1 设计原则" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">4.1 设计原则</span></a><a href="#42-指标矩阵" class="rp-toc-item rp-link" title="4.2 指标矩阵" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">4.2 指标矩阵</span></a><a href="#43-实现方式" class="rp-toc-item rp-link" title="4.3 实现方式" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">4.3 实现方式</span></a><a href="#5-l2-结构化评分rubric" class="rp-toc-item rp-link" title="5. L2 结构化评分（Rubric）" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">5. L2 结构化评分（Rubric）</span></a><a href="#51-7-个维度" class="rp-toc-item rp-link" title="5.1 7 个维度" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">5.1 7 个维度</span></a><a href="#511-维度归属歧义消解重要" class="rp-toc-item rp-link" title="5.1.1 维度归属歧义消解（重要）" style="padding-left:24px" data-depth="2"><span class="rp-toc-item__text rp-doc">5.1.1 维度归属歧义消解（重要）</span></a><a href="#52-评分锚点0245" class="rp-toc-item rp-link" title="5.2 评分锚点（0/2/4/5）" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">5.2 评分锚点（0/2/4/5）</span></a><a href="#53-评分流程" class="rp-toc-item rp-link" title="5.3 评分流程" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">5.3 评分流程</span></a><a href="#6-l3-标准任务集benchmark" class="rp-toc-item rp-link" title="6. L3 标准任务集（Benchmark）" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">6. L3 标准任务集（Benchmark）</span></a><a href="#61-设计原则" class="rp-toc-item rp-link" title="6.1 设计原则" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">6.1 设计原则</span></a><a href="#62-6-个标准任务" class="rp-toc-item rp-link" title="6.2 6 个标准任务" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">6.2 6 个标准任务</span></a><a href="#63-每个任务的指标" class="rp-toc-item rp-link" title="6.3 每个任务的指标" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">6.3 每个任务的指标</span></a><a href="#64-单任务得分公式" class="rp-toc-item rp-link" title="6.4 单任务得分公式" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">6.4 单任务得分公式</span></a><a href="#65-抗作弊设计" class="rp-toc-item rp-link" title="6.5 抗作弊设计" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">6.5 抗作弊设计</span></a><a href="#7-l4-用户反馈与-dogfoodingfeedback" class="rp-toc-item rp-link" title="7. L4 用户反馈与 dogfooding（Feedback）" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">7. L4 用户反馈与 dogfooding（Feedback）</span></a><a href="#71-数据源" class="rp-toc-item rp-link" title="7.1 数据源" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">7.1 数据源</span></a><a href="#72-计算细节" class="rp-toc-item rp-link" title="7.2 计算细节" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">7.2 计算细节</span></a><a href="#73-冷启动豁免" class="rp-toc-item rp-link" title="7.3 冷启动豁免" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">7.3 冷启动豁免</span></a><a href="#74-抗刷分设计" class="rp-toc-item rp-link" title="7.4 抗刷分设计" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">7.4 抗刷分设计</span></a><a href="#8-聚合公式与等级" class="rp-toc-item rp-link" title="8. 聚合公式与等级" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">8. 聚合公式与等级</span></a><a href="#81-公式" class="rp-toc-item rp-link" title="8.1 公式" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">8.1 公式</span></a><a href="#82-等级映射" class="rp-toc-item rp-link" title="8.2 等级映射" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">8.2 等级映射</span></a><a href="#83-维度雷达图" class="rp-toc-item rp-link" title="8.3 维度雷达图" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">8.3 维度雷达图</span></a><a href="#9-harnessevaluate-自动化评测架构" class="rp-toc-item rp-link" title="9. harness:evaluate 自动化评测架构" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">9. <code>harness:evaluate</code> 自动化评测架构</span></a><a href="#91-设计概览不在本期实现仅定型" class="rp-toc-item rp-link" title="9.1 设计概览（不在本期实现，仅定型）" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">9.1 设计概览（不在本期实现，仅定型）</span></a><a href="#92-各模块职责" class="rp-toc-item rp-link" title="9.2 各模块职责" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">9.2 各模块职责</span></a><a href="#module-1-static-scanner无-llm" class="rp-toc-item rp-link" title="Module 1: Static Scanner（无 LLM）" style="padding-left:24px" data-depth="2"><span class="rp-toc-item__text rp-doc">Module 1: Static Scanner（无 LLM）</span></a><a href="#module-2-rubric-evaluatorllm-驱动" class="rp-toc-item rp-link" title="Module 2: Rubric Evaluator（LLM 驱动）" style="padding-left:24px" data-depth="2"><span class="rp-toc-item__text rp-doc">Module 2: Rubric Evaluator（LLM 驱动）</span></a><a href="#module-3-benchmark-runner沙箱" class="rp-toc-item rp-link" title="Module 3: Benchmark Runner（沙箱）" style="padding-left:24px" data-depth="2"><span class="rp-toc-item__text rp-doc">Module 3: Benchmark Runner（沙箱）</span></a><a href="#module-4-feedback-collector" class="rp-toc-item rp-link" title="Module 4: Feedback Collector" style="padding-left:24px" data-depth="2"><span class="rp-toc-item__text rp-doc">Module 4: Feedback Collector</span></a><a href="#module-5-aggregator" class="rp-toc-item rp-link" title="Module 5: Aggregator" style="padding-left:24px" data-depth="2"><span class="rp-toc-item__text rp-doc">Module 5: Aggregator</span></a><a href="#module-6-report-generator" class="rp-toc-item rp-link" title="Module 6: Report Generator" style="padding-left:24px" data-depth="2"><span class="rp-toc-item__text rp-doc">Module 6: Report Generator</span></a><a href="#93-与现有-harness-engineering-的集成点" class="rp-toc-item rp-link" title="9.3 与现有 harness-engineering 的集成点" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">9.3 与现有 harness-engineering 的集成点</span></a><a href="#94-代价估算参考" class="rp-toc-item rp-link" title="9.4 代价估算（参考）" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">9.4 代价估算（参考）</span></a><a href="#10-报告-schema-与示例" class="rp-toc-item rp-link" title="10. 报告 schema 与示例" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">10. 报告 schema 与示例</span></a><a href="#101-scoresjson-schema" class="rp-toc-item rp-link" title="10.1 scores.json schema" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">10.1 scores.json schema</span></a><a href="#102-reportmd-结构" class="rp-toc-item rp-link" title="10.2 report.md 结构" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">10.2 report.md 结构</span></a><a href="#11-评价者中立性与抗偏见" class="rp-toc-item rp-link" title="11. 评价者中立性与抗偏见" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">11. 评价者中立性与抗偏见</span></a><a href="#111-评价-harness-engineering-自身的特殊规则" class="rp-toc-item rp-link" title="11.1 评价 harness-engineering 自身的特殊规则" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">11.1 评价 harness-engineering 自身的特殊规则</span></a><a href="#112-跨-harness-评价时的中立化" class="rp-toc-item rp-link" title="11.2 跨 harness 评价时的中立化" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">11.2 跨 harness 评价时的中立化</span></a><a href="#113-公开异议机制" class="rp-toc-item rp-link" title="11.3 公开异议机制" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">11.3 公开异议机制</span></a><a href="#12-验证案例5-款现有-harness-的样例评分" class="rp-toc-item rp-link" title="12. 验证案例：5 款现有 harness 的样例评分" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">12. 验证案例：5 款现有 harness 的样例评分</span></a><a href="#13-与-four-frameworks-comparisonmd-的兼容性" class="rp-toc-item rp-link" title="13. 与 four-frameworks-comparison.md 的兼容性" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">13. 与 four-frameworks-comparison.md 的兼容性</span></a><a href="#131-维度映射" class="rp-toc-item rp-link" title="13.1 维度映射" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">13.1 维度映射</span></a><a href="#132-旧文档的去留" class="rp-toc-item rp-link" title="13.2 旧文档的去留" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">13.2 旧文档的去留</span></a><a href="#附录-arubric-锚点完整定义" class="rp-toc-item rp-link" title="附录 A：Rubric 锚点完整定义" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">附录 A：Rubric 锚点完整定义</span></a><a href="#d1-方法论完整度" class="rp-toc-item rp-link" title="D1 方法论完整度" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">D1 方法论完整度</span></a><a href="#d2-能力分层结构" class="rp-toc-item rp-link" title="D2 能力分层结构" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">D2 能力分层结构</span></a><a href="#d3-强制性与门禁" class="rp-toc-item rp-link" title="D3 强制性与门禁" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">D3 强制性与门禁</span></a><a href="#d4-可追溯性与归档" class="rp-toc-item rp-link" title="D4 可追溯性与归档" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">D4 可追溯性与归档</span></a><a href="#d5-上下文管理与抗腐蚀" class="rp-toc-item rp-link" title="D5 上下文管理与抗腐蚀" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">D5 上下文管理与抗腐蚀</span></a><a href="#d6-可观测性与反馈闭环" class="rp-toc-item rp-link" title="D6 可观测性与反馈闭环" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">D6 可观测性与反馈闭环</span></a><a href="#d7-生态与文档" class="rp-toc-item rp-link" title="D7 生态与文档" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">D7 生态与文档</span></a><a href="#附录-bbenchmark-任务规格" class="rp-toc-item rp-link" title="附录 B：Benchmark 任务规格" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">附录 B：Benchmark 任务规格</span></a><a href="#t1--微改-bug-fix" class="rp-toc-item rp-link" title="T1 — 微改 bug fix" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">T1 — 微改 bug fix</span></a><a href="#t2--单-feature-crud" class="rp-toc-item rp-link" title="T2 — 单 feature CRUD" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">T2 — 单 feature CRUD</span></a><a href="#t3--单文件重构" class="rp-toc-item rp-link" title="T3 — 单文件重构" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">T3 — 单文件重构</span></a><a href="#t4--跨服务集成" class="rp-toc-item rp-link" title="T4 — 跨服务集成" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">T4 — 跨服务集成</span></a><a href="#t5--5-feature-mini-saas长周期" class="rp-toc-item rp-link" title="T5 — 5-feature mini SaaS（长周期）" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">T5 — 5-feature mini SaaS（长周期）</span></a><a href="#t6--prod-incident-triage--postmortem" class="rp-toc-item rp-link" title="T6 — Prod incident triage + postmortem" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">T6 — Prod incident triage + postmortem</span></a><a href="#附录-cstatic-指标完整公式" class="rp-toc-item rp-link" title="附录 C：Static 指标完整公式" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">附录 C：Static 指标完整公式</span></a><a href="#变更日志" class="rp-toc-item rp-link" title="变更日志" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">变更日志</span></a></nav><div class="rp-outline__divider"></div><div class="rp-outline__bottom"></div></div></aside></div></div>
+    <div id="__rspress_modal_container"></div>
+  </body>
+</html>

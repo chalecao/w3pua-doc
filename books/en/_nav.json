@@ -3,5 +3,10 @@
     "text": "Agent Guide",
     "link": "/book/preface",
     "activeMatch": "/book/"
+  },
+  {
+    "text": "Harness Handbook",
+    "link": "/harness/1-four-frameworks-comparison",
+    "activeMatch": "/harness/"
   }
 ]

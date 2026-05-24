@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh">
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harness Engineering 速查手册</title>
+<script>{;const saved = localStorage.getItem('rspress-theme-appearance');const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;const isDark = !saved || saved === 'auto' ? preferDark : saved === 'dark';document.documentElement.classList.toggle('dark', isDark);document.documentElement.classList.toggle('rp-dark', isDark);document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';}</script>
+<script>window.onload=function(){document.title='「万维飘」w3pua.com';setTimeout(function(){var imgs=document.querySelectorAll('img.rp-home-hero__image-img');imgs.forEach(function(img){var num=Math.floor(Math.random()*19)+1;img.src='/logo/'+num+'.svg';});},100);};</script>
+<link href="/static/css/styles.a9ece97661.css" rel="stylesheet">
+<script defer src="/static/js/styles.c905503ecf.js"></script>
+<script defer src="/static/js/lib-react.06aa503779.js"></script>
+<script defer src="/static/js/lib-router.a7a83a8399.js"></script>
+<script defer src="/static/js/6665.f15cceccdb.js"></script>
+<script defer src="/static/js/index.529caf5c59.js"></script>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Rspress v2.0.11">
+<link rel="icon" href="/logo.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Harness Engineering 速查手册">
+<meta name="description" content="本文件是 Harness Engineering 核心概念的浓缩参考，供 Skills 和 Commands 按需加载。 完整手册见：references/HarnessEngineering.md（综合 Anthropic · OpenAI · InfoQ · HN 实践精华）">
+<meta property="og:description" content="本文件是 Harness Engineering 核心概念的浓缩参考，供 Skills 和 Commands 按需加载。 完整手册见：references/HarnessEngineering.md（综合 Anthropic · OpenAI · InfoQ · HN 实践精华）"></head>
+
+  <body>
+    <div id="__rspress_root"><link rel="preload" as="image" href="/logo.png"/><header class="rp-nav"><div class="rp-nav__left"><div class="rp-nav__title"><a href="/" class="rp-nav__title__link rp-link"><div class="rp-nav__title__logo"><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--light"/><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--dark"/></div></a></div></div><div class="rp-nav__right"><button class="rp-search-button"><div class="rp-search-button__content"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21" class="rp-search-button__icon"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg><span class="rp-search-button__word">搜索</span></div><div class="rp-search-button__hotkey" style="opacity:0"><span></span><span>K</span></div></button><div class="rp-search-button--mobile"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg></div><ul class="rp-nav-menu rp-nav-menu--right"><li class="rp-nav-menu__item"><a href="/book/preface.html" class="rp-nav-menu__item__container rp-link">Agent指南</a></li><li class="rp-nav-menu__item rp-nav-menu__item--active"><a href="/harness/1-four-frameworks-comparison.html" class="rp-nav-menu__item__container rp-link">Harness手册</a></li></ul><div class="rp-nav__others"><div class="rp-nav-menu__divider"></div><li class="rp-nav-menu__item"><div class="rp-nav-menu__item__container">简体中文<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-menu__item__icon"><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--center"><li class="rp-hover-group__item" style="padding-left:8px" data-depth="0"><a href="/en/harness/3-harness-engineering-handbook.html" class="rp-hover-group__item__link rp-link" aria-label="English" lang="en" hrefLang="en" rel="alternate">English</a></li><li class="rp-hover-group__item rp-hover-group__item--active" style="padding-left:8px" data-depth="0"><a href="/3-harness-engineering-handbook.html" class="rp-hover-group__item__link rp-link" aria-label="简体中文" lang="zh" hrefLang="zh" rel="alternate">简体中文</a></li></ul></li><div class="rp-switch-appearance"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" class="rp-switch-appearance__icon rp-switch-appearance__icon--sun"><path fill="currentColor" d="m7.001 15.848-1.226 1.226a.58.58 0 0 0 0 .818.58.58 0 0 0 .818 0l1.226-1.226a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0m-.352-8.735a.584.584 0 0 0 .825-.825L6.237 5.051a.584.584 0 0 0-.825.825zM5.011 11.07h-1.75a.584.584 0 0 0 0 1.167h1.75c.324 0 .584-.26.584-.583a.585.585 0 0 0-.584-.584m7.003-5.835c.324 0 .584-.26.584-.584V2.9a.58.58 0 0 0-.584-.584.58.58 0 0 0-.583.583V4.65c0 .323.262.584.583.584m5.616 1.621 1.226-1.225a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0l-1.226 1.225a.58.58 0 0 0 0 .818.576.576 0 0 0 .818 0m3.138 4.214h-1.75a.58.58 0 0 0-.584.584c0 .324.26.584.583.584h1.751a.584.584 0 1 0 0-1.167m-3.389 5.124a.584.584 0 0 0-.825.825l1.238 1.238a.584.584 0 0 0 .825-.826zm-5.365-9.795a5.256 5.256 0 0 0-5.257 5.258 5.256 5.256 0 0 0 5.257 5.257 5.256 5.256 0 0 0 5.257-5.257 5.256 5.256 0 0 0-5.257-5.258m0 11.675a.58.58 0 0 0-.583.583v1.751a.582.582 0 1 0 1.167 0v-1.75a.584.584 0 0 0-.584-.584"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" viewBox="0 0 19 19" class="rp-switch-appearance__icon rp-switch-appearance__icon--moon"><path fill="currentColor" d="M9.166 0a9.2 9.2 0 0 1 1.857.188.834.834 0 0 1 .042 1.623 4.47 4.47 0 1 0 5.457 5.457l.048-.135a.834.834 0 0 1 1.575.177q.186.902.188 1.856A9.168 9.168 0 1 1 9.166 0"></path></svg></div></div><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__sm"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg></button><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__md"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--right"><div class="rp-nav-menu__others-mobile__container"><div class="rp-nav-hamburger__md__hover-group"><div class="rp-nav-screen-appearance"><div class="rp-nav-screen-appearance__left">主题</div><div class="rp-nav-screen-appearance__right"></div></div><div class="rp-nav-screen-langs"><div class="rp-nav-screen-langs__left">语言</div><div class="rp-nav-screen-langs__right">简体中文<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-screen-langs__icon "><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div></div><div class="rp-nav-screen-langs-group" style="display:grid;grid-template-rows:0fr;transition:grid-template-rows 0.2s ease-out"><div class="rp-nav-screen-langs-group__inner"><a href="/en/harness/3-harness-engineering-handbook.html" class="rp-nav-screen-langs-group__item rp-link" hrefLang="en" lang="en" rel="alternate">English</a><span class="rp-nav-screen-langs-group__item rp-nav-screen-langs-group__item--active" aria-current="page" aria-disabled="true">简体中文</span></div></div><div class="rp-nav-screen-divider"></div></div></div></ul></button></div></header><div class="rp-doc-layout__menu"><div class="rp-sidebar-menu"><button type="button" class="rp-sidebar-menu__left"><svg width="1em" height="1em" viewBox="0 0 32 32"><path fill="currentColor" d="M4 6h24v2H4zm0 18h24v2H4zm0-12h24v2H4zm0 6h24v2H4z"></path></svg><span>菜单</span></button><button type="button" class="rp-sidebar-menu__right"><span class="rp-sidebar-menu__right__text">目录</span><svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-sidebar-menu__right__icon" style="transform:rotate(0deg);transition:transform 0.2s ease-out"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></button></div></div><div class="rp-doc-layout__container"><aside class="rp-doc-layout__sidebar rp-scrollbar"><a href="/harness/1-four-frameworks-comparison.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>四大框架对比</span></div><div class="rp-sidebar-item__right"></div></a><a href="/harness/2-HarnessEngineering.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>Harness工程实践</span></div><div class="rp-sidebar-item__right"></div></a><a href="/harness/3-harness-engineering-handbook.html" class="rp-sidebar-item rp-sidebar-item--active rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>快速参考手册</span></div><div class="rp-sidebar-item__right"></div></a><a href="/harness/4-anti-patterns.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>反模式指南</span></div><div class="rp-sidebar-item__right"></div></a><a href="/harness/5-harness-evaluation-handbook.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>评估手册</span></div><div class="rp-sidebar-item__right"></div></a><a href="/harness/6-hook-patterns.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>Hook设计模式</span></div><div class="rp-sidebar-item__right"></div></a><a href="/harness/7-team-parallel-development.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>团队并行开发</span></div><div class="rp-sidebar-item__right"></div></a></aside><div class="rp-doc-layout__doc"><main class="rp-doc-layout__doc-container"><div class="rp-doc rspress-doc"><!--$--><h1 class="rp-toc-include" id="harness-engineering-速查手册"><a href="#harness-engineering-速查手册" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Harness Engineering 速查手册<!-- --> </h1>
+<blockquote>
+<p>本文件是 Harness Engineering 核心概念的浓缩参考，供 Skills 和 Commands 按需加载。
+完整手册见：<a href="/harness/2-HarnessEngineering.html" class="rp-link">references/HarnessEngineering.md</a>（综合 Anthropic · OpenAI · InfoQ · HN 实践精华）</p>
+</blockquote>
+<h2 class="rp-toc-include" id="核心定义"><a href="#核心定义" class="rp-header-anchor rp-link" aria-hidden="true">#</a>核心定义</h2>
+<p>Harness Engineering 是将工程师的核心工作从「编写代码」转变为「设计让 AI 智能体可靠工作的环境」。</p>
+<p>模型是骏马——强大但不自知方向；Harness 是缰绳、鞍具和衔铁——引导力量朝正确方向。</p>
+<h2 class="rp-toc-include" id="三个演进阶段"><a href="#三个演进阶段" class="rp-header-anchor rp-link" aria-hidden="true">#</a>三个演进阶段</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>阶段</th><th>时间</th><th>核心关注点</th></tr></thead><tbody><tr><td>Prompt Engineering</td><td>2022–2024</td><td>优化单次推理的指令质量</td></tr><tr><td>Context Engineering</td><td>2025</td><td>确保模型在推理时获得正确的上下文</td></tr><tr><td><strong>Harness Engineering</strong></td><td><strong>2026–</strong></td><td><strong>在系统层面架构约束、反馈循环和验证机制</strong></td></tr></tbody></table></div>
+<h2 class="rp-toc-include" id="四大组成要素"><a href="#四大组成要素" class="rp-header-anchor rp-link" aria-hidden="true">#</a>四大组成要素</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>要素</th><th>内容</th></tr></thead><tbody><tr><td>上下文工程</td><td>持续充实的知识库（CLAUDE.md、设计文档、架构图）</td></tr><tr><td>架构约束</td><td>通过 Linter 和结构化测试机械性强制执行</td></tr><tr><td>验证与反馈</td><td>CI 管道、测试；每次失败都触发 Harness 改进</td></tr><tr><td>垃圾回收</td><td>周期性运行清理，检测文档陈旧、架构漂移、代码熵增</td></tr></tbody></table></div>
+<h2 class="rp-toc-include" id="六层模型"><a href="#六层模型" class="rp-header-anchor rp-link" aria-hidden="true">#</a>六层模型</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>层级</th><th>组件</th><th>核心职责</th></tr></thead><tbody><tr><td>① 记忆层</td><td>CLAUDE.md</td><td>静态知识：架构约定、禁止规则、测试命令</td></tr><tr><td>② 规则层</td><td>settings.json</td><td>确定性行为：权限、模型、输出配置</td></tr><tr><td>③ 技能层</td><td>skills/ + commands/</td><td>按需知识和手动触发工作流</td></tr><tr><td>④ 智能体层</td><td>agents/</td><td>上下文隔离的专用 Subagent</td></tr><tr><td>⑤ 钩子层</td><td>Hooks</td><td>确定性强制：不依赖模型判断</td></tr><tr><td>⑥ 工具层</td><td>MCP Servers</td><td>能力扩展：外部服务接入</td></tr></tbody></table></div>
+<p><strong>单层失效陷阱</strong>：三者协同才能真正有效——CLAUDE.md 规则单独使用会被偶尔忽略；Hooks 单独使用无法处理判断性任务；settings.json 单独使用缺乏上下文。</p>
+<h2 class="rp-toc-include" id="核心原则"><a href="#核心原则" class="rp-header-anchor rp-link" aria-hidden="true">#</a>核心原则</h2>
+<ol>
+<li><strong>上下文重置优于无限压缩</strong>：定期清空并结构化交接比累积更有效</li>
+<li><strong>永远不要让创建者独立评审自己的产出</strong>：分离生成与评估角色</li>
+<li><strong>随模型进化精简 Harness</strong>：新模型解决了某类失败时，主动删除脚手架</li>
+<li><strong>约束赋能，而非限制</strong>：架构约束越严格，Agent 产出越可靠</li>
+<li><strong>上下文是稀缺资源</strong>：批判性审视每个加入上下文窗口的内容</li>
+<li><strong>权限强制与模型推理分离</strong>：CLAUDE.md 解释原因，Hook 强制执行</li>
+</ol>
+<h2 class="rp-toc-include" id="核心循环"><a href="#核心循环" class="rp-header-anchor rp-link" aria-hidden="true">#</a>核心循环</h2>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>Agent 失败 → 识别缺失的能力 → 工程化修复（更新文档/添加Linter/构建工具）→ 该失败永不再发生</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<h2 class="rp-toc-include" id="在环路上的角色定位"><a href="#在环路上的角色定位" class="rp-header-anchor rp-link" aria-hidden="true">#</a>「在环路上」的角色定位</h2>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>在环路外（Vibe Coding）  → 人给需求，Agent 自由发挥 → 可能可用，但不可控</span></span>
+<span class="line"><span>在环路中（微管理）       → 审查每行代码 → 质量有保证，但人是瓶颈</span></span>
+<span class="line"><span>在环路上（Harness Engineering）→ 设计约束、维护 Harness → 质量有保证，速度快</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>正确做法：对 Agent 产出不满意时，改进产生这个产物的 Harness，而不是直接修改产物。</p>
+<h2 class="rp-toc-include" id="前馈与反馈体系"><a href="#前馈与反馈体系" class="rp-header-anchor rp-link" aria-hidden="true">#</a>前馈与反馈体系</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>控制方向</th><th>类型</th><th>典型实现</th></tr></thead><tbody><tr><td>前馈（Guides）</td><td>Computational</td><td>CLAUDE.md 架构约定、依赖规则</td></tr><tr><td>前馈（Guides）</td><td>Inferential</td><td>Skills 领域知识注入</td></tr><tr><td>反馈（Sensors）</td><td>Computational</td><td>Stop Hook 类型检查、CI 结构测试</td></tr><tr><td>反馈（Sensors）</td><td>Inferential</td><td>安全审查 Sub-agent</td></tr></tbody></table></div>
+<p>原则：先用 Computational 覆盖 80% 常见问题，再用 Inferential 处理语义层面的剩余 20%。</p>
+<h2 class="rp-toc-include" id="反模式速查"><a href="#反模式速查" class="rp-header-anchor rp-link" aria-hidden="true">#</a>反模式速查</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>反模式</th><th>修复</th></tr></thead><tbody><tr><td>CLAUDE.md 超过 100 行</td><td>精简至 &lt;60 行，移入 docs/</td></tr><tr><td>滥用 MCP（20+ Server）</td><td>按需接入，不用时禁用</td></tr><tr><td>测试成功时输出 4000 行日志</td><td>成功静默，失败才输出</td></tr><tr><td>所有约定放 CLAUDE.md</td><td>必须执行 = Hook，应该遵守 = CLAUDE.md</td></tr><tr><td>单会话处理 10+ 功能</td><td>每功能一个会话 + /harness:dump</td></tr><tr><td>依赖 Compaction 保持记忆</td><td>用 claude-progress.json 结构化交接</td></tr></tbody></table></div>
+<h2 class="rp-toc-include" id="三层防护"><a href="#三层防护" class="rp-header-anchor rp-link" aria-hidden="true">#</a>三层防护</h2>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>Layer 1: settings.json     → 控制 Agent 可以调用哪些工具（系统级）</span></span>
+<span class="line"><span>Layer 2: PreToolUse Hook   → 在允许的工具范围内检查参数（拦截层）</span></span>
+<span class="line"><span>Layer 3: CLAUDE.md         → 解释约束原因，帮助 Agent 主动避免（理解层）</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<h2 class="rp-toc-include" id="mcp-使用决策框架"><a href="#mcp-使用决策框架" class="rp-header-anchor rp-link" aria-hidden="true">#</a>MCP 使用决策框架</h2>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>判断 1：模型有没有内置知识？</span></span>
+<span class="line"><span>  git/npm/docker/gh CLI... → 直接用 CLI（模型已训练过）</span></span>
+<span class="line"><span>  你公司的内部 API        → 需要 MCP 或自定义 CLI 封装</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>判断 2：工具有多少个操作？</span></span>
+<span class="line"><span>  只用 3 个操作 → 写 CLI 封装 + CLAUDE.md 说明（约 100 Token）</span></span>
+<span class="line"><span>  用 20+ 操作  → 使用 MCP Server（约 3000-9000 Token）</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>判断 3：CLI 输出是否高效？</span></span>
+<span class="line"><span>  简洁结构化 → 用 CLI</span></span>
+<span class="line"><span>  冗长噪声多 → 用 MCP（可控制返回格式）</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<h2 class="rp-toc-include" id="harness-成熟度路径"><a href="#harness-成熟度路径" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Harness 成熟度路径</h2>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>阶段 1：人建 Harness，Agent 在 Harness 内工作（大多数团队当前状态）</span></span>
+<span class="line"><span>阶段 2：Agent 发现问题，记录在 progress.json，人定期审查转化为改进（推荐目标）</span></span>
+<span class="line"><span>阶段 3：Agent 发现问题后直接提 PR，人审批后合并（OpenAI 垃圾回收 Agent 模式）</span></span>
+<span class="line"><span>阶段 4：Harness 自动优化自身（Meta-Harness，实验阶段）</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<h2 class="rp-toc-include" id="衡量成效的正确指标"><a href="#衡量成效的正确指标" class="rp-header-anchor rp-link" aria-hidden="true">#</a>衡量成效的正确指标</h2>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>❌ 错误：「本周帮 Agent 修复了 20 个 Bug」</span></span>
+<span class="line"><span>✅ 正确：「本周新增了 3 条架构 Linter 规则，这类 Bug 不会再出现」</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>❌ 错误：「写了详细的 CLAUDE.md 让 Agent 不犯错」</span></span>
+<span class="line"><span>✅ 正确：「通过 Hook + settings.json 让物理上无法犯那些错」</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div><!--/$--></div><footer class="rp-doc-footer"><div class="rp-doc-footer__edit"></div><div class="rp-doc-footer__divider"></div><div class="rp-prev-next-page"><a href="/harness/2-HarnessEngineering.html" class="rp-prev-next-page__item rp-prev-next-page__prev rp-link"><span class="rp-prev-next-page__item__desc">上一页</span><span class="rp-prev-next-page__item__title"><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon rp-prev-next-page__rotate_180"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg><span>Harness工程实践</span></span></a><a href="/harness/4-anti-patterns.html" class="rp-prev-next-page__item rp-prev-next-page__next rp-link"><span class="rp-prev-next-page__item__desc">下一页</span><span class="rp-prev-next-page__item__title"><span>反模式指南</span><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></span></a></div></footer></main></div><aside class="rp-doc-layout__outline rp-scrollbar"><div class="rp-outline"><div class="rp-outline__title">目录<svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg></div><nav class="rp-outline__toc rp-scrollbar"><a href="#核心定义" class="rp-toc-item rp-link" title="核心定义" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">核心定义</span></a><a href="#三个演进阶段" class="rp-toc-item rp-link" title="三个演进阶段" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">三个演进阶段</span></a><a href="#四大组成要素" class="rp-toc-item rp-link" title="四大组成要素" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">四大组成要素</span></a><a href="#六层模型" class="rp-toc-item rp-link" title="六层模型" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">六层模型</span></a><a href="#核心原则" class="rp-toc-item rp-link" title="核心原则" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">核心原则</span></a><a href="#核心循环" class="rp-toc-item rp-link" title="核心循环" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">核心循环</span></a><a href="#在环路上的角色定位" class="rp-toc-item rp-link" title="「在环路上」的角色定位" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">「在环路上」的角色定位</span></a><a href="#前馈与反馈体系" class="rp-toc-item rp-link" title="前馈与反馈体系" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">前馈与反馈体系</span></a><a href="#反模式速查" class="rp-toc-item rp-link" title="反模式速查" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">反模式速查</span></a><a href="#三层防护" class="rp-toc-item rp-link" title="三层防护" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">三层防护</span></a><a href="#mcp-使用决策框架" class="rp-toc-item rp-link" title="MCP 使用决策框架" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">MCP 使用决策框架</span></a><a href="#harness-成熟度路径" class="rp-toc-item rp-link" title="Harness 成熟度路径" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">Harness 成熟度路径</span></a><a href="#衡量成效的正确指标" class="rp-toc-item rp-link" title="衡量成效的正确指标" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">衡量成效的正确指标</span></a></nav><div class="rp-outline__divider"></div><div class="rp-outline__bottom"></div></div></aside></div></div>
+    <div id="__rspress_modal_container"></div>
+  </body>
+</html>

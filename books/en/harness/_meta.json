@@ -1,0 +1,37 @@
+[
+  {
+    "type": "file",
+    "name": "1-four-frameworks-comparison",
+    "label": "Four Frameworks Comparison"
+  },
+  {
+    "type": "file",
+    "name": "2-HarnessEngineering",
+    "label": "Harness Engineering Practice"
+  },
+  {
+    "type": "file",
+    "name": "3-harness-engineering-handbook",
+    "label": "Quick Reference Handbook"
+  },
+  {
+    "type": "file",
+    "name": "4-anti-patterns",
+    "label": "Anti-Patterns Guide"
+  },
+  {
+    "type": "file",
+    "name": "5-harness-evaluation-handbook",
+    "label": "Evaluation Handbook"
+  },
+  {
+    "type": "file",
+    "name": "6-hook-patterns",
+    "label": "Hook Design Patterns"
+  },
+  {
+    "type": "file",
+    "name": "7-team-parallel-development",
+    "label": "Team Parallel Development"
+  }
+]
