@@ -8,5 +8,10 @@
     "text": "Harness手册",
     "link": "/harness/1-four-frameworks-comparison",
     "activeMatch": "/harness/"
+  },
+  {
+    "text": "学习Claude",
+    "link": "/learn-claude/s01_agent_loop/",
+    "activeMatch": "/learn-claude/"
   }
 ]

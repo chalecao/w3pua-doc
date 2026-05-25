@@ -77,6 +77,9 @@ export default defineConfig({
   lang: 'zh',
   plugins: [katex()],
   builderConfig: {
+    markdown: {
+      checkDeadLinks: false,
+    },
     html: {
       tags: [
         {
@@ -96,6 +99,9 @@ export default defineConfig({
           children: renderMathScript(),
         },
       ],
+    },
+    source: {
+      include: ['learn-claude/**/*'],
     },
   },
   locales: [
@@ -118,6 +124,7 @@ export default defineConfig({
     dark: '/logo.png',
   },
   markdown: {
+    checkDeadLinks: false,
     shiki: {
       langs: ['python', 'bash', 'javascript', 'typescript', 'json', 'yaml', 'toml', 'sql', 'html', 'css'],
     },

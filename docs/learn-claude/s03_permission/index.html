@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="zh">
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>s03: Permission — 执行前做权限判断</title>
+<script>{;const saved = localStorage.getItem('rspress-theme-appearance');const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;const isDark = !saved || saved === 'auto' ? preferDark : saved === 'dark';document.documentElement.classList.toggle('dark', isDark);document.documentElement.classList.toggle('rp-dark', isDark);document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';}</script>
+<script>window.onload=function(){document.title='「万维飘」w3pua.com';setTimeout(function(){var imgs=document.querySelectorAll('img.rp-home-hero__image-img');imgs.forEach(function(img){var num=Math.floor(Math.random()*19)+1;img.src='/logo/'+num+'.svg';});},100);};</script>
+<script src="/katex.min.js"></script>
+<script>
+    (function() {
+      function renderMathInElement(container) {
+        if (!container) return;
+        
+        var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+        var textNodes = [];
+        while(walker.nextNode()) textNodes.push(walker.currentNode);
+        
+        textNodes.forEach(function(textNode) {
+          var text = textNode.textContent;
+          if (!text || (!text.includes('$$') && !text.includes('$'))) return;
+          
+          var parent = textNode.parentNode;
+          if (!parent) return;
+          if (parent.tagName === 'PRE' || parent.tagName === 'CODE' || parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE') return;
+          
+          var newHtml = text.replace(/\$\$([\s\S]*?)\$\$/g, function(match, formula) {
+            try {
+              return '<div class="math math-display">' + katex.renderToString(formula.trim(), {displayMode: true, throwOnError: false}) + '</div>';
+            } catch(e) { return match; }
+          }).replace(/\$([^\$\n]+?)\$/g, function(match, formula) {
+            try {
+              return katex.renderToString(formula.trim(), {displayMode: false, throwOnError: false});
+            } catch(e) { return match; }
+          });
+          
+          if (newHtml !== text) {
+            var span = document.createElement('span');
+            span.innerHTML = newHtml;
+            parent.replaceChild(span, textNode);
+          }
+        });
+      }
+
+      function onRouteChange() {
+        setTimeout(function() {
+          var container = document.getElementById('__rspress_root');
+          if (container) {
+            renderMathInElement(container);
+          }
+        }, 100);
+      }
+
+      if (typeof window !== 'undefined') {
+        if (window.__RSPRESS__) {
+          window.__RSPRESS__.addEventListener('routeChangeComplete', onRouteChange);
+        } else {
+          window.addEventListener('popstate', onRouteChange);
+          var originalPushState = history.pushState;
+          history.pushState = function() {
+            originalPushState.apply(this, arguments);
+            onRouteChange();
+          };
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+          onRouteChange();
+        });
+        
+        setTimeout(onRouteChange, 500);
+        setTimeout(onRouteChange, 1000);
+        setTimeout(onRouteChange, 2000);
+      }
+    })();
+  </script>
+<link href="/static/css/styles.e6bedadc36.css" rel="stylesheet">
+<link rel="stylesheet" href="/katex.min.css">
+<script defer src="/static/js/styles.03ebfe3fca.js"></script>
+<script defer src="/static/js/lib-react.06aa503779.js"></script>
+<script defer src="/static/js/lib-router.a7a83a8399.js"></script>
+<script defer src="/static/js/6665.052760f3df.js"></script>
+<script defer src="/static/js/index.2a1d1b00fc.js"></script>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Rspress v2.0.11">
+<link rel="icon" href="/logo.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="s03: Permission — 执行前做权限判断">
+<meta name="description" content="s01 → s02 → s03 → <a href=&quot;s04](./s04_hooks/&quot;>s04</a> → s05 → ... → s20 &quot;工具执行前先做权限判断&quot; — 权限管线决定哪些操作需要审批。Harness 层: 权限 — 在工具执行前加一道门。">
+<meta property="og:description" content="s01 → s02 → s03 → <a href=&quot;s04](./s04_hooks/&quot;>s04</a> → s05 → ... → s20 &quot;工具执行前先做权限判断&quot; — 权限管线决定哪些操作需要审批。Harness 层: 权限 — 在工具执行前加一道门。"></head>
+
+  <body>
+    <div id="__rspress_root"><link rel="preload" as="image" href="/logo.png"/><link rel="preload" as="image" href="/static/svg/permission-overview.a15734da1f.svg"/><link rel="preload" as="image" href="/static/svg/permission-pipeline.42ed7ffe6d.svg"/><header class="rp-nav"><div class="rp-nav__left"><div class="rp-nav__title"><a href="/" class="rp-nav__title__link rp-link"><div class="rp-nav__title__logo"><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--light"/><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--dark"/></div></a></div></div><div class="rp-nav__right"><button class="rp-search-button"><div class="rp-search-button__content"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21" class="rp-search-button__icon"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg><span class="rp-search-button__word">搜索</span></div><div class="rp-search-button__hotkey" style="opacity:0"><span></span><span>K</span></div></button><div class="rp-search-button--mobile"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg></div><ul class="rp-nav-menu rp-nav-menu--right"><li class="rp-nav-menu__item"><a href="/book/preface.html" class="rp-nav-menu__item__container rp-link">Agent指南</a></li><li class="rp-nav-menu__item"><a href="/harness/1-four-frameworks-comparison.html" class="rp-nav-menu__item__container rp-link">Harness手册</a></li><li class="rp-nav-menu__item rp-nav-menu__item--active"><a href="/learn-claude/s01_agent_loop/index.html" class="rp-nav-menu__item__container rp-link">学习Claude</a></li></ul><div class="rp-nav__others"><div class="rp-nav-menu__divider"></div><li class="rp-nav-menu__item"><div class="rp-nav-menu__item__container">简体中文<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-menu__item__icon"><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--center"><li class="rp-hover-group__item" style="padding-left:8px" data-depth="0"><a href="/en/learn-claude/s03_permission/index.html" class="rp-hover-group__item__link rp-link" aria-label="English" lang="en" hrefLang="en" rel="alternate">English</a></li><li class="rp-hover-group__item rp-hover-group__item--active" style="padding-left:8px" data-depth="0"><a href="/s03_permission/index.html" class="rp-hover-group__item__link rp-link" aria-label="简体中文" lang="zh" hrefLang="zh" rel="alternate">简体中文</a></li></ul></li><div class="rp-switch-appearance"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" class="rp-switch-appearance__icon rp-switch-appearance__icon--sun"><path fill="currentColor" d="m7.001 15.848-1.226 1.226a.58.58 0 0 0 0 .818.58.58 0 0 0 .818 0l1.226-1.226a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0m-.352-8.735a.584.584 0 0 0 .825-.825L6.237 5.051a.584.584 0 0 0-.825.825zM5.011 11.07h-1.75a.584.584 0 0 0 0 1.167h1.75c.324 0 .584-.26.584-.583a.585.585 0 0 0-.584-.584m7.003-5.835c.324 0 .584-.26.584-.584V2.9a.58.58 0 0 0-.584-.584.58.58 0 0 0-.583.583V4.65c0 .323.262.584.583.584m5.616 1.621 1.226-1.225a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0l-1.226 1.225a.58.58 0 0 0 0 .818.576.576 0 0 0 .818 0m3.138 4.214h-1.75a.58.58 0 0 0-.584.584c0 .324.26.584.583.584h1.751a.584.584 0 1 0 0-1.167m-3.389 5.124a.584.584 0 0 0-.825.825l1.238 1.238a.584.584 0 0 0 .825-.826zm-5.365-9.795a5.256 5.256 0 0 0-5.257 5.258 5.256 5.256 0 0 0 5.257 5.257 5.256 5.256 0 0 0 5.257-5.257 5.256 5.256 0 0 0-5.257-5.258m0 11.675a.58.58 0 0 0-.583.583v1.751a.582.582 0 1 0 1.167 0v-1.75a.584.584 0 0 0-.584-.584"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" viewBox="0 0 19 19" class="rp-switch-appearance__icon rp-switch-appearance__icon--moon"><path fill="currentColor" d="M9.166 0a9.2 9.2 0 0 1 1.857.188.834.834 0 0 1 .042 1.623 4.47 4.47 0 1 0 5.457 5.457l.048-.135a.834.834 0 0 1 1.575.177q.186.902.188 1.856A9.168 9.168 0 1 1 9.166 0"></path></svg></div></div><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__sm"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg></button><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__md"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--right"><div class="rp-nav-menu__others-mobile__container"><div class="rp-nav-hamburger__md__hover-group"><div class="rp-nav-screen-appearance"><div class="rp-nav-screen-appearance__left">主题</div><div class="rp-nav-screen-appearance__right"></div></div><div class="rp-nav-screen-langs"><div class="rp-nav-screen-langs__left">语言</div><div class="rp-nav-screen-langs__right">简体中文<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-screen-langs__icon "><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div></div><div class="rp-nav-screen-langs-group" style="display:grid;grid-template-rows:0fr;transition:grid-template-rows 0.2s ease-out"><div class="rp-nav-screen-langs-group__inner"><a href="/en/learn-claude/s03_permission/index.html" class="rp-nav-screen-langs-group__item rp-link" hrefLang="en" lang="en" rel="alternate">English</a><span class="rp-nav-screen-langs-group__item rp-nav-screen-langs-group__item--active" aria-current="page" aria-disabled="true">简体中文</span></div></div><div class="rp-nav-screen-divider"></div></div></div></ul></button></div></header><div class="rp-doc-layout__menu"><div class="rp-sidebar-menu"><button type="button" class="rp-sidebar-menu__left"><svg width="1em" height="1em" viewBox="0 0 32 32"><path fill="currentColor" d="M4 6h24v2H4zm0 18h24v2H4zm0-12h24v2H4zm0 6h24v2H4z"></path></svg><span>菜单</span></button><button type="button" class="rp-sidebar-menu__right"><span class="rp-sidebar-menu__right__text">目录</span><svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-sidebar-menu__right__icon" style="transform:rotate(0deg);transition:transform 0.2s ease-out"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></button></div></div><div class="rp-doc-layout__container"><aside class="rp-doc-layout__sidebar rp-scrollbar"><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s01_agent_loop</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s01_agent_loop/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s01_agent_loop</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s02_tool_use</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s02_tool_use/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s02_tool_use</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s03_permission</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s03_permission/index.html" class="rp-sidebar-item rp-sidebar-item--active rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s03_permission</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s04_hooks</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s04_hooks/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s04_hooks</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s05_todo_write</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s05_todo_write/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s05_todo_write</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s06_subagent</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s06_subagent/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s06_subagent</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s07_skill_loading</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s07_skill_loading/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s07_skill_loading</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s08_context_compact</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s08_context_compact/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s08_context_compact</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s09_memory</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s09_memory/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s09_memory</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s10_system_prompt</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s10_system_prompt/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s10_system_prompt</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s11_error_recovery</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s11_error_recovery/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s11_error_recovery</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s12_task_system</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s12_task_system/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s12_task_system</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s13_background_tasks</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s13_background_tasks/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s13_background_tasks</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s14_cron_scheduler</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s14_cron_scheduler/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s14_cron_scheduler</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s15_agent_teams</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s15_agent_teams/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s15_agent_teams</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s16_team_protocols</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s16_team_protocols/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s16_team_protocols</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s17_autonomous_agents</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s17_autonomous_agents/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s17_autonomous_agents</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s18_worktree_isolation</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s18_worktree_isolation/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s18_worktree_isolation</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s19_mcp_plugin</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s19_mcp_plugin/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s19_mcp_plugin</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s20_comprehensive</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s20_comprehensive/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s20_comprehensive</span></div><div class="rp-sidebar-item__right"></div></a></aside><div class="rp-doc-layout__doc"><main class="rp-doc-layout__doc-container"><div class="rp-doc rspress-doc"><!--$--><h1 class="rp-toc-include" id="s03-permission--执行前做权限判断"><a href="#s03-permission--执行前做权限判断" class="rp-header-anchor rp-link" aria-hidden="true">#</a>s03: Permission — 执行前做权限判断<!-- --> </h1>
+<p>s01 → s02 → <code>s03</code> → <a href="s04](./s04_hooks/" class="rp-link">s04</a> → s05 → ... → s20</p>
+<blockquote>
+<p><em>&quot;工具执行前先做权限判断&quot;</em> — 权限管线决定哪些操作需要审批。</p>
+<p><strong>Harness 层</strong>: 权限 — 在工具执行前加一道门。</p>
+</blockquote>
+<hr/>
+<h2 class="rp-toc-include" id="问题"><a href="#问题" class="rp-header-anchor rp-link" aria-hidden="true">#</a>问题</h2>
+<p>s02 的 Agent 有 5 个工具。file tools 受 <code>safe_path</code> 保护，但 bash 不受限制。让它&quot;清理一下项目&quot;，可能执行 <code>rm -rf /</code>。</p>
+<p>安全不能靠信任模型，要靠代码——在工具执行之前做判断。</p>
+<hr/>
+<h2 class="rp-toc-include" id="解决方案"><a href="#解决方案" class="rp-header-anchor rp-link" aria-hidden="true">#</a>解决方案</h2>
+<p><img alt="Permission Overview" src="/static/svg/permission-overview.a15734da1f.svg"/>)</p>
+<p>s02 的循环完全保留。唯一的变动在工具执行前插入 <code>check_permission()</code>——每个工具调用经过三道闸门，顺序固定：硬拒绝优先，软询问次之，都没命中就放行。</p>
+<p>三道闸门对应三种决策：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>闸门</th><th>作用</th><th>命中后</th></tr></thead><tbody><tr><td>1. 拒绝列表</td><td>永远禁止的操作（<code>rm -rf /</code>、<code>sudo</code>）</td><td>直接拒绝，不执行</td></tr><tr><td>2. 规则匹配</td><td>取决于上下文的操作（写工作区外、<code>rm</code> 文件）</td><td>交给闸门 3</td></tr><tr><td>3. 用户审批</td><td>闸门 2 命中后，暂停等用户确认</td><td>用户决定允许或拒绝</td></tr></tbody></table></div>
+<p>三道都没命中 → 直接执行。大部分日常操作走这条路。</p>
+<hr/>
+<h2 class="rp-toc-include" id="工作原理"><a href="#工作原理" class="rp-header-anchor rp-link" aria-hidden="true">#</a>工作原理</h2>
+<p><img alt="Permission Pipeline" src="/static/svg/permission-pipeline.42ed7ffe6d.svg"/>)</p>
+<p><strong>闸门 1</strong>：一张硬拒绝表，先查，命中就返回阻止信息。（教学示意：简单字符串匹配不是可靠安全机制，命令变体和 shell 展开可能绕过。CC 的做法见附录。）</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-foreground)">DENY_LIST </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> [</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">    &quot;rm -rf /&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-string-expression)"> &quot;sudo&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-string-expression)"> &quot;shutdown&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-string-expression)"> &quot;reboot&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">    &quot;mkfs&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-string-expression)"> &quot;dd if=&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-string-expression)"> &quot;&gt; /dev/sda&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">]</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> check_deny_list</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">command</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-foreground)">) </span><span style="color:var(--shiki-token-punctuation)">-&gt;</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-token-keyword)"> |</span><span style="color:var(--shiki-token-constant)"> None</span><span style="color:var(--shiki-foreground)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    for</span><span style="color:var(--shiki-foreground)"> pattern </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-foreground)"> DENY_LIST</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        if</span><span style="color:var(--shiki-foreground)"> pattern </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-foreground)"> command</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            return</span><span style="color:var(--shiki-token-keyword)"> f</span><span style="color:var(--shiki-token-string-expression)">&quot;Blocked: &#x27;</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">pattern</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&#x27; is on the deny list&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-token-constant)"> None</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p><strong>闸门 2</strong>：规则匹配——描述&quot;什么时候需要问用户&quot;。每条规则指定工具和检查条件。</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-foreground)">PERMISSION_RULES </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> [</span></span>
+<span class="line"><span style="color:var(--shiki-token-punctuation)">    {</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">        &quot;tools&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> [</span><span style="color:var(--shiki-token-string-expression)">&quot;write_file&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-string-expression)"> &quot;edit_file&quot;</span><span style="color:var(--shiki-foreground)">]</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">        &quot;check&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-keyword)"> lambda</span><span style="color:var(--shiki-token-parameter)"> args</span><span style="color:var(--shiki-foreground)">: </span><span style="color:var(--shiki-token-keyword)">not</span><span style="color:var(--shiki-foreground)"> (WORKDIR </span><span style="color:var(--shiki-token-keyword)">/</span><span style="color:var(--shiki-foreground)"> args</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">get</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot;path&quot;</span><span style="color:var(--shiki-token-punctuation)">, </span><span style="color:var(--shiki-token-string-expression)">&quot;&quot;</span><span style="color:var(--shiki-token-punctuation)">)</span><span style="color:var(--shiki-foreground)">)</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">resolve</span><span style="color:var(--shiki-token-punctuation)">().</span><span style="color:var(--shiki-token-function)">is_relative_to</span><span style="color:var(--shiki-token-punctuation)">(WORKDIR),</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">        &quot;message&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;Writing outside workspace&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-punctuation)">    },</span></span>
+<span class="line"><span style="color:var(--shiki-token-punctuation)">    {</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">        &quot;tools&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> [</span><span style="color:var(--shiki-token-string-expression)">&quot;bash&quot;</span><span style="color:var(--shiki-foreground)">]</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">        &quot;check&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-keyword)"> lambda</span><span style="color:var(--shiki-token-parameter)"> args</span><span style="color:var(--shiki-foreground)">: </span><span style="color:var(--shiki-token-function)">any</span><span style="color:var(--shiki-token-punctuation)">(kw </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-token-punctuation)"> args.</span><span style="color:var(--shiki-token-function)">get</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot;command&quot;</span><span style="color:var(--shiki-token-punctuation)">, </span><span style="color:var(--shiki-token-string-expression)">&quot;&quot;</span><span style="color:var(--shiki-token-punctuation)">) </span><span style="color:var(--shiki-token-keyword)">for</span><span style="color:var(--shiki-token-punctuation)"> kw </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-token-punctuation)"> [</span><span style="color:var(--shiki-token-string-expression)">&quot;rm &quot;</span><span style="color:var(--shiki-token-punctuation)">, </span><span style="color:var(--shiki-token-string-expression)">&quot;&gt; /etc/&quot;</span><span style="color:var(--shiki-token-punctuation)">, </span><span style="color:var(--shiki-token-string-expression)">&quot;chmod 777&quot;</span><span style="color:var(--shiki-token-punctuation)">]),</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">        &quot;message&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;Potentially destructive command&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-punctuation)">    },</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">]</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> check_rules</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">tool_name</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> args</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> dict</span><span style="color:var(--shiki-foreground)">) </span><span style="color:var(--shiki-token-punctuation)">-&gt;</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-token-keyword)"> |</span><span style="color:var(--shiki-token-constant)"> None</span><span style="color:var(--shiki-foreground)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    for</span><span style="color:var(--shiki-foreground)"> rule </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-foreground)"> PERMISSION_RULES</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        if</span><span style="color:var(--shiki-foreground)"> tool_name </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-foreground)"> rule</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-token-string-expression)">&quot;tools&quot;</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-token-keyword)"> and</span><span style="color:var(--shiki-foreground)"> rule</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-token-string-expression)">&quot;check&quot;</span><span style="color:var(--shiki-token-punctuation)">](args):</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            return</span><span style="color:var(--shiki-foreground)"> rule</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-token-string-expression)">&quot;message&quot;</span><span style="color:var(--shiki-token-punctuation)">]</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-token-constant)"> None</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p><strong>闸门 3</strong>：规则命中后，暂停等用户输入。</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> ask_user</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">tool_name</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> args</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> dict</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> reason</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-foreground)">) </span><span style="color:var(--shiki-token-punctuation)">-&gt;</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-foreground)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-function)">    print</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-keyword)">f</span><span style="color:var(--shiki-token-string-expression)">&quot;</span><span style="color:var(--shiki-token-punctuation)">\n</span><span style="color:var(--shiki-token-string-expression)">⚠  </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">reason</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&quot;</span><span style="color:var(--shiki-token-punctuation)">)</span></span>
+<span class="line"><span style="color:var(--shiki-token-function)">    print</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-keyword)">f</span><span style="color:var(--shiki-token-string-expression)">&quot;   Tool: </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">tool_name</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">(</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">args</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">)&quot;</span><span style="color:var(--shiki-token-punctuation)">)</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    choice </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> input</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot;   Allow? [y/N] &quot;</span><span style="color:var(--shiki-token-punctuation)">).</span><span style="color:var(--shiki-token-function)">strip</span><span style="color:var(--shiki-token-punctuation)">().</span><span style="color:var(--shiki-token-function)">lower</span><span style="color:var(--shiki-token-punctuation)">()</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-token-string-expression)"> &quot;allow&quot;</span><span style="color:var(--shiki-token-keyword)"> if</span><span style="color:var(--shiki-foreground)"> choice </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-foreground)"> (</span><span style="color:var(--shiki-token-string-expression)">&quot;y&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-string-expression)"> &quot;yes&quot;</span><span style="color:var(--shiki-foreground)">) </span><span style="color:var(--shiki-token-keyword)">else</span><span style="color:var(--shiki-token-string-expression)"> &quot;deny&quot;</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p><strong>三道闸门串在一起</strong>，插在工具执行之前：</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> check_permission</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">block</span><span style="color:var(--shiki-foreground)">) </span><span style="color:var(--shiki-token-punctuation)">-&gt;</span><span style="color:var(--shiki-token-constant)"> bool</span><span style="color:var(--shiki-foreground)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">    # 闸门 1: 硬拒绝</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-foreground)"> block</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">name </span><span style="color:var(--shiki-token-keyword)">==</span><span style="color:var(--shiki-token-string-expression)"> &quot;bash&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        reason </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> check_deny_list</span><span style="color:var(--shiki-token-punctuation)">(block.input.</span><span style="color:var(--shiki-token-function)">get</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot;command&quot;</span><span style="color:var(--shiki-token-punctuation)">, </span><span style="color:var(--shiki-token-string-expression)">&quot;&quot;</span><span style="color:var(--shiki-token-punctuation)">))</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        if</span><span style="color:var(--shiki-foreground)"> reason</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-function)">            print</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-keyword)">f</span><span style="color:var(--shiki-token-string-expression)">&quot;</span><span style="color:var(--shiki-token-punctuation)">\n</span><span style="color:var(--shiki-token-string-expression)">⛔ </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">reason</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&quot;</span><span style="color:var(--shiki-token-punctuation)">)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            return</span><span style="color:var(--shiki-token-constant)"> False</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">    # 闸门 2 + 3: 规则匹配 → 用户审批</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    reason </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> check_rules</span><span style="color:var(--shiki-token-punctuation)">(block.name, block.input)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-foreground)"> reason</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        decision </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> ask_user</span><span style="color:var(--shiki-token-punctuation)">(block.name, block.input, reason)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        if</span><span style="color:var(--shiki-foreground)"> decision </span><span style="color:var(--shiki-token-keyword)">==</span><span style="color:var(--shiki-token-string-expression)"> &quot;deny&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            return</span><span style="color:var(--shiki-token-constant)"> False</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-token-constant)"> True</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-comment)"># 在 agent_loop 中——s02 的循环只加了一行：</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">for</span><span style="color:var(--shiki-foreground)"> block </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-foreground)"> response</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">content</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-foreground)"> block</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">type </span><span style="color:var(--shiki-token-keyword)">==</span><span style="color:var(--shiki-token-string-expression)"> &quot;tool_use&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        if</span><span style="color:var(--shiki-token-keyword)"> not</span><span style="color:var(--shiki-token-function)"> check_permission</span><span style="color:var(--shiki-token-punctuation)">(block):</span><span style="color:var(--shiki-token-comment)">           # ← 新增</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            results</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">append</span><span style="color:var(--shiki-token-punctuation)">({... </span><span style="color:var(--shiki-token-string-expression)">&quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">: </span><span style="color:var(--shiki-token-string-expression)">&quot;Permission denied.&quot;</span><span style="color:var(--shiki-token-punctuation)">})</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            continue</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        output </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> TOOL_HANDLERS</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-foreground)">block</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">name</span><span style="color:var(--shiki-token-punctuation)">](</span><span style="color:var(--shiki-token-keyword)">**</span><span style="color:var(--shiki-token-punctuation)">block.input)</span><span style="color:var(--shiki-token-comment)">  # s02 原有</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        results</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">append</span><span style="color:var(--shiki-token-punctuation)">(...)</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<hr/>
+<h2 class="rp-toc-include" id="相对-s02-的变更"><a href="#相对-s02-的变更" class="rp-header-anchor rp-link" aria-hidden="true">#</a>相对 s02 的变更</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>组件</th><th>之前 (s02)</th><th>之后 (s03)</th></tr></thead><tbody><tr><td>安全模型</td><td>无（信任模型）</td><td>三道闸门权限管线</td></tr><tr><td>新函数</td><td>—</td><td>check_deny_list, check_rules, ask_user, check_permission</td></tr><tr><td>循环</td><td>直接执行所有工具</td><td>执行前插入 check_permission()</td></tr></tbody></table></div>
+<hr/>
+<h2 class="rp-toc-include" id="试一下"><a href="#试一下" class="rp-header-anchor rp-link" aria-hidden="true">#</a>试一下</h2>
+<div class="rp-codeblock language-sh"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="sh"><code><span class="line"><span style="color:var(--shiki-token-function)">cd</span><span style="color:var(--shiki-token-string)"> learn-claude-code</span></span>
+<span class="line"><span style="color:var(--shiki-token-function)">python</span><span style="color:var(--shiki-token-string)"> s03_permission/code.py</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>试试这些 prompt：</p>
+<ol>
+<li><code>Create a file called test.txt in the current directory</code>（应该直接通过）</li>
+<li><code>Delete all temporary files in /tmp</code>（bash + rm 会触发闸门 2）</li>
+<li><code>What files are in the current directory?</code>（只读，全部通过）</li>
+<li><code>Try to write a file to /etc/something</code>（写工作区外，触发闸门 2）</li>
+</ol>
+<p>观察重点：哪些操作直接通过？哪些需要你确认？哪些被直接拒绝？</p>
+<hr/>
+<h2 class="rp-toc-include" id="接下来"><a href="#接下来" class="rp-header-anchor rp-link" aria-hidden="true">#</a>接下来</h2>
+<p>权限检查做了——但每次都在循环里硬编码 <code>check_permission()</code>。如果我想在每次工具执行前后加日志？如果想在某些操作后自动触发 git commit？这些扩展逻辑散落在 loop 里，循环很快就会膨胀。</p>
+<p>s04 Hooks → 给循环加钩子，扩展逻辑挂在钩子上，循环保持干净。</p>
+<details>
+<summary>深入 CC 源码</summary>
+<blockquote>
+<p>以下基于 CC 源码 <code>types/permissions.ts</code>、<code>utils/permissions/permissions.ts</code>、<code>toolExecution.ts</code>、<code>utils/permissions/yoloClassifier.ts</code>、<code>tools/AgentTool/forkSubagent.ts</code> 的核查。</p>
+</blockquote>
+<h3 class="rp-toc-include" id="一permissionresult不是-3-种是-4-种"><a href="#一permissionresult不是-3-种是-4-种" class="rp-header-anchor rp-link" aria-hidden="true">#</a>一、PermissionResult：不是 3 种，是 4 种</h3>
+<p>教学版的三道闸门（deny → ask → allow）和 CC 不完全对应。CC 的 <code>PermissionResult</code> 有 4 个 behavior（<code>types/permissions.ts:241-266</code>）：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>behavior</th><th>含义</th><th>教学版对应</th></tr></thead><tbody><tr><td><code>allow</code></td><td>直接允许</td><td>闸门 3 通过</td></tr><tr><td><code>deny</code></td><td>直接拒绝</td><td>闸门 1 命中</td></tr><tr><td><code>ask</code></td><td>弹出对话框问用户</td><td>闸门 2 命中</td></tr><tr><td><code>passthrough</code></td><td>工具不表态，交给通用管线决定</td><td>教学版无</td></tr></tbody></table></div>
+<h3 class="rp-toc-include" id="二生产版的验证阶段"><a href="#二生产版的验证阶段" class="rp-header-anchor rp-link" aria-hidden="true">#</a>二、生产版的验证阶段</h3>
+<p>CC 的工具调用不是经过三道闸门，而是经过多个阶段，分布在 <code>checkPermissionsAndCallTool()</code>（<code>toolExecution.ts:599-1745</code>）、hooks、<code>hasPermissionsToUseToolInner()</code>（<code>utils/permissions/permissions.ts:1158-1310</code>）和 classifier 逻辑里：</p>
+<ol>
+<li><strong>Zod schema 验证</strong>（<code>toolExecution.ts:614-680</code>）— 参数类型检查</li>
+<li><strong>validateInput()</strong>（<code>toolExecution.ts:682-733</code>）— 工具级语义验证</li>
+<li><strong>backfillObservableInput()</strong>（<code>toolExecution.ts:784</code>）— 补全遗留字段</li>
+<li><strong>PreToolUse hooks</strong>（<code>toolExecution.ts:800-862</code>）— 钩子可以返回 allow/deny/ask</li>
+<li><strong>resolveHookPermissionDecision()</strong>（<code>toolExecution.ts:921-931</code>）— 协调钩子+管线决策</li>
+<li><strong>hasPermissionsToUseToolInner()</strong>（<code>permissions.ts:1158-1310</code>）— 多层规则检查：
+<ul>
+<li>整个工具被 deny rule 禁用 → <code>deny</code></li>
+<li>整个工具被 ask rule 标记 → <code>ask</code></li>
+<li><code>tool.checkPermissions()</code> 工具自己的判断</li>
+<li>工具自己返回 deny → <code>deny</code></li>
+<li><code>requiresUserInteraction()</code> → <code>ask</code></li>
+<li>内容相关的 ask 规则 → <code>ask</code>（不可绕过）</li>
+<li>安全检查违规 → <code>ask</code>（不可绕过）</li>
+<li>bypassPermissions 模式 → <code>allow</code></li>
+<li>整个工具被 allow rule 放行 → <code>allow</code></li>
+<li>passthrough → 转为 <code>ask</code></li>
+</ul>
+</li>
+</ol>
+<h3 class="rp-toc-include" id="三拒绝列表不是一个文件是-8-个来源"><a href="#三拒绝列表不是一个文件是-8-个来源" class="rp-header-anchor rp-link" aria-hidden="true">#</a>三、拒绝列表：不是一个文件，是 8 个来源</h3>
+<p>CC 没有单一的 deny list。权限规则来自 8 个来源（<code>types/permissions.ts:54-62</code>）：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>来源</th><th>配置位置</th></tr></thead><tbody><tr><td><code>userSettings</code></td><td><code>~/.claude/settings.json</code></td></tr><tr><td><code>projectSettings</code></td><td><code>.claude/settings.json</code></td></tr><tr><td><code>localSettings</code></td><td><code>settings.local.json</code></td></tr><tr><td><code>flagSettings</code></td><td>Feature flags</td></tr><tr><td><code>policySettings</code></td><td>企业管理策略</td></tr><tr><td><code>cliArg</code></td><td><code>--allowedTools</code> / <code>--deniedTools</code></td></tr><tr><td><code>command</code></td><td>内联命令</td></tr><tr><td><code>session</code></td><td>会话内临时授权</td></tr></tbody></table></div>
+<p>每条规则格式：<code>{ toolName: &quot;Bash&quot;, ruleBehavior: &quot;deny&quot;, ruleContent: &quot;npm publish:*&quot; }</code>。多个来源的规则合并，高优先级来源覆盖低优先级（从低到高：user &lt; project &lt; local &lt; flag &lt; policy，加上 cliArg、command、session）。</p>
+<h3 class="rp-toc-include" id="四isdestructive-是什么"><a href="#四isdestructive-是什么" class="rp-header-anchor rp-link" aria-hidden="true">#</a>四、isDestructive() 是什么</h3>
+<p>CC 中 <code>isDestructive</code>（<code>Tool.ts:405-406</code>）<strong>纯粹是 UI 展示用的</strong>——在工具列表里显示 <code>[destructive]</code> 标签。它不参与权限决策。默认所有工具都返回 <code>false</code>。只有 ExitWorktree（remove 时）和 MCP 工具（依赖 <code>annotations.destructiveHint</code>）覆写了它。</p>
+<h3 class="rp-toc-include" id="五yoloclassifier自动审批"><a href="#五yoloclassifier自动审批" class="rp-header-anchor rp-link" aria-hidden="true">#</a>五、YoloClassifier（自动审批）</h3>
+<p>CC 的 auto 模式下，不会每次都弹对话框。<code>classifyYoloAction</code>（<code>utils/permissions/yoloClassifier.ts:1012</code>）把工具调用 + 对话上下文发给一个分类器 LLM 判断是否安全。先尝试 acceptEdits 模式模拟（<code>permissions.ts:620-656</code>，如果 acceptEdits 允许 → 直接批准），再查安全工具白名单（<code>permissions.ts:658-686</code>），最后才调分类器。分类器连续拒绝太多次 → 回退到人工审批。</p>
+<h3 class="rp-toc-include" id="六权限冒泡"><a href="#六权限冒泡" class="rp-header-anchor rp-link" aria-hidden="true">#</a>六、权限冒泡</h3>
+<p>子 Agent（通过 AgentTool fork 出来的）的 <code>permissionMode</code> 设为 <code>&#x27;bubble&#x27;</code>（<code>forkSubagent.ts:50</code>）。意思是权限弹窗<strong>冒泡到父 Agent 的终端</strong>，而不是在子 Agent 里静默拒绝。Bash 分类器在这个过程中继续跑——给权限对话框显示的同时在后台判断是否可以自动批准。</p>
+<h3 class="rp-toc-include" id="教学版的简化是刻意的"><a href="#教学版的简化是刻意的" class="rp-header-anchor rp-link" aria-hidden="true">#</a>教学版的简化是刻意的</h3>
+<ul>
+<li>多阶段管线 → 3 道闸门：理解门槛大幅降低</li>
+<li>8 个规则来源 → 1 个本地 DENY_LIST：概念量可控</li>
+<li>isDestructive → 忽略（教学版没有 UI 层，CC 里它也不参与权限决策）</li>
+<li>YoloClassifier → 省略（依赖于额外的 LLM 调用和遥测系统）</li>
+<li>权限冒泡 → 省略（s15 才涉及多 Agent）</li>
+</ul>
+</details>
+<!--/$--></div><footer class="rp-doc-footer"><div class="rp-doc-footer__edit"></div><div class="rp-doc-footer__divider"></div><div class="rp-prev-next-page"><a href="/learn-claude/s02_tool_use/index.html" class="rp-prev-next-page__item rp-prev-next-page__prev rp-link"><span class="rp-prev-next-page__item__desc">上一页</span><span class="rp-prev-next-page__item__title"><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon rp-prev-next-page__rotate_180"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg><span>s02_tool_use</span></span></a><a href="/learn-claude/s04_hooks/index.html" class="rp-prev-next-page__item rp-prev-next-page__next rp-link"><span class="rp-prev-next-page__item__desc">下一页</span><span class="rp-prev-next-page__item__title"><span>s04_hooks</span><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></span></a></div></footer></main></div><aside class="rp-doc-layout__outline rp-scrollbar"><div class="rp-outline"><div class="rp-outline__title">目录<svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg></div><nav class="rp-outline__toc rp-scrollbar"><a href="#问题" class="rp-toc-item rp-link" title="问题" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">问题</span></a><a href="#解决方案" class="rp-toc-item rp-link" title="解决方案" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">解决方案</span></a><a href="#工作原理" class="rp-toc-item rp-link" title="工作原理" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">工作原理</span></a><a href="#相对-s02-的变更" class="rp-toc-item rp-link" title="相对 s02 的变更" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">相对 s02 的变更</span></a><a href="#试一下" class="rp-toc-item rp-link" title="试一下" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">试一下</span></a><a href="#接下来" class="rp-toc-item rp-link" title="接下来" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">接下来</span></a><a href="#一permissionresult不是-3-种是-4-种" class="rp-toc-item rp-link" title="一、PermissionResult：不是 3 种，是 4 种" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">一、PermissionResult：不是 3 种，是 4 种</span></a><a href="#二生产版的验证阶段" class="rp-toc-item rp-link" title="二、生产版的验证阶段" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">二、生产版的验证阶段</span></a><a href="#三拒绝列表不是一个文件是-8-个来源" class="rp-toc-item rp-link" title="三、拒绝列表：不是一个文件，是 8 个来源" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">三、拒绝列表：不是一个文件，是 8 个来源</span></a><a href="#四isdestructive-是什么" class="rp-toc-item rp-link" title="四、isDestructive() 是什么" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">四、isDestructive() 是什么</span></a><a href="#五yoloclassifier自动审批" class="rp-toc-item rp-link" title="五、YoloClassifier（自动审批）" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">五、YoloClassifier（自动审批）</span></a><a href="#六权限冒泡" class="rp-toc-item rp-link" title="六、权限冒泡" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">六、权限冒泡</span></a><a href="#教学版的简化是刻意的" class="rp-toc-item rp-link" title="教学版的简化是刻意的" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">教学版的简化是刻意的</span></a></nav><div class="rp-outline__divider"></div><div class="rp-outline__bottom"></div></div></aside></div></div>
+    <div id="__rspress_modal_container"></div>
+  </body>
+</html>

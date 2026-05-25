@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="zh">
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>s09: Memory — 压缩会丢细节，要有一层不丢的</title>
+<script>{;const saved = localStorage.getItem('rspress-theme-appearance');const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;const isDark = !saved || saved === 'auto' ? preferDark : saved === 'dark';document.documentElement.classList.toggle('dark', isDark);document.documentElement.classList.toggle('rp-dark', isDark);document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';}</script>
+<script>window.onload=function(){document.title='「万维飘」w3pua.com';setTimeout(function(){var imgs=document.querySelectorAll('img.rp-home-hero__image-img');imgs.forEach(function(img){var num=Math.floor(Math.random()*19)+1;img.src='/logo/'+num+'.svg';});},100);};</script>
+<script src="/katex.min.js"></script>
+<script>
+    (function() {
+      function renderMathInElement(container) {
+        if (!container) return;
+        
+        var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+        var textNodes = [];
+        while(walker.nextNode()) textNodes.push(walker.currentNode);
+        
+        textNodes.forEach(function(textNode) {
+          var text = textNode.textContent;
+          if (!text || (!text.includes('$$') && !text.includes('$'))) return;
+          
+          var parent = textNode.parentNode;
+          if (!parent) return;
+          if (parent.tagName === 'PRE' || parent.tagName === 'CODE' || parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE') return;
+          
+          var newHtml = text.replace(/\$\$([\s\S]*?)\$\$/g, function(match, formula) {
+            try {
+              return '<div class="math math-display">' + katex.renderToString(formula.trim(), {displayMode: true, throwOnError: false}) + '</div>';
+            } catch(e) { return match; }
+          }).replace(/\$([^\$\n]+?)\$/g, function(match, formula) {
+            try {
+              return katex.renderToString(formula.trim(), {displayMode: false, throwOnError: false});
+            } catch(e) { return match; }
+          });
+          
+          if (newHtml !== text) {
+            var span = document.createElement('span');
+            span.innerHTML = newHtml;
+            parent.replaceChild(span, textNode);
+          }
+        });
+      }
+
+      function onRouteChange() {
+        setTimeout(function() {
+          var container = document.getElementById('__rspress_root');
+          if (container) {
+            renderMathInElement(container);
+          }
+        }, 100);
+      }
+
+      if (typeof window !== 'undefined') {
+        if (window.__RSPRESS__) {
+          window.__RSPRESS__.addEventListener('routeChangeComplete', onRouteChange);
+        } else {
+          window.addEventListener('popstate', onRouteChange);
+          var originalPushState = history.pushState;
+          history.pushState = function() {
+            originalPushState.apply(this, arguments);
+            onRouteChange();
+          };
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+          onRouteChange();
+        });
+        
+        setTimeout(onRouteChange, 500);
+        setTimeout(onRouteChange, 1000);
+        setTimeout(onRouteChange, 2000);
+      }
+    })();
+  </script>
+<link href="/static/css/styles.e6bedadc36.css" rel="stylesheet">
+<link rel="stylesheet" href="/katex.min.css">
+<script defer src="/static/js/styles.03ebfe3fca.js"></script>
+<script defer src="/static/js/lib-react.06aa503779.js"></script>
+<script defer src="/static/js/lib-router.a7a83a8399.js"></script>
+<script defer src="/static/js/6665.052760f3df.js"></script>
+<script defer src="/static/js/index.2a1d1b00fc.js"></script>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Rspress v2.0.11">
+<link rel="icon" href="/logo.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="s09: Memory — 压缩会丢细节，要有一层不丢的">
+<meta name="description" content="s01 → ... → s07 → s08 → s09 → <a href=&quot;s10](./s10_system_prompt/&quot;>s10</a> → s11 → ... → s20 &quot;压缩会丢细节, 要有一层不丢的&quot; — 文件仓库 + 索引 + 按需加载，跨压缩、跨会话。Harness 层: 记忆 — 跨压缩、跨会话的知识积累。">
+<meta property="og:description" content="s01 → ... → s07 → s08 → s09 → <a href=&quot;s10](./s10_system_prompt/&quot;>s10</a> → s11 → ... → s20 &quot;压缩会丢细节, 要有一层不丢的&quot; — 文件仓库 + 索引 + 按需加载，跨压缩、跨会话。Harness 层: 记忆 — 跨压缩、跨会话的知识积累。"></head>
+
+  <body>
+    <div id="__rspress_root"><link rel="preload" as="image" href="/logo.png"/><link rel="preload" as="image" href="/static/svg/memory-overview.7f421e3561.svg"/><link rel="preload" as="image" href="/static/svg/memory-subsystems.89670694ab.svg"/><header class="rp-nav"><div class="rp-nav__left"><div class="rp-nav__title"><a href="/" class="rp-nav__title__link rp-link"><div class="rp-nav__title__logo"><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--light"/><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--dark"/></div></a></div></div><div class="rp-nav__right"><button class="rp-search-button"><div class="rp-search-button__content"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21" class="rp-search-button__icon"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg><span class="rp-search-button__word">搜索</span></div><div class="rp-search-button__hotkey" style="opacity:0"><span></span><span>K</span></div></button><div class="rp-search-button--mobile"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg></div><ul class="rp-nav-menu rp-nav-menu--right"><li class="rp-nav-menu__item"><a href="/book/preface.html" class="rp-nav-menu__item__container rp-link">Agent指南</a></li><li class="rp-nav-menu__item"><a href="/harness/1-four-frameworks-comparison.html" class="rp-nav-menu__item__container rp-link">Harness手册</a></li><li class="rp-nav-menu__item rp-nav-menu__item--active"><a href="/learn-claude/s01_agent_loop/index.html" class="rp-nav-menu__item__container rp-link">学习Claude</a></li></ul><div class="rp-nav__others"><div class="rp-nav-menu__divider"></div><li class="rp-nav-menu__item"><div class="rp-nav-menu__item__container">简体中文<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-menu__item__icon"><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--center"><li class="rp-hover-group__item" style="padding-left:8px" data-depth="0"><a href="/en/learn-claude/s09_memory/index.html" class="rp-hover-group__item__link rp-link" aria-label="English" lang="en" hrefLang="en" rel="alternate">English</a></li><li class="rp-hover-group__item rp-hover-group__item--active" style="padding-left:8px" data-depth="0"><a href="/s09_memory/index.html" class="rp-hover-group__item__link rp-link" aria-label="简体中文" lang="zh" hrefLang="zh" rel="alternate">简体中文</a></li></ul></li><div class="rp-switch-appearance"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" class="rp-switch-appearance__icon rp-switch-appearance__icon--sun"><path fill="currentColor" d="m7.001 15.848-1.226 1.226a.58.58 0 0 0 0 .818.58.58 0 0 0 .818 0l1.226-1.226a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0m-.352-8.735a.584.584 0 0 0 .825-.825L6.237 5.051a.584.584 0 0 0-.825.825zM5.011 11.07h-1.75a.584.584 0 0 0 0 1.167h1.75c.324 0 .584-.26.584-.583a.585.585 0 0 0-.584-.584m7.003-5.835c.324 0 .584-.26.584-.584V2.9a.58.58 0 0 0-.584-.584.58.58 0 0 0-.583.583V4.65c0 .323.262.584.583.584m5.616 1.621 1.226-1.225a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0l-1.226 1.225a.58.58 0 0 0 0 .818.576.576 0 0 0 .818 0m3.138 4.214h-1.75a.58.58 0 0 0-.584.584c0 .324.26.584.583.584h1.751a.584.584 0 1 0 0-1.167m-3.389 5.124a.584.584 0 0 0-.825.825l1.238 1.238a.584.584 0 0 0 .825-.826zm-5.365-9.795a5.256 5.256 0 0 0-5.257 5.258 5.256 5.256 0 0 0 5.257 5.257 5.256 5.256 0 0 0 5.257-5.257 5.256 5.256 0 0 0-5.257-5.258m0 11.675a.58.58 0 0 0-.583.583v1.751a.582.582 0 1 0 1.167 0v-1.75a.584.584 0 0 0-.584-.584"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" viewBox="0 0 19 19" class="rp-switch-appearance__icon rp-switch-appearance__icon--moon"><path fill="currentColor" d="M9.166 0a9.2 9.2 0 0 1 1.857.188.834.834 0 0 1 .042 1.623 4.47 4.47 0 1 0 5.457 5.457l.048-.135a.834.834 0 0 1 1.575.177q.186.902.188 1.856A9.168 9.168 0 1 1 9.166 0"></path></svg></div></div><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__sm"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg></button><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__md"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--right"><div class="rp-nav-menu__others-mobile__container"><div class="rp-nav-hamburger__md__hover-group"><div class="rp-nav-screen-appearance"><div class="rp-nav-screen-appearance__left">主题</div><div class="rp-nav-screen-appearance__right"></div></div><div class="rp-nav-screen-langs"><div class="rp-nav-screen-langs__left">语言</div><div class="rp-nav-screen-langs__right">简体中文<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-screen-langs__icon "><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div></div><div class="rp-nav-screen-langs-group" style="display:grid;grid-template-rows:0fr;transition:grid-template-rows 0.2s ease-out"><div class="rp-nav-screen-langs-group__inner"><a href="/en/learn-claude/s09_memory/index.html" class="rp-nav-screen-langs-group__item rp-link" hrefLang="en" lang="en" rel="alternate">English</a><span class="rp-nav-screen-langs-group__item rp-nav-screen-langs-group__item--active" aria-current="page" aria-disabled="true">简体中文</span></div></div><div class="rp-nav-screen-divider"></div></div></div></ul></button></div></header><div class="rp-doc-layout__menu"><div class="rp-sidebar-menu"><button type="button" class="rp-sidebar-menu__left"><svg width="1em" height="1em" viewBox="0 0 32 32"><path fill="currentColor" d="M4 6h24v2H4zm0 18h24v2H4zm0-12h24v2H4zm0 6h24v2H4z"></path></svg><span>菜单</span></button><button type="button" class="rp-sidebar-menu__right"><span class="rp-sidebar-menu__right__text">目录</span><svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-sidebar-menu__right__icon" style="transform:rotate(0deg);transition:transform 0.2s ease-out"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></button></div></div><div class="rp-doc-layout__container"><aside class="rp-doc-layout__sidebar rp-scrollbar"><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s01_agent_loop</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s01_agent_loop/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s01_agent_loop</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s02_tool_use</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s02_tool_use/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s02_tool_use</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s03_permission</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s03_permission/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s03_permission</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s04_hooks</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s04_hooks/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s04_hooks</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s05_todo_write</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s05_todo_write/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s05_todo_write</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s06_subagent</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s06_subagent/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s06_subagent</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s07_skill_loading</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s07_skill_loading/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s07_skill_loading</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s08_context_compact</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s08_context_compact/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s08_context_compact</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s09_memory</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s09_memory/index.html" class="rp-sidebar-item rp-sidebar-item--active rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s09_memory</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s10_system_prompt</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s10_system_prompt/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s10_system_prompt</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s11_error_recovery</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s11_error_recovery/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s11_error_recovery</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s12_task_system</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s12_task_system/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s12_task_system</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s13_background_tasks</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s13_background_tasks/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s13_background_tasks</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s14_cron_scheduler</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s14_cron_scheduler/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s14_cron_scheduler</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s15_agent_teams</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s15_agent_teams/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s15_agent_teams</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s16_team_protocols</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s16_team_protocols/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s16_team_protocols</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s17_autonomous_agents</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s17_autonomous_agents/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s17_autonomous_agents</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s18_worktree_isolation</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s18_worktree_isolation/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s18_worktree_isolation</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s19_mcp_plugin</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s19_mcp_plugin/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s19_mcp_plugin</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s20_comprehensive</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s20_comprehensive/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s20_comprehensive</span></div><div class="rp-sidebar-item__right"></div></a></aside><div class="rp-doc-layout__doc"><main class="rp-doc-layout__doc-container"><div class="rp-doc rspress-doc"><!--$--><h1 class="rp-toc-include" id="s09-memory--压缩会丢细节要有一层不丢的"><a href="#s09-memory--压缩会丢细节要有一层不丢的" class="rp-header-anchor rp-link" aria-hidden="true">#</a>s09: Memory — 压缩会丢细节，要有一层不丢的<!-- --> </h1>
+<p>s01 → ... → s07 → s08 → <code>s09</code> → <a href="s10](./s10_system_prompt/" class="rp-link">s10</a> → s11 → ... → s20</p>
+<blockquote>
+<p><em>&quot;压缩会丢细节, 要有一层不丢的&quot;</em> — 文件仓库 + 索引 + 按需加载，跨压缩、跨会话。</p>
+<p><strong>Harness 层</strong>: 记忆 — 跨压缩、跨会话的知识积累。</p>
+</blockquote>
+<hr/>
+<h2 class="rp-toc-include" id="问题"><a href="#问题" class="rp-header-anchor rp-link" aria-hidden="true">#</a>问题</h2>
+<p>s08 的 autoCompact 会把当前目标、剩余工作、用户约束写进摘要，但细节会丢失：&quot;用 tab 缩进不要用空格&quot;可能被简化成&quot;用户有代码风格偏好&quot;。而且新开一个会话，连摘要也没了。</p>
+<p>LLM 没有持久状态，所有信息都在上下文窗口里。上下文满了要压缩，压缩就有损。需要一层不参与压缩、跨会话保留的存储。</p>
+<hr/>
+<h2 class="rp-toc-include" id="解决方案"><a href="#解决方案" class="rp-header-anchor rp-link" aria-hidden="true">#</a>解决方案</h2>
+<p><img alt="Memory Overview" src="/static/svg/memory-overview.7f421e3561.svg"/>)</p>
+<p>s08 的压缩管线保留，聚焦记忆。存储选文件系统：<code>.memory/</code> 目录下，每个记忆一个 <code>.md</code> 文件，带 YAML frontmatter（<code>name</code> / <code>description</code> / <code>type</code>）。文件多了需要索引：<code>MEMORY.md</code> 一行一个链接，注入 SYSTEM。</p>
+<p>关键设计：索引常驻 SYSTEM prompt（可被 prompt cache 缓存），文件内容按需注入（按 filename/description 匹配当前对话，不破坏 cache）。写入分两条路径：用户显式说&quot;记住&quot;，或者每轮结束后后台提取。文件积累多了，定期整理去重。</p>
+<p>四类记忆，各有用途：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>类型</th><th>回答什么</th><th>示例</th></tr></thead><tbody><tr><td>user</td><td>你是谁</td><td>&quot;用 tab 不用空格&quot;</td></tr><tr><td>feedback</td><td>怎么做事</td><td>&quot;别 mock 数据库&quot;</td></tr><tr><td>project</td><td>正在发生什么</td><td>&quot;auth 重写是合规驱动&quot;</td></tr><tr><td>reference</td><td>东西在哪找</td><td>&quot;pipeline bug 在 Linear INGEST&quot;</td></tr></tbody></table></div>
+<hr/>
+<h2 class="rp-toc-include" id="工作原理"><a href="#工作原理" class="rp-header-anchor rp-link" aria-hidden="true">#</a>工作原理</h2>
+<p><img alt="Memory Subsystems" src="/static/svg/memory-subsystems.89670694ab.svg"/>)</p>
+<h3 class="rp-toc-include" id="存储markdown-文件--索引"><a href="#存储markdown-文件--索引" class="rp-header-anchor rp-link" aria-hidden="true">#</a>存储：Markdown 文件 + 索引</h3>
+<p>每个记忆是一个 <code>.md</code> 文件，YAML frontmatter 记录元数据：</p>
+<div class="rp-codeblock language-markdown"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="markdown"><code><span class="line"><span style="color:var(--shiki-foreground)">---</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">name</span><span style="color:var(--shiki-token-keyword)">:</span><span style="color:var(--shiki-token-string-expression)"> user-preference-tabs</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">description</span><span style="color:var(--shiki-token-keyword)">:</span><span style="color:var(--shiki-token-string-expression)"> User prefers tabs for indentation</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">type</span><span style="color:var(--shiki-token-keyword)">:</span><span style="color:var(--shiki-token-string-expression)"> user</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">---</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-foreground)">User prefers using tabs, not spaces, for indentation.</span></span>
+<span class="line"><span style="color:var(--shiki-foreground);font-weight:bold">**Why:**</span><span style="color:var(--shiki-foreground)"> Consistency with existing codebase conventions.</span></span>
+<span class="line"><span style="color:var(--shiki-foreground);font-weight:bold">**How to apply:**</span><span style="color:var(--shiki-foreground)"> Always use tabs when writing or editing files.</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p><code>MEMORY.md</code> 是索引，一行一个链接：</p>
+<div class="rp-codeblock language-markdown"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="markdown"><code><span class="line"><span style="color:var(--shiki-foreground)">- </span><span style="color:var(--shiki-token-link);text-decoration:underline">[</span><span style="color:var(--shiki-token-keyword);text-decoration:underline">user-preference-tabs</span><span style="color:var(--shiki-token-link);text-decoration:underline">](user-preference-tabs.md)</span><span style="color:var(--shiki-foreground)"> — User prefers tabs for indentation</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>写入新记忆时自动重建索引：</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> write_memory_file</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">name</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> mem_type</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> description</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> body</span><span style="color:var(--shiki-foreground)">):</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    slug </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> name</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">lower</span><span style="color:var(--shiki-token-punctuation)">().</span><span style="color:var(--shiki-token-function)">replace</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot; &quot;</span><span style="color:var(--shiki-token-punctuation)">, </span><span style="color:var(--shiki-token-string-expression)">&quot;-&quot;</span><span style="color:var(--shiki-token-punctuation)">)</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    filepath </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> MEMORY_DIR </span><span style="color:var(--shiki-token-keyword)">/</span><span style="color:var(--shiki-token-keyword)"> f</span><span style="color:var(--shiki-token-string-expression)">&quot;</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">slug</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">.md&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    filepath</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">write_text</span><span style="color:var(--shiki-token-punctuation)">(</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        f</span><span style="color:var(--shiki-token-string-expression)">&quot;---</span><span style="color:var(--shiki-token-punctuation)">\n</span><span style="color:var(--shiki-token-string-expression)">name: </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">name</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-punctuation)">\n</span><span style="color:var(--shiki-token-string-expression)">description: </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">description</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-punctuation)">\n</span><span style="color:var(--shiki-token-string-expression)">type: </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">mem_type</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-punctuation)">\n</span><span style="color:var(--shiki-token-string-expression)">---</span><span style="color:var(--shiki-token-punctuation)">\n\n</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">body</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-punctuation)">\n</span><span style="color:var(--shiki-token-string-expression)">&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-punctuation)">    )</span></span>
+<span class="line"><span style="color:var(--shiki-token-function)">    _rebuild_index</span><span style="color:var(--shiki-token-punctuation)">()</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<h3 class="rp-toc-include" id="加载两条路径"><a href="#加载两条路径" class="rp-header-anchor rp-link" aria-hidden="true">#</a>加载：两条路径</h3>
+<p><strong>路径一：索引常驻 SYSTEM。</strong> <code>build_system()</code> 每轮重建 SYSTEM 时读取 <code>MEMORY.md</code>，把记忆清单注入。SYSTEM prompt 中的索引可以被 prompt cache 缓存，不需要每轮重新发送。</p>
+<p><strong>路径二：相关记忆按需注入。</strong> 每轮调用前，<code>load_memories()</code> 把最近对话和记忆目录（name + description）一起发给 LLM 做一次轻量 side-query，选出相关的文件名，再读文件内容注入上下文。最多 5 条，控制开销。</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> select_relevant_memories</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">messages</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> max_items</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)">5</span><span style="color:var(--shiki-foreground)">):</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    files </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> list_memory_files</span><span style="color:var(--shiki-token-punctuation)">()</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-token-keyword)"> not</span><span style="color:var(--shiki-foreground)"> files</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        return</span><span style="color:var(--shiki-foreground)"> []</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">    # Build catalog: &quot;0: user-preference-tabs — User prefers tabs...&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    catalog </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-string-expression)"> &quot;\n&quot;</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">join</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-keyword)">f</span><span style="color:var(--shiki-token-string-expression)">&quot;</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">i</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">: </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">f[</span><span style="color:var(--shiki-token-string-expression)">&#x27;name&#x27;</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)"> — </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">f[</span><span style="color:var(--shiki-token-string-expression)">&#x27;description&#x27;</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&quot;</span><span style="color:var(--shiki-token-keyword)"> for</span><span style="color:var(--shiki-token-punctuation)"> i, f </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-token-function)"> enumerate</span><span style="color:var(--shiki-token-punctuation)">(files))</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    response </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> client</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">messages</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">create</span><span style="color:var(--shiki-token-punctuation)">(model</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-punctuation)">MODEL, messages</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-punctuation)">[{</span><span style="color:var(--shiki-token-string-expression)">&quot;role&quot;</span><span style="color:var(--shiki-token-punctuation)">: </span><span style="color:var(--shiki-token-string-expression)">&quot;user&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">        &quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">: </span><span style="color:var(--shiki-token-keyword)">f</span><span style="color:var(--shiki-token-string-expression)">&quot;Select relevant memory indices. Return JSON array.</span><span style="color:var(--shiki-token-punctuation)">\n\n</span><span style="color:var(--shiki-token-string-expression)">&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">                   f</span><span style="color:var(--shiki-token-string-expression)">&quot;Recent conversation:</span><span style="color:var(--shiki-token-punctuation)">\n</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">recent</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-punctuation)">\n\n</span><span style="color:var(--shiki-token-string-expression)">Memory catalog:</span><span style="color:var(--shiki-token-punctuation)">\n</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">catalog</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&quot;</span><span style="color:var(--shiki-token-punctuation)">}],</span></span>
+<span class="line"><span style="color:var(--shiki-token-punctuation)">        max_tokens</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)">200</span><span style="color:var(--shiki-token-punctuation)">)</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    indices </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> json</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">loads</span><span style="color:var(--shiki-token-punctuation)">(re.</span><span style="color:var(--shiki-token-function)">search</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-keyword)">r</span><span style="color:var(--shiki-token-string-expression)">&#x27;\[</span><span style="color:var(--shiki-token-constant)">.</span><span style="color:var(--shiki-token-keyword)">*?</span><span style="color:var(--shiki-token-string-expression)">\]&#x27;</span><span style="color:var(--shiki-token-punctuation)">, response.content[</span><span style="color:var(--shiki-token-constant)">0</span><span style="color:var(--shiki-token-punctuation)">].text).</span><span style="color:var(--shiki-token-function)">group</span><span style="color:var(--shiki-token-punctuation)">())</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-foreground)"> [files</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-foreground)">i</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-foreground)">[</span><span style="color:var(--shiki-token-string-expression)">&quot;filename&quot;</span><span style="color:var(--shiki-foreground)">] </span><span style="color:var(--shiki-token-keyword)">for</span><span style="color:var(--shiki-foreground)"> i </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-foreground)"> indices </span><span style="color:var(--shiki-token-keyword)">if</span><span style="color:var(--shiki-token-constant)"> 0</span><span style="color:var(--shiki-token-keyword)"> &lt;=</span><span style="color:var(--shiki-foreground)"> i </span><span style="color:var(--shiki-token-keyword)">&lt;</span><span style="color:var(--shiki-token-function)"> len</span><span style="color:var(--shiki-token-punctuation)">(files)</span><span style="color:var(--shiki-foreground)">]</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>如果 side-query 失败（API 错误、JSON 解析失败），降级到关键词匹配 name + description。</p>
+<h3 class="rp-toc-include" id="写入每轮结束后提取"><a href="#写入每轮结束后提取" class="rp-header-anchor rp-link" aria-hidden="true">#</a>写入：每轮结束后提取</h3>
+<p>用户不会每次都说&quot;记住这个&quot;。偏好通常散落在正常对话中：&quot;用 tab 比空格好&quot;、&quot;以后都用单引号&quot;。</p>
+<p><code>extract_memories()</code> 在每轮结束时运行，条件是模型停止且没有 tool_use（说明对话告一段落）：</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-comment)"># In agent_loop:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">if</span><span style="color:var(--shiki-foreground)"> response</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">stop_reason </span><span style="color:var(--shiki-token-keyword)">!=</span><span style="color:var(--shiki-token-string-expression)"> &quot;tool_use&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-function)">    extract_memories</span><span style="color:var(--shiki-token-punctuation)">(messages)</span><span style="color:var(--shiki-token-comment)">   # 从最近对话提取新记忆</span></span>
+<span class="line"><span style="color:var(--shiki-token-function)">    consolidate_memories</span><span style="color:var(--shiki-token-punctuation)">()</span><span style="color:var(--shiki-token-comment)">       # 检查是否需要整理</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>提取前先检查已有记忆，避免重复。提取 prompt 要求 LLM 返回 <code>{name, type, description, body}</code> 的 JSON 数组，只有确实有新信息时才写文件。</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> extract_memories</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">messages</span><span style="color:var(--shiki-foreground)">):</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    dialogue </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> format_recent_messages</span><span style="color:var(--shiki-token-punctuation)">(messages[</span><span style="color:var(--shiki-token-keyword)">-</span><span style="color:var(--shiki-token-constant)">10</span><span style="color:var(--shiki-token-punctuation)">:])</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    existing </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-string-expression)"> &quot;\n&quot;</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">join</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-keyword)">f</span><span style="color:var(--shiki-token-string-expression)">&quot;- </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">m[</span><span style="color:var(--shiki-token-string-expression)">&#x27;name&#x27;</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">: </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">m[</span><span style="color:var(--shiki-token-string-expression)">&#x27;description&#x27;</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&quot;</span><span style="color:var(--shiki-token-keyword)"> for</span><span style="color:var(--shiki-token-punctuation)"> m </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-token-function)"> list_memory_files</span><span style="color:var(--shiki-token-punctuation)">())</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    prompt </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> (</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">        &quot;Extract user preferences, constraints, or project facts.\n&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">        &quot;Return JSON array: [{name, type, description, body}].\n&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">        &quot;If nothing new or already covered, return [].\n\n&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        f</span><span style="color:var(--shiki-token-string-expression)">&quot;Existing memories:</span><span style="color:var(--shiki-foreground)">\n</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">existing</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-foreground)">\n\n</span><span style="color:var(--shiki-token-string-expression)">Dialogue:</span><span style="color:var(--shiki-foreground)">\n</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">dialogue</span><span style="color:var(--shiki-token-punctuation)">[:</span><span style="color:var(--shiki-token-constant)">4000</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    )</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">    # ... parse response, write files ...</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<h3 class="rp-toc-include" id="整理低频合并去重"><a href="#整理低频合并去重" class="rp-header-anchor rp-link" aria-hidden="true">#</a>整理：低频合并去重</h3>
+<p>记忆文件会积累。<code>consolidate_memories()</code> 在文件数达到阈值（默认 10）时触发，让 LLM 去重、合并矛盾、淘汰过时记忆：</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-foreground)">CONSOLIDATE_THRESHOLD </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)"> 10</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> consolidate_memories</span><span style="color:var(--shiki-foreground)">():</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    files </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> list_memory_files</span><span style="color:var(--shiki-token-punctuation)">()</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-token-function)"> len</span><span style="color:var(--shiki-token-punctuation)">(files)</span><span style="color:var(--shiki-token-keyword)"> &lt;</span><span style="color:var(--shiki-foreground)"> CONSOLIDATE_THRESHOLD</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        return</span><span style="color:var(--shiki-token-comment)">  # 太少，不值得整理</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">    # Send all memories to LLM, get back deduplicated list</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">    # Replace all files with consolidated results</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>CC 把这个过程叫 Dream，实际有四层门控：时间间隔、扫描节流、会话数、文件锁。教学版简化为文件数阈值。</p>
+<h3 class="rp-toc-include" id="memory-适合保存什么"><a href="#memory-适合保存什么" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Memory 适合保存什么</h3>
+<p>Memory 保存跨会话仍然有用的信息：用户偏好、反复出现的反馈、项目背景、常用入口和排查线索。它关注“以后还会用到什么”，并通过索引 + 按需加载把这些信息带回当前对话。</p>
+<p>session memory 关注同一会话内的连续性：compact 之后，当前会话还需要保留哪些上下文。两者配合使用：Memory 管长期知识，session memory 管当前会话的压缩续接。</p>
+<hr/>
+<h2 class="rp-toc-include" id="相对-s08-的变更"><a href="#相对-s08-的变更" class="rp-header-anchor rp-link" aria-hidden="true">#</a>相对 s08 的变更</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>组件</th><th>之前 (s08)</th><th>之后 (s09)</th></tr></thead><tbody><tr><td>记忆能力</td><td>无（压缩后偏好随摘要退化）</td><td>存储 + 加载 + 提取 + 整理</td></tr><tr><td>新函数</td><td>—</td><td>write_memory_file, select_relevant_memories, load_memories, extract_memories, consolidate_memories</td></tr><tr><td>存储</td><td>—</td><td>.memory/MEMORY.md 索引 + .memory/*.md 文件</td></tr><tr><td>工具</td><td>bash, read, write, edit, glob, todo_write, task, load_skill, compact (9)</td><td>bash, read_file, write_file, edit_file, glob, task (6)</td></tr><tr><td>循环</td><td>每轮只做压缩</td><td>每轮注入记忆 + 压缩 + 每轮结束后提取 + 定期整理</td></tr></tbody></table></div>
+<hr/>
+<h2 class="rp-toc-include" id="试一下"><a href="#试一下" class="rp-header-anchor rp-link" aria-hidden="true">#</a>试一下</h2>
+<div class="rp-codeblock language-sh"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="sh"><code><span class="line"><span style="color:var(--shiki-token-function)">cd</span><span style="color:var(--shiki-token-string)"> learn-claude-code</span></span>
+<span class="line"><span style="color:var(--shiki-token-function)">python</span><span style="color:var(--shiki-token-string)"> s09_memory/code.py</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>试试这些 prompt（分多轮输入，观察记忆的累积和加载）：</p>
+<ol>
+<li><code>I prefer using tabs for indentation, not spaces. Remember that.</code></li>
+<li><code>Create a Python file called test.py</code>（观察 Agent 是否用了 tab）</li>
+<li><code>What did I tell you about my preferences?</code>（观察 Agent 是否记得）</li>
+<li><code>I also prefer single quotes over double quotes for strings.</code></li>
+</ol>
+<p>观察重点：每轮结束后是否出现 <code>[Memory: extracted N new memories]</code>？<code>.memory/</code> 目录下是否生成了 <code>.md</code> 文件？<code>MEMORY.md</code> 索引是否更新？新一轮对话时 Agent 是否自动加载了之前的记忆？</p>
+<hr/>
+<h2 class="rp-toc-include" id="接下来"><a href="#接下来" class="rp-header-anchor rp-link" aria-hidden="true">#</a>接下来</h2>
+<p>记忆、压缩、工具都已就绪。但 system prompt 还是硬编码的一大段字符串。加了新工具要手动加描述，换了项目要重写整个 prompt。prompt 应该运行时组装。</p>
+<p>s10 System Prompt → 分段 + 运行时组装。不同项目、不同工具，拼出不同的 prompt。</p>
+<details>
+<summary>深入 CC 源码</summary>
+<blockquote>
+<p>以下基于 CC 源码 <code>src/</code> 下 <code>memdir/</code>、<code>services/</code>、<code>utils/</code>、<code>query/</code> 的分析，行号已对照核实。</p>
+</blockquote>
+<h3 class="rp-toc-include" id="源码路径"><a href="#源码路径" class="rp-header-anchor rp-link" aria-hidden="true">#</a>源码路径</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>文件</th><th>行数</th><th>职责</th></tr></thead><tbody><tr><td><code>memdir/memdir.ts</code></td><td>507</td><td>核心：MEMORY.md 定义（<code>34-38</code>）、记忆行为指令区分 memory/plan/tasks（<code>199-266</code>）、<code>loadMemoryPrompt()</code> 三条路径（<code>419-490</code>）</td></tr><tr><td><code>memdir/findRelevantMemories.ts</code></td><td>141</td><td>Sonnet side-query 选记忆（<code>18-24</code> 系统提示、<code>97-122</code> 调用逻辑）</td></tr><tr><td><code>memdir/memoryTypes.ts</code></td><td>271</td><td>类型定义，frontmatter 字段</td></tr><tr><td><code>memdir/memoryScan.ts</code></td><td>—</td><td>扫描 .md 文件，排除 MEMORY.md，读 frontmatter，最多 200 个，按 mtime 降序（<code>35-94</code>）</td></tr><tr><td><code>services/extractMemories/extractMemories.ts</code></td><td>615</td><td>forked agent 提取记忆，受限权限，<code>skipTranscript: true</code>，<code>maxTurns: 5</code>（<code>371-427</code>）</td></tr><tr><td><code>services/autoDream/autoDream.ts</code></td><td>324</td><td>Dream 整理，四层门控（<code>63-66</code> 默认值、<code>130-190</code> 门控、<code>224-233</code> forked agent）</td></tr><tr><td><code>services/SessionMemory/sessionMemory.ts</code></td><td>495</td><td>会话级记忆管理</td></tr><tr><td><code>services/compact/sessionMemoryCompact.ts</code></td><td>—</td><td>session memory 轻量摘要，阈值 10K/5/40K（<code>56-61</code>）</td></tr><tr><td><code>utils/attachments.ts</code></td><td>—</td><td>注入预算：200 行 / 4096 字节每文件，60KB 每 session（<code>269-288</code>）；按 query 找相关 memory（<code>2196-2241</code>）</td></tr><tr><td><code>query.ts</code></td><td>—</td><td>memory prefetch 每轮启动（<code>301-304</code>），非阻塞收集（<code>1592-1614</code>）</td></tr><tr><td><code>query/stopHooks.ts</code></td><td>—</td><td>stop hook fire-and-forget 触发提取和 Dream（<code>141-155</code>）</td></tr></tbody></table></div>
+<h3 class="rp-toc-include" id="记忆选择llm-选不是-embedding"><a href="#记忆选择llm-选不是-embedding" class="rp-header-anchor rp-link" aria-hidden="true">#</a>记忆选择：LLM 选，不是 embedding</h3>
+<p>CC 用 <strong>Sonnet 本身来选</strong>（<code>findRelevantMemories.ts</code>），不是 embedding 向量相似度：</p>
+<ol>
+<li><code>memoryScan.ts</code> 扫描 <code>.memory/</code> 下所有 <code>.md</code> 文件（排除 MEMORY.md），最多 200 个，按 mtime 降序</li>
+<li>把 <code>name</code> + <code>description</code> 列成清单</li>
+<li>发给 Sonnet side-query：&quot;根据名称和描述选出真正有用的记忆（最多 5 个）。不确定就不要选。&quot;</li>
+<li>Sonnet 返回 <code>{ selected_memories: [&quot;file1.md&quot;, ...] }</code></li>
+<li>选中文件读取完整内容（每文件 ≤ 200 行 / 4096 字节），注入上下文。单 session 总预算 60KB</li>
+</ol>
+<p>每轮用户 turn 开始时，<code>query.ts:301-304</code> 启动 memory prefetch（异步）；工具执行后 <code>1592-1614</code> 非阻塞收集结果，不卡主流程。</p>
+<h3 class="rp-toc-include" id="提取时机stop-hook不是-autocompact-后"><a href="#提取时机stop-hook不是-autocompact-后" class="rp-header-anchor rp-link" aria-hidden="true">#</a>提取时机：stop hook，不是 autoCompact 后</h3>
+<p>触发位置（<code>stopHooks.ts:141-155</code>）：在 <code>handleStopHooks()</code> 中，fire-and-forget 触发提取和 Dream。教学版把提取放在 <code>stop_reason != &quot;tool_use&quot;</code> 分支里，方向一致。</p>
+<p>CC 的提取通过 forked agent 执行（<code>extractMemories.ts:371-427</code>）：受限权限、<code>skipTranscript: true</code>、<code>maxTurns: 5</code>。还有重叠保护：如果主 Agent 已经写入了记忆文件，跳过提取。</p>
+<h3 class="rp-toc-include" id="记忆文件格式"><a href="#记忆文件格式" class="rp-header-anchor rp-link" aria-hidden="true">#</a>记忆文件格式</h3>
+<p>CC 用 Markdown + YAML frontmatter，和教学版一致。四种类型：<code>user</code>、<code>feedback</code>、<code>project</code>、<code>reference</code>。</p>
+<p><code>memdir.ts:34-38</code> 定义索引约束：<code>MEMORY.md</code> 最多 200 行 / 25KB。<code>memdir.ts:199-266</code> 构建记忆行为指令，明确区分 memory、plan、tasks。存储位置：<code>~/.claude/projects/&lt;sanitized-git-root&gt;/memory/</code>。</p>
+<h3 class="rp-toc-include" id="dream四层门控"><a href="#dream四层门控" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Dream：四层门控</h3>
+<p>不是&quot;空闲时触发&quot;或&quot;数量够了就合并&quot;，而是四层门控（<code>autoDream.ts</code>，默认值 <code>63-66</code>，门控逻辑 <code>130-190</code>）：</p>
+<ol>
+<li><strong>时间门控</strong>：距上次合并 ≥ 24 小时</li>
+<li><strong>扫描节流</strong>：避免频繁扫描文件系统</li>
+<li><strong>会话门控</strong>：自上次合并以来修改了 ≥ 5 个会话 transcript</li>
+<li><strong>锁门控</strong>：没有其他进程正在合并（<code>.consolidate-lock</code> 文件）</li>
+</ol>
+<p>合并本身通过 forked agent 执行（<code>224-233</code>）：定位 → 收集近期信号 → 合并写文件 → 剪枝更新索引。锁文件 mtime 就是 lastConsolidatedAt。崩溃恢复：1 小时后锁自动过期。</p>
+<h3 class="rp-toc-include" id="user-memory-vs-session-memory"><a href="#user-memory-vs-session-memory" class="rp-header-anchor rp-link" aria-hidden="true">#</a>User Memory vs Session Memory</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th></th><th>User Memory</th><th>Session Memory</th></tr></thead><tbody><tr><td>持久性</td><td>跨会话</td><td>单会话</td></tr><tr><td>存储</td><td><code>memory/</code> 下多个 .md 文件</td><td><code>session-memory/&lt;id&gt;/memory.md</code></td></tr><tr><td>加载到</td><td>system prompt</td><td>compact 摘要</td></tr><tr><td>用途</td><td>跨会话的知识积累</td><td>跨 compact 的上下文连续性</td></tr></tbody></table></div>
+<p>sessionMemoryCompact（s08 中提到的机制）正是使用了 Session Memory：autoCompact 前先读 session memory 文件，如果内容足够（≥ 10K token、≥ 5 条文本消息、≤ 40K token，<code>sessionMemoryCompact.ts:56-61</code>），就用它做摘要，不调 LLM。</p>
+<h3 class="rp-toc-include" id="真实实现比教学版复杂的地方"><a href="#真实实现比教学版复杂的地方" class="rp-header-anchor rp-link" aria-hidden="true">#</a>真实实现比教学版复杂的地方</h3>
+<ul>
+<li><strong>Feature flags</strong>：记忆相关功能有多层 feature gate 控制</li>
+<li><strong>Team memory</strong>：团队共享记忆，<code>loadMemoryPrompt()</code> 有专门路径（教学版未涉及）</li>
+<li><strong>KAIROS</strong>：时机感知的记忆提取策略，<code>loadMemoryPrompt()</code> 中 daily-log 模式</li>
+<li><strong>Prompt cache</strong>：记忆注入需要考虑 prompt cache 的 TTL，避免每次都重写 system prompt 的大段内容</li>
+<li><strong>文件锁</strong>：多进程并发时的锁机制</li>
+<li><strong>Memory prefetch</strong>：异步预取，不阻塞主流程</li>
+</ul>
+<h3 class="rp-toc-include" id="教学版的简化是刻意的"><a href="#教学版的简化是刻意的" class="rp-header-anchor rp-link" aria-hidden="true">#</a>教学版的简化是刻意的</h3>
+<ul>
+<li>LLM side-query → LLM side-query + 关键词降级：教学版保留了 LLM 选择，加了降级路径</li>
+<li>记忆 JSON → Markdown + frontmatter：教学版与 CC 一致</li>
+<li>stop hook 触发 → <code>stop_reason != &quot;tool_use&quot;</code> 分支：方向一致</li>
+<li>四层门控 → 文件数阈值：教学版没有 transcript 系统和多会话概念</li>
+<li>forked agent + 受限权限 → 直接调用：教学版没有子进程隔离</li>
+</ul>
+</details>
+<!--/$--></div><footer class="rp-doc-footer"><div class="rp-doc-footer__edit"></div><div class="rp-doc-footer__divider"></div><div class="rp-prev-next-page"><a href="/learn-claude/s08_context_compact/index.html" class="rp-prev-next-page__item rp-prev-next-page__prev rp-link"><span class="rp-prev-next-page__item__desc">上一页</span><span class="rp-prev-next-page__item__title"><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon rp-prev-next-page__rotate_180"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg><span>s08_context_compact</span></span></a><a href="/learn-claude/s10_system_prompt/index.html" class="rp-prev-next-page__item rp-prev-next-page__next rp-link"><span class="rp-prev-next-page__item__desc">下一页</span><span class="rp-prev-next-page__item__title"><span>s10_system_prompt</span><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></span></a></div></footer></main></div><aside class="rp-doc-layout__outline rp-scrollbar"><div class="rp-outline"><div class="rp-outline__title">目录<svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg></div><nav class="rp-outline__toc rp-scrollbar"><a href="#问题" class="rp-toc-item rp-link" title="问题" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">问题</span></a><a href="#解决方案" class="rp-toc-item rp-link" title="解决方案" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">解决方案</span></a><a href="#工作原理" class="rp-toc-item rp-link" title="工作原理" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">工作原理</span></a><a href="#存储markdown-文件--索引" class="rp-toc-item rp-link" title="存储：Markdown 文件 + 索引" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">存储：Markdown 文件 + 索引</span></a><a href="#加载两条路径" class="rp-toc-item rp-link" title="加载：两条路径" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">加载：两条路径</span></a><a href="#写入每轮结束后提取" class="rp-toc-item rp-link" title="写入：每轮结束后提取" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">写入：每轮结束后提取</span></a><a href="#整理低频合并去重" class="rp-toc-item rp-link" title="整理：低频合并去重" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">整理：低频合并去重</span></a><a href="#memory-适合保存什么" class="rp-toc-item rp-link" title="Memory 适合保存什么" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">Memory 适合保存什么</span></a><a href="#相对-s08-的变更" class="rp-toc-item rp-link" title="相对 s08 的变更" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">相对 s08 的变更</span></a><a href="#试一下" class="rp-toc-item rp-link" title="试一下" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">试一下</span></a><a href="#接下来" class="rp-toc-item rp-link" title="接下来" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">接下来</span></a><a href="#源码路径" class="rp-toc-item rp-link" title="源码路径" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">源码路径</span></a><a href="#记忆选择llm-选不是-embedding" class="rp-toc-item rp-link" title="记忆选择：LLM 选，不是 embedding" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">记忆选择：LLM 选，不是 embedding</span></a><a href="#提取时机stop-hook不是-autocompact-后" class="rp-toc-item rp-link" title="提取时机：stop hook，不是 autoCompact 后" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">提取时机：stop hook，不是 autoCompact 后</span></a><a href="#记忆文件格式" class="rp-toc-item rp-link" title="记忆文件格式" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">记忆文件格式</span></a><a href="#dream四层门控" class="rp-toc-item rp-link" title="Dream：四层门控" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">Dream：四层门控</span></a><a href="#user-memory-vs-session-memory" class="rp-toc-item rp-link" title="User Memory vs Session Memory" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">User Memory vs Session Memory</span></a><a href="#真实实现比教学版复杂的地方" class="rp-toc-item rp-link" title="真实实现比教学版复杂的地方" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">真实实现比教学版复杂的地方</span></a><a href="#教学版的简化是刻意的" class="rp-toc-item rp-link" title="教学版的简化是刻意的" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">教学版的简化是刻意的</span></a></nav><div class="rp-outline__divider"></div><div class="rp-outline__bottom"></div></div></aside></div></div>
+    <div id="__rspress_modal_container"></div>
+  </body>
+</html>

@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="zh">
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>s11: Error Recovery — 错误不是结束，是重试的开始</title>
+<script>{;const saved = localStorage.getItem('rspress-theme-appearance');const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;const isDark = !saved || saved === 'auto' ? preferDark : saved === 'dark';document.documentElement.classList.toggle('dark', isDark);document.documentElement.classList.toggle('rp-dark', isDark);document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';}</script>
+<script>window.onload=function(){document.title='「万维飘」w3pua.com';setTimeout(function(){var imgs=document.querySelectorAll('img.rp-home-hero__image-img');imgs.forEach(function(img){var num=Math.floor(Math.random()*19)+1;img.src='/logo/'+num+'.svg';});},100);};</script>
+<script src="/katex.min.js"></script>
+<script>
+    (function() {
+      function renderMathInElement(container) {
+        if (!container) return;
+        
+        var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+        var textNodes = [];
+        while(walker.nextNode()) textNodes.push(walker.currentNode);
+        
+        textNodes.forEach(function(textNode) {
+          var text = textNode.textContent;
+          if (!text || (!text.includes('$$') && !text.includes('$'))) return;
+          
+          var parent = textNode.parentNode;
+          if (!parent) return;
+          if (parent.tagName === 'PRE' || parent.tagName === 'CODE' || parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE') return;
+          
+          var newHtml = text.replace(/\$\$([\s\S]*?)\$\$/g, function(match, formula) {
+            try {
+              return '<div class="math math-display">' + katex.renderToString(formula.trim(), {displayMode: true, throwOnError: false}) + '</div>';
+            } catch(e) { return match; }
+          }).replace(/\$([^\$\n]+?)\$/g, function(match, formula) {
+            try {
+              return katex.renderToString(formula.trim(), {displayMode: false, throwOnError: false});
+            } catch(e) { return match; }
+          });
+          
+          if (newHtml !== text) {
+            var span = document.createElement('span');
+            span.innerHTML = newHtml;
+            parent.replaceChild(span, textNode);
+          }
+        });
+      }
+
+      function onRouteChange() {
+        setTimeout(function() {
+          var container = document.getElementById('__rspress_root');
+          if (container) {
+            renderMathInElement(container);
+          }
+        }, 100);
+      }
+
+      if (typeof window !== 'undefined') {
+        if (window.__RSPRESS__) {
+          window.__RSPRESS__.addEventListener('routeChangeComplete', onRouteChange);
+        } else {
+          window.addEventListener('popstate', onRouteChange);
+          var originalPushState = history.pushState;
+          history.pushState = function() {
+            originalPushState.apply(this, arguments);
+            onRouteChange();
+          };
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+          onRouteChange();
+        });
+        
+        setTimeout(onRouteChange, 500);
+        setTimeout(onRouteChange, 1000);
+        setTimeout(onRouteChange, 2000);
+      }
+    })();
+  </script>
+<link href="/static/css/styles.e6bedadc36.css" rel="stylesheet">
+<link rel="stylesheet" href="/katex.min.css">
+<script defer src="/static/js/styles.03ebfe3fca.js"></script>
+<script defer src="/static/js/lib-react.06aa503779.js"></script>
+<script defer src="/static/js/lib-router.a7a83a8399.js"></script>
+<script defer src="/static/js/6665.052760f3df.js"></script>
+<script defer src="/static/js/index.2a1d1b00fc.js"></script>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Rspress v2.0.11">
+<link rel="icon" href="/logo.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="s11: Error Recovery — 错误不是结束，是重试的开始">
+<meta name="description" content="s01 → ... → s09 → s10 → s11 → <a href=&quot;s12](./s12_task_system/&quot;>s12</a> → s13 → ... → s20 &quot;错误不是终点, 是重试的起点&quot; — 升级 token、压缩上下文、切换模型。Harness 层: 韧性 — 主循环遇到错误时分类并恢复。">
+<meta property="og:description" content="s01 → ... → s09 → s10 → s11 → <a href=&quot;s12](./s12_task_system/&quot;>s12</a> → s13 → ... → s20 &quot;错误不是终点, 是重试的起点&quot; — 升级 token、压缩上下文、切换模型。Harness 层: 韧性 — 主循环遇到错误时分类并恢复。"></head>
+
+  <body>
+    <div id="__rspress_root"><link rel="preload" as="image" href="/logo.png"/><link rel="preload" as="image" href="/static/svg/error-recovery-overview.85231c3d1e.svg"/><header class="rp-nav"><div class="rp-nav__left"><div class="rp-nav__title"><a href="/" class="rp-nav__title__link rp-link"><div class="rp-nav__title__logo"><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--light"/><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--dark"/></div></a></div></div><div class="rp-nav__right"><button class="rp-search-button"><div class="rp-search-button__content"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21" class="rp-search-button__icon"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg><span class="rp-search-button__word">搜索</span></div><div class="rp-search-button__hotkey" style="opacity:0"><span></span><span>K</span></div></button><div class="rp-search-button--mobile"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg></div><ul class="rp-nav-menu rp-nav-menu--right"><li class="rp-nav-menu__item"><a href="/book/preface.html" class="rp-nav-menu__item__container rp-link">Agent指南</a></li><li class="rp-nav-menu__item"><a href="/harness/1-four-frameworks-comparison.html" class="rp-nav-menu__item__container rp-link">Harness手册</a></li><li class="rp-nav-menu__item rp-nav-menu__item--active"><a href="/learn-claude/s01_agent_loop/index.html" class="rp-nav-menu__item__container rp-link">学习Claude</a></li></ul><div class="rp-nav__others"><div class="rp-nav-menu__divider"></div><li class="rp-nav-menu__item"><div class="rp-nav-menu__item__container">简体中文<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-menu__item__icon"><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--center"><li class="rp-hover-group__item" style="padding-left:8px" data-depth="0"><a href="/en/learn-claude/s11_error_recovery/index.html" class="rp-hover-group__item__link rp-link" aria-label="English" lang="en" hrefLang="en" rel="alternate">English</a></li><li class="rp-hover-group__item rp-hover-group__item--active" style="padding-left:8px" data-depth="0"><a href="/s11_error_recovery/index.html" class="rp-hover-group__item__link rp-link" aria-label="简体中文" lang="zh" hrefLang="zh" rel="alternate">简体中文</a></li></ul></li><div class="rp-switch-appearance"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" class="rp-switch-appearance__icon rp-switch-appearance__icon--sun"><path fill="currentColor" d="m7.001 15.848-1.226 1.226a.58.58 0 0 0 0 .818.58.58 0 0 0 .818 0l1.226-1.226a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0m-.352-8.735a.584.584 0 0 0 .825-.825L6.237 5.051a.584.584 0 0 0-.825.825zM5.011 11.07h-1.75a.584.584 0 0 0 0 1.167h1.75c.324 0 .584-.26.584-.583a.585.585 0 0 0-.584-.584m7.003-5.835c.324 0 .584-.26.584-.584V2.9a.58.58 0 0 0-.584-.584.58.58 0 0 0-.583.583V4.65c0 .323.262.584.583.584m5.616 1.621 1.226-1.225a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0l-1.226 1.225a.58.58 0 0 0 0 .818.576.576 0 0 0 .818 0m3.138 4.214h-1.75a.58.58 0 0 0-.584.584c0 .324.26.584.583.584h1.751a.584.584 0 1 0 0-1.167m-3.389 5.124a.584.584 0 0 0-.825.825l1.238 1.238a.584.584 0 0 0 .825-.826zm-5.365-9.795a5.256 5.256 0 0 0-5.257 5.258 5.256 5.256 0 0 0 5.257 5.257 5.256 5.256 0 0 0 5.257-5.257 5.256 5.256 0 0 0-5.257-5.258m0 11.675a.58.58 0 0 0-.583.583v1.751a.582.582 0 1 0 1.167 0v-1.75a.584.584 0 0 0-.584-.584"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" viewBox="0 0 19 19" class="rp-switch-appearance__icon rp-switch-appearance__icon--moon"><path fill="currentColor" d="M9.166 0a9.2 9.2 0 0 1 1.857.188.834.834 0 0 1 .042 1.623 4.47 4.47 0 1 0 5.457 5.457l.048-.135a.834.834 0 0 1 1.575.177q.186.902.188 1.856A9.168 9.168 0 1 1 9.166 0"></path></svg></div></div><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__sm"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg></button><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__md"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--right"><div class="rp-nav-menu__others-mobile__container"><div class="rp-nav-hamburger__md__hover-group"><div class="rp-nav-screen-appearance"><div class="rp-nav-screen-appearance__left">主题</div><div class="rp-nav-screen-appearance__right"></div></div><div class="rp-nav-screen-langs"><div class="rp-nav-screen-langs__left">语言</div><div class="rp-nav-screen-langs__right">简体中文<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-screen-langs__icon "><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div></div><div class="rp-nav-screen-langs-group" style="display:grid;grid-template-rows:0fr;transition:grid-template-rows 0.2s ease-out"><div class="rp-nav-screen-langs-group__inner"><a href="/en/learn-claude/s11_error_recovery/index.html" class="rp-nav-screen-langs-group__item rp-link" hrefLang="en" lang="en" rel="alternate">English</a><span class="rp-nav-screen-langs-group__item rp-nav-screen-langs-group__item--active" aria-current="page" aria-disabled="true">简体中文</span></div></div><div class="rp-nav-screen-divider"></div></div></div></ul></button></div></header><div class="rp-doc-layout__menu"><div class="rp-sidebar-menu"><button type="button" class="rp-sidebar-menu__left"><svg width="1em" height="1em" viewBox="0 0 32 32"><path fill="currentColor" d="M4 6h24v2H4zm0 18h24v2H4zm0-12h24v2H4zm0 6h24v2H4z"></path></svg><span>菜单</span></button><button type="button" class="rp-sidebar-menu__right"><span class="rp-sidebar-menu__right__text">目录</span><svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-sidebar-menu__right__icon" style="transform:rotate(0deg);transition:transform 0.2s ease-out"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></button></div></div><div class="rp-doc-layout__container"><aside class="rp-doc-layout__sidebar rp-scrollbar"><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s01_agent_loop</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s01_agent_loop/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s01_agent_loop</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s02_tool_use</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s02_tool_use/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s02_tool_use</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s03_permission</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s03_permission/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s03_permission</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s04_hooks</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s04_hooks/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s04_hooks</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s05_todo_write</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s05_todo_write/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s05_todo_write</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s06_subagent</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s06_subagent/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s06_subagent</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s07_skill_loading</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s07_skill_loading/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s07_skill_loading</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s08_context_compact</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s08_context_compact/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s08_context_compact</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s09_memory</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s09_memory/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s09_memory</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s10_system_prompt</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s10_system_prompt/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s10_system_prompt</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s11_error_recovery</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s11_error_recovery/index.html" class="rp-sidebar-item rp-sidebar-item--active rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s11_error_recovery</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s12_task_system</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s12_task_system/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s12_task_system</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s13_background_tasks</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s13_background_tasks/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s13_background_tasks</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s14_cron_scheduler</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s14_cron_scheduler/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s14_cron_scheduler</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s15_agent_teams</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s15_agent_teams/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s15_agent_teams</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s16_team_protocols</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s16_team_protocols/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s16_team_protocols</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s17_autonomous_agents</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s17_autonomous_agents/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s17_autonomous_agents</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s18_worktree_isolation</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s18_worktree_isolation/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s18_worktree_isolation</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s19_mcp_plugin</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s19_mcp_plugin/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s19_mcp_plugin</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s20_comprehensive</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s20_comprehensive/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s20_comprehensive</span></div><div class="rp-sidebar-item__right"></div></a></aside><div class="rp-doc-layout__doc"><main class="rp-doc-layout__doc-container"><div class="rp-doc rspress-doc"><!--$--><h1 class="rp-toc-include" id="s11-error-recovery--错误不是结束是重试的开始"><a href="#s11-error-recovery--错误不是结束是重试的开始" class="rp-header-anchor rp-link" aria-hidden="true">#</a>s11: Error Recovery — 错误不是结束，是重试的开始<!-- --> </h1>
+<p>s01 → ... → s09 → s10 → <code>s11</code> → <a href="s12](./s12_task_system/" class="rp-link">s12</a> → s13 → ... → s20</p>
+<blockquote>
+<p><em>&quot;错误不是终点, 是重试的起点&quot;</em> — 升级 token、压缩上下文、切换模型。</p>
+<p><strong>Harness 层</strong>: 韧性 — 主循环遇到错误时分类并恢复。</p>
+</blockquote>
+<hr/>
+<h2 class="rp-toc-include" id="问题"><a href="#问题" class="rp-header-anchor rp-link" aria-hidden="true">#</a>问题</h2>
+<p>Agent 跑着跑着报错了：</p>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>Error: 529 overloaded</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>Agent 崩溃了。它没有重试，没有换模型，没有减少上下文——直接崩溃。</p>
+<p>生产环境中 API 错误是常态。三种最常见的故障模式：<strong>输出被截断</strong>（模型话说一半 token 用完了）、<strong>上下文超限</strong>（压缩后还是太长）、<strong>临时故障</strong>（429 限流 / 529 过载）。一个不处理错误的 Agent 就像一个一碰就熄火的车。</p>
+<hr/>
+<h2 class="rp-toc-include" id="解决方案"><a href="#解决方案" class="rp-header-anchor rp-link" aria-hidden="true">#</a>解决方案</h2>
+<p><img alt="Error Recovery Overview" src="/static/svg/error-recovery-overview.85231c3d1e.svg"/>)</p>
+<p>s10 的循环、prompt 组装全部保留。唯一的变动：LLM 调用包裹在 try/except 里，根据错误类型走不同的恢复路径。恢复后 <code>continue</code> 回到循环开头重新调用 LLM。</p>
+<p>三种最常见的恢复模式（教学版只处理 429/529；真实系统还覆盖连接错误、超时、云厂商认证缓存等。CC 实际有 13+ reason code，其余见 Deep dive）：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>模式</th><th>触发</th><th>恢复动作</th></tr></thead><tbody><tr><td>输出截断</td><td><code>max_tokens</code></td><td>升级 8K→64K / 续写提示</td></tr><tr><td>上下文超限</td><td><code>prompt_too_long</code></td><td>reactive compact → 重试</td></tr><tr><td>临时故障</td><td>429 / 529</td><td>指数退避 + 抖动，连续 529 可切换备用模型</td></tr></tbody></table></div>
+<hr/>
+<h2 class="rp-toc-include" id="工作原理"><a href="#工作原理" class="rp-header-anchor rp-link" aria-hidden="true">#</a>工作原理</h2>
+<h3 class="rp-toc-include" id="路径-1-输出被截断"><a href="#路径-1-输出被截断" class="rp-header-anchor rp-link" aria-hidden="true">#</a>路径 1: 输出被截断</h3>
+<p>模型话说一半，<code>max_tokens</code> 用完了。默认 8000 token 不够它输出完整回答。</p>
+<p>第一次发生时，直接把 <code>max_tokens</code> 从 8K 升级到 64K（8 倍空间），重试同一请求——此时不追加截断输出到 messages，保持原始请求不变。如果 64K 还是不够，才保存截断输出并注入续写提示让模型接着刚才的话继续说，最多 3 次：</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">if</span><span style="color:var(--shiki-foreground)"> response</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">stop_reason </span><span style="color:var(--shiki-token-keyword)">==</span><span style="color:var(--shiki-token-string-expression)"> &quot;max_tokens&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">    # First escalation: don&#x27;t append truncated output, retry same request</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-token-keyword)"> not</span><span style="color:var(--shiki-foreground)"> state</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">has_escalated</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        max_tokens </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> ESCALATED_MAX_TOKENS</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        state</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">has_escalated </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)"> True</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        continue</span><span style="color:var(--shiki-token-comment)">  # messages unchanged, same request with more tokens</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">    # 64K still truncated: save output + continuation prompt</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    messages</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">append</span><span style="color:var(--shiki-token-punctuation)">({</span><span style="color:var(--shiki-token-string-expression)">&quot;role&quot;</span><span style="color:var(--shiki-token-punctuation)">: </span><span style="color:var(--shiki-token-string-expression)">&quot;assistant&quot;</span><span style="color:var(--shiki-token-punctuation)">, </span><span style="color:var(--shiki-token-string-expression)">&quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">: response.content})</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-foreground)"> state</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">recovery_count </span><span style="color:var(--shiki-token-keyword)">&lt;</span><span style="color:var(--shiki-foreground)"> MAX_RECOVERY_RETRIES</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        messages</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">append</span><span style="color:var(--shiki-token-punctuation)">({</span><span style="color:var(--shiki-token-string-expression)">&quot;role&quot;</span><span style="color:var(--shiki-token-punctuation)">: </span><span style="color:var(--shiki-token-string-expression)">&quot;user&quot;</span><span style="color:var(--shiki-token-punctuation)">, </span><span style="color:var(--shiki-token-string-expression)">&quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">            &quot;Output token limit hit. Resume directly — &quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">            &quot;no apology, no recap. Pick up mid-thought.&quot;</span><span style="color:var(--shiki-token-punctuation)">})</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        state</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">recovery_count </span><span style="color:var(--shiki-token-keyword)">+=</span><span style="color:var(--shiki-token-constant)"> 1</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        continue</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-token-comment)">  # still truncated after 3 continuations</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)"># Normal: append after max_tokens check</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">messages</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">append</span><span style="color:var(--shiki-token-punctuation)">({</span><span style="color:var(--shiki-token-string-expression)">&quot;role&quot;</span><span style="color:var(--shiki-token-punctuation)">: </span><span style="color:var(--shiki-token-string-expression)">&quot;assistant&quot;</span><span style="color:var(--shiki-token-punctuation)">, </span><span style="color:var(--shiki-token-string-expression)">&quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">: response.content})</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>升级只有一次机会，续写最多 3 次。超过就退出——继续续写也不会有实质产出。</p>
+<h3 class="rp-toc-include" id="路径-2-上下文超限"><a href="#路径-2-上下文超限" class="rp-header-anchor rp-link" aria-hidden="true">#</a>路径 2: 上下文超限</h3>
+<p>LLM 说&quot;你的上下文太长了&quot;（<code>prompt_too_long</code>）。s08 的四层压缩全跑过了，还是超。</p>
+<p>触发 reactive compact——比 auto compact 更激进。教学版只保留最后 5 条消息模拟压缩效果；真实实现会调用 LLM 生成 compact 摘要再重试。压缩后重试。但如果压缩过一次还是超限，只能退出——再压缩也不会变小：</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">except</span><span style="color:var(--shiki-foreground)"> PromptTooLongError</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-token-keyword)"> not</span><span style="color:var(--shiki-foreground)"> state</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">has_attempted_reactive_compact</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        messages</span><span style="color:var(--shiki-token-punctuation)">[:]</span><span style="color:var(--shiki-token-keyword)"> =</span><span style="color:var(--shiki-token-function)"> reactive_compact</span><span style="color:var(--shiki-token-punctuation)">(messages)</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        state</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">has_attempted_reactive_compact </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)"> True</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        continue</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-token-comment)">  # 压缩过了还是超限，只能退出</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<h3 class="rp-toc-include" id="路径-3-临时故障"><a href="#路径-3-临时故障" class="rp-header-anchor rp-link" aria-hidden="true">#</a>路径 3: 临时故障</h3>
+<p>网络抖动、429 限流、529 过载——这些不是 bug，是分布式系统的常态。</p>
+<p>429 和 529 统一走指数退避 + 抖动：第一次等 0.5 秒，第二次等 1 秒，第三次等 2 秒，最多 10 次。加随机抖动让并发请求不在同一时刻重试。连续 3 次 529 过载 → 切换到备用模型（若配置了 <code>FALLBACK_MODEL_ID</code> 环境变量）：</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> retry_delay</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">attempt</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> retry_after</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)">None</span><span style="color:var(--shiki-foreground)">):</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-foreground)"> retry_after</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        return</span><span style="color:var(--shiki-foreground)"> retry_after</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    base </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> min</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-constant)">500</span><span style="color:var(--shiki-token-keyword)"> *</span><span style="color:var(--shiki-token-punctuation)"> (</span><span style="color:var(--shiki-token-constant)">2</span><span style="color:var(--shiki-token-keyword)"> **</span><span style="color:var(--shiki-token-punctuation)"> attempt), </span><span style="color:var(--shiki-token-constant)">32000</span><span style="color:var(--shiki-token-punctuation)">)</span><span style="color:var(--shiki-token-keyword)"> /</span><span style="color:var(--shiki-token-constant)"> 1000</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-foreground)"> base </span><span style="color:var(--shiki-token-keyword)">+</span><span style="color:var(--shiki-foreground)"> random</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">uniform</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-constant)">0</span><span style="color:var(--shiki-token-punctuation)">, base </span><span style="color:var(--shiki-token-keyword)">*</span><span style="color:var(--shiki-token-constant)"> 0.25</span><span style="color:var(--shiki-token-punctuation)">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> with_retry</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">fn</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> state</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> max_retries</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)">10</span><span style="color:var(--shiki-foreground)">):</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    for</span><span style="color:var(--shiki-foreground)"> attempt </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-token-function)"> range</span><span style="color:var(--shiki-token-punctuation)">(max_retries):</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        try</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            return</span><span style="color:var(--shiki-token-function)"> fn</span><span style="color:var(--shiki-token-punctuation)">()</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        except</span><span style="color:var(--shiki-foreground)"> (RateLimitError</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)"> OverloadedError)</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            delay </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> retry_delay</span><span style="color:var(--shiki-token-punctuation)">(attempt)</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            time</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">sleep</span><span style="color:var(--shiki-token-punctuation)">(delay)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            if</span><span style="color:var(--shiki-foreground)"> is_overloaded</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">                state</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">consecutive_529 </span><span style="color:var(--shiki-token-keyword)">+=</span><span style="color:var(--shiki-token-constant)"> 1</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">                if</span><span style="color:var(--shiki-foreground)"> state</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">consecutive_529 </span><span style="color:var(--shiki-token-keyword)">&gt;=</span><span style="color:var(--shiki-token-constant)"> 3</span><span style="color:var(--shiki-token-keyword)"> and</span><span style="color:var(--shiki-foreground)"> FALLBACK_MODEL</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">                    state</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">current_model </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> FALLBACK_MODEL</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    raise</span><span style="color:var(--shiki-token-function)"> MaxRetriesExceeded</span><span style="color:var(--shiki-token-punctuation)">()</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>退避公式：<code>min(500 × 2^attempt, 32000) + random(0~25%)</code>。如果服务器返回 <code>Retry-After</code> header，优先用那个值。</p>
+<h3 class="rp-toc-include" id="合起来跑"><a href="#合起来跑" class="rp-header-anchor rp-link" aria-hidden="true">#</a>合起来跑</h3>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> agent_loop</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">messages</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> context</span><span style="color:var(--shiki-foreground)">):</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    system </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> get_system_prompt</span><span style="color:var(--shiki-token-punctuation)">(context)</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    state </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> RecoveryState</span><span style="color:var(--shiki-token-punctuation)">()</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    max_tokens </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)"> 8000</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    while</span><span style="color:var(--shiki-token-constant)"> True</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        try</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            response </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> with_retry</span><span style="color:var(--shiki-token-punctuation)">(</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">                lambda</span><span style="color:var(--shiki-token-punctuation)">: client.messages.</span><span style="color:var(--shiki-token-function)">create</span><span style="color:var(--shiki-token-punctuation)">(</span></span>
+<span class="line"><span style="color:var(--shiki-token-punctuation)">                    model</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-punctuation)">state.current_model, system</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-punctuation)">system,</span></span>
+<span class="line"><span style="color:var(--shiki-token-punctuation)">                    messages</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-punctuation)">messages, tools</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-punctuation)">TOOLS,</span></span>
+<span class="line"><span style="color:var(--shiki-token-punctuation)">                    max_tokens</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-punctuation)">max_tokens),</span></span>
+<span class="line"><span style="color:var(--shiki-token-punctuation)">                state)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        except</span><span style="color:var(--shiki-token-constant)"> Exception</span><span style="color:var(--shiki-token-keyword)"> as</span><span style="color:var(--shiki-foreground)"> e</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            if</span><span style="color:var(--shiki-token-function)"> is_prompt_too_long_error</span><span style="color:var(--shiki-token-punctuation)">(e):</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">                if</span><span style="color:var(--shiki-token-keyword)"> not</span><span style="color:var(--shiki-foreground)"> state</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">has_attempted_reactive_compact</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">                    messages</span><span style="color:var(--shiki-token-punctuation)">[:]</span><span style="color:var(--shiki-token-keyword)"> =</span><span style="color:var(--shiki-token-function)"> reactive_compact</span><span style="color:var(--shiki-token-punctuation)">(messages)</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">                    state</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">has_attempted_reactive_compact </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)"> True</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">                    continue</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">                return</span></span>
+<span class="line"><span style="color:var(--shiki-token-function)">            log_error</span><span style="color:var(--shiki-token-punctuation)">(e)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            return</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">        # max_tokens check BEFORE appending to messages</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        if</span><span style="color:var(--shiki-foreground)"> response</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">stop_reason </span><span style="color:var(--shiki-token-keyword)">==</span><span style="color:var(--shiki-token-string-expression)"> &quot;max_tokens&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            if</span><span style="color:var(--shiki-token-keyword)"> not</span><span style="color:var(--shiki-foreground)"> state</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">has_escalated</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">                max_tokens </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)"> 64000</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">                state</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">has_escalated </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)"> True</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">                continue</span><span style="color:var(--shiki-token-comment)">  # retry same request, messages unchanged</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">            # save truncated output + continuation prompt</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            messages</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">append</span><span style="color:var(--shiki-token-punctuation)">({</span><span style="color:var(--shiki-token-string-expression)">&quot;role&quot;</span><span style="color:var(--shiki-token-punctuation)">: </span><span style="color:var(--shiki-token-string-expression)">&quot;assistant&quot;</span><span style="color:var(--shiki-token-punctuation)">, </span><span style="color:var(--shiki-token-string-expression)">&quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">: response.content})</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            messages</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">append</span><span style="color:var(--shiki-token-punctuation)">({</span><span style="color:var(--shiki-token-string-expression)">&quot;role&quot;</span><span style="color:var(--shiki-token-punctuation)">: </span><span style="color:var(--shiki-token-string-expression)">&quot;user&quot;</span><span style="color:var(--shiki-token-punctuation)">, </span><span style="color:var(--shiki-token-string-expression)">&quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">: CONTINUATION_PROMPT})</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            continue</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">        # Normal completion</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        messages</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">append</span><span style="color:var(--shiki-token-punctuation)">({</span><span style="color:var(--shiki-token-string-expression)">&quot;role&quot;</span><span style="color:var(--shiki-token-punctuation)">: </span><span style="color:var(--shiki-token-string-expression)">&quot;assistant&quot;</span><span style="color:var(--shiki-token-punctuation)">, </span><span style="color:var(--shiki-token-string-expression)">&quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">: response.content})</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        if</span><span style="color:var(--shiki-foreground)"> response</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">stop_reason </span><span style="color:var(--shiki-token-keyword)">!=</span><span style="color:var(--shiki-token-string-expression)"> &quot;tool_use&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            return</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">        # ... tool execution ...</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>外层 try/except 捕获 API 异常（prompt_too_long 等），<code>with_retry</code> 处理瞬态错误（429/529），<code>stop_reason</code> 检查处理截断。三种恢复机制各管各的错误类型。</p>
+<hr/>
+<h2 class="rp-toc-include" id="相对-s10-的变更"><a href="#相对-s10-的变更" class="rp-header-anchor rp-link" aria-hidden="true">#</a>相对 s10 的变更</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>组件</th><th>之前 (s10)</th><th>之后 (s11)</th></tr></thead><tbody><tr><td>错误处理</td><td>无（一碰就崩溃）</td><td>三种恢复模式 + 指数退避</td></tr><tr><td>新常量</td><td>—</td><td>ESCALATED_MAX_TOKENS=64000, MAX_RETRIES=10, BASE_DELAY_MS=500, FALLBACK_MODEL</td></tr><tr><td>新函数</td><td>—</td><td>with_retry, retry_delay, reactive_compact, is_prompt_too_long_error, RecoveryState</td></tr><tr><td>工具</td><td>bash, read_file, write_file (3)</td><td>bash, read_file, write_file (3) — 不变</td></tr><tr><td>循环</td><td>裸调用 LLM</td><td>try/except 包裹 + continue 重试</td></tr></tbody></table></div>
+<hr/>
+<h2 class="rp-toc-include" id="试一下"><a href="#试一下" class="rp-header-anchor rp-link" aria-hidden="true">#</a>试一下</h2>
+<div class="rp-codeblock language-sh"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="sh"><code><span class="line"><span style="color:var(--shiki-token-function)">cd</span><span style="color:var(--shiki-token-string)"> learn-claude-code</span></span>
+<span class="line"><span style="color:var(--shiki-token-function)">python</span><span style="color:var(--shiki-token-string)"> s11_error_recovery/code.py</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>试试这些 prompt：</p>
+<ol>
+<li>让 Agent 生成一段很长的代码，观察截断后是否自动续写（看 <code>[max_tokens] escalating</code> 日志）</li>
+<li>连续读取大量文件撑大上下文，观察 reactive compact</li>
+<li>如果遇到 429/529，观察指数退避的日志输出</li>
+</ol>
+<hr/>
+<h2 class="rp-toc-include" id="接下来"><a href="#接下来" class="rp-header-anchor rp-link" aria-hidden="true">#</a>接下来</h2>
+<p>Agent 现在能在错误中自动恢复了。但它处理的任务仍然是&quot;一次性&quot;的——你给它一个任务，它做完，结束。</p>
+<p>能不能让 Agent 管理一个<strong>任务列表</strong>——有依赖关系、持久化到磁盘、跨会话能恢复？TODO 列表不是任务系统。</p>
+<p>s12 Task System → 任务是有依赖、有状态、持久化的图。这是多 Agent 协作的基础。</p>
+<details>
+<summary>深入 CC 源码</summary>
+<blockquote>
+<p>以下基于 CC 源码 <code>query.ts</code>（1729 行）、<code>services/api/withRetry.ts</code>（822 行）、<code>query/tokenBudget.ts</code>（93 行）、<code>utils/tokenBudget.ts</code>（73 行）的分析。</p>
+</blockquote>
+<h3 class="rp-toc-include" id="一十几种-reasontransition不只是-3-条"><a href="#一十几种-reasontransition不只是-3-条" class="rp-header-anchor rp-link" aria-hidden="true">#</a>一、十几种 reason/transition（不只是 3 条）</h3>
+<p>教学版讲了 3 种最常见的恢复模式。CC 实际有十几种 reason/transition，每轮 LLM 调用后都会判断：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>reason/transition</th><th>教学版对应</th><th>CC 行为</th></tr></thead><tbody><tr><td><code>completed</code></td><td>正常完成</td><td>返回结果</td></tr><tr><td><code>next_turn</code></td><td>正常工具调用</td><td>继续下一轮工具执行</td></tr><tr><td><code>max_output_tokens_escalate</code></td><td>路径 1</td><td>8K→64K 升级</td></tr><tr><td><code>max_output_tokens_recovery</code></td><td>路径 1 续写</td><td>续写提示（最多 3 次）</td></tr><tr><td><code>reactive_compact_retry</code></td><td>路径 2</td><td>reactive compact → 重试</td></tr><tr><td><code>prompt_too_long</code></td><td>路径 2</td><td>同上</td></tr><tr><td><code>collapse_drain_retry</code></td><td>未展开</td><td>context collapse 先提交暂存</td></tr><tr><td><code>model_error</code></td><td>未展开</td><td>重试</td></tr><tr><td><code>image_error</code></td><td>未展开</td><td><code>ImageSizeError</code> / <code>ImageResizeError</code> 专门处理</td></tr><tr><td><code>aborted_streaming</code></td><td>未展开</td><td>流式中止恢复</td></tr><tr><td><code>aborted_tools</code></td><td>未展开</td><td>工具中止</td></tr><tr><td><code>stop_hook_blocking</code></td><td>未展开</td><td>注入 blocking error → 模型自纠</td></tr><tr><td><code>stop_hook_prevented</code></td><td>未展开</td><td>hooks 阻止</td></tr><tr><td><code>hook_stopped</code></td><td>未展开</td><td>hook 停止执行</td></tr><tr><td><code>token_budget_continuation</code></td><td>未展开</td><td>token 用量 &lt; 90% 时继续</td></tr><tr><td><code>blocking_limit</code></td><td>未展开</td><td>阻塞限制</td></tr><tr><td><code>max_turns</code></td><td>未展开</td><td>达到最大轮次</td></tr></tbody></table></div>
+<p>教学版只展开了前 5 种（最常见的），其余各有专门处理逻辑。</p>
+<h3 class="rp-toc-include" id="二指数退避的精确公式"><a href="#二指数退避的精确公式" class="rp-header-anchor rp-link" aria-hidden="true">#</a>二、指数退避的精确公式</h3>
+<p>CC 的退避延迟（<code>withRetry.ts:530-548</code>）：</p>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>delay = min(500 × 2^(attempt-1), 32000) + random(0~25%)</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>尝试</th><th>基础延迟</th><th>+ 抖动</th></tr></thead><tbody><tr><td>1</td><td>500ms</td><td>0-125ms</td></tr><tr><td>2</td><td>1000ms</td><td>0-250ms</td></tr><tr><td>4</td><td>4000ms</td><td>0-1000ms</td></tr><tr><td>7+</td><td>32000ms（上限）</td><td>0-8000ms</td></tr></tbody></table></div>
+<p>如果服务器返回 <code>Retry-After</code> header，优先用那个值。</p>
+<h3 class="rp-toc-include" id="三continuation-提示原文"><a href="#三continuation-提示原文" class="rp-header-anchor rp-link" aria-hidden="true">#</a>三、CONTINUATION 提示原文</h3>
+<p>CC 的续写提示（<code>query.ts:1225-1227</code>）：</p>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>Output token limit hit. Resume directly — no apology, no recap of what</span></span>
+<span class="line"><span>you were doing. Pick up mid-thought if that is where the cut happened.</span></span>
+<span class="line"><span>Break remaining work into smaller pieces.</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>Token budget 的 nudge 提示（<code>tokenBudget.ts:72</code>）：</p>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>Stopped at {pct}% of token target. Keep working — do not summarize.</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<h3 class="rp-toc-include" id="四流式错误处理"><a href="#四流式错误处理" class="rp-header-anchor rp-link" aria-hidden="true">#</a>四、流式错误处理</h3>
+<p>CC 的流式路径中，可恢复的错误（413、max_tokens、media error）在 streaming 期间<strong>被暂扣不展示</strong>（<code>query.ts:788-822</code>）——SDK 消费者看不到，只有恢复逻辑能看到。等 streaming 结束后才判断是否需要恢复。</p>
+<h3 class="rp-toc-include" id="五529--fallback-model-切换"><a href="#五529--fallback-model-切换" class="rp-header-anchor rp-link" aria-hidden="true">#</a>五、529 → Fallback Model 切换</h3>
+<p>连续 3 次 529 过载错误后（<code>MAX_529_RETRIES = 3</code>），CC 自动切换到 fallback model（如 Opus → Sonnet）。切换时清除所有 pending 消息和 tool 结果，给用户展示 &quot;Switched to {model} due to high demand&quot;。</p>
+<h3 class="rp-toc-include" id="六diminishing-returns-检测"><a href="#六diminishing-returns-检测" class="rp-header-anchor rp-link" aria-hidden="true">#</a>六、Diminishing Returns 检测</h3>
+<p>Token budget 的&quot;继续&quot;不是无限的。当连续 3 次 continuation 且 token 增量 &lt; 500 时，系统判断&quot;继续也没有实质性产出&quot;，停止 continuation（<code>tokenBudget.ts:60-62</code>）。</p>
+</details>
+<!--/$--></div><footer class="rp-doc-footer"><div class="rp-doc-footer__edit"></div><div class="rp-doc-footer__divider"></div><div class="rp-prev-next-page"><a href="/learn-claude/s10_system_prompt/index.html" class="rp-prev-next-page__item rp-prev-next-page__prev rp-link"><span class="rp-prev-next-page__item__desc">上一页</span><span class="rp-prev-next-page__item__title"><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon rp-prev-next-page__rotate_180"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg><span>s10_system_prompt</span></span></a><a href="/learn-claude/s12_task_system/index.html" class="rp-prev-next-page__item rp-prev-next-page__next rp-link"><span class="rp-prev-next-page__item__desc">下一页</span><span class="rp-prev-next-page__item__title"><span>s12_task_system</span><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></span></a></div></footer></main></div><aside class="rp-doc-layout__outline rp-scrollbar"><div class="rp-outline"><div class="rp-outline__title">目录<svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg></div><nav class="rp-outline__toc rp-scrollbar"><a href="#问题" class="rp-toc-item rp-link" title="问题" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">问题</span></a><a href="#解决方案" class="rp-toc-item rp-link" title="解决方案" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">解决方案</span></a><a href="#工作原理" class="rp-toc-item rp-link" title="工作原理" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">工作原理</span></a><a href="#路径-1-输出被截断" class="rp-toc-item rp-link" title="路径 1: 输出被截断" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">路径 1: 输出被截断</span></a><a href="#路径-2-上下文超限" class="rp-toc-item rp-link" title="路径 2: 上下文超限" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">路径 2: 上下文超限</span></a><a href="#路径-3-临时故障" class="rp-toc-item rp-link" title="路径 3: 临时故障" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">路径 3: 临时故障</span></a><a href="#合起来跑" class="rp-toc-item rp-link" title="合起来跑" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">合起来跑</span></a><a href="#相对-s10-的变更" class="rp-toc-item rp-link" title="相对 s10 的变更" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">相对 s10 的变更</span></a><a href="#试一下" class="rp-toc-item rp-link" title="试一下" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">试一下</span></a><a href="#接下来" class="rp-toc-item rp-link" title="接下来" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">接下来</span></a><a href="#一十几种-reasontransition不只是-3-条" class="rp-toc-item rp-link" title="一、十几种 reason/transition（不只是 3 条）" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">一、十几种 reason/transition（不只是 3 条）</span></a><a href="#二指数退避的精确公式" class="rp-toc-item rp-link" title="二、指数退避的精确公式" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">二、指数退避的精确公式</span></a><a href="#三continuation-提示原文" class="rp-toc-item rp-link" title="三、CONTINUATION 提示原文" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">三、CONTINUATION 提示原文</span></a><a href="#四流式错误处理" class="rp-toc-item rp-link" title="四、流式错误处理" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">四、流式错误处理</span></a><a href="#五529--fallback-model-切换" class="rp-toc-item rp-link" title="五、529 → Fallback Model 切换" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">五、529 → Fallback Model 切换</span></a><a href="#六diminishing-returns-检测" class="rp-toc-item rp-link" title="六、Diminishing Returns 检测" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">六、Diminishing Returns 检测</span></a></nav><div class="rp-outline__divider"></div><div class="rp-outline__bottom"></div></div></aside></div></div>
+    <div id="__rspress_modal_container"></div>
+  </body>
+</html>

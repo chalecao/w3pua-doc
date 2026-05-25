@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="zh">
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>s08: Context Compact — 上下文总会满，要有办法腾地方</title>
+<script>{;const saved = localStorage.getItem('rspress-theme-appearance');const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;const isDark = !saved || saved === 'auto' ? preferDark : saved === 'dark';document.documentElement.classList.toggle('dark', isDark);document.documentElement.classList.toggle('rp-dark', isDark);document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';}</script>
+<script>window.onload=function(){document.title='「万维飘」w3pua.com';setTimeout(function(){var imgs=document.querySelectorAll('img.rp-home-hero__image-img');imgs.forEach(function(img){var num=Math.floor(Math.random()*19)+1;img.src='/logo/'+num+'.svg';});},100);};</script>
+<script src="/katex.min.js"></script>
+<script>
+    (function() {
+      function renderMathInElement(container) {
+        if (!container) return;
+        
+        var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+        var textNodes = [];
+        while(walker.nextNode()) textNodes.push(walker.currentNode);
+        
+        textNodes.forEach(function(textNode) {
+          var text = textNode.textContent;
+          if (!text || (!text.includes('$$') && !text.includes('$'))) return;
+          
+          var parent = textNode.parentNode;
+          if (!parent) return;
+          if (parent.tagName === 'PRE' || parent.tagName === 'CODE' || parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE') return;
+          
+          var newHtml = text.replace(/\$\$([\s\S]*?)\$\$/g, function(match, formula) {
+            try {
+              return '<div class="math math-display">' + katex.renderToString(formula.trim(), {displayMode: true, throwOnError: false}) + '</div>';
+            } catch(e) { return match; }
+          }).replace(/\$([^\$\n]+?)\$/g, function(match, formula) {
+            try {
+              return katex.renderToString(formula.trim(), {displayMode: false, throwOnError: false});
+            } catch(e) { return match; }
+          });
+          
+          if (newHtml !== text) {
+            var span = document.createElement('span');
+            span.innerHTML = newHtml;
+            parent.replaceChild(span, textNode);
+          }
+        });
+      }
+
+      function onRouteChange() {
+        setTimeout(function() {
+          var container = document.getElementById('__rspress_root');
+          if (container) {
+            renderMathInElement(container);
+          }
+        }, 100);
+      }
+
+      if (typeof window !== 'undefined') {
+        if (window.__RSPRESS__) {
+          window.__RSPRESS__.addEventListener('routeChangeComplete', onRouteChange);
+        } else {
+          window.addEventListener('popstate', onRouteChange);
+          var originalPushState = history.pushState;
+          history.pushState = function() {
+            originalPushState.apply(this, arguments);
+            onRouteChange();
+          };
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+          onRouteChange();
+        });
+        
+        setTimeout(onRouteChange, 500);
+        setTimeout(onRouteChange, 1000);
+        setTimeout(onRouteChange, 2000);
+      }
+    })();
+  </script>
+<link href="/static/css/styles.e6bedadc36.css" rel="stylesheet">
+<link rel="stylesheet" href="/katex.min.css">
+<script defer src="/static/js/styles.03ebfe3fca.js"></script>
+<script defer src="/static/js/lib-react.06aa503779.js"></script>
+<script defer src="/static/js/lib-router.a7a83a8399.js"></script>
+<script defer src="/static/js/6665.052760f3df.js"></script>
+<script defer src="/static/js/index.2a1d1b00fc.js"></script>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Rspress v2.0.11">
+<link rel="icon" href="/logo.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="s08: Context Compact — 上下文总会满，要有办法腾地方">
+<meta name="description" content="s01 → s02 → s03 → s04 → s05 → s06 → s07 → s08 → <a href=&quot;s09](./s09_memory/&quot;>s09</a> → s10 → ... → s20 &quot;上下文总会满, 要有办法腾地方&quot; — 四层压缩策略, 便宜的先跑贵的后跑。Harness 层: 压缩 — 干净的记忆, 无限的会话。">
+<meta property="og:description" content="s01 → s02 → s03 → s04 → s05 → s06 → s07 → s08 → <a href=&quot;s09](./s09_memory/&quot;>s09</a> → s10 → ... → s20 &quot;上下文总会满, 要有办法腾地方&quot; — 四层压缩策略, 便宜的先跑贵的后跑。Harness 层: 压缩 — 干净的记忆, 无限的会话。"></head>
+
+  <body>
+    <div id="__rspress_root"><link rel="preload" as="image" href="/logo.png"/><link rel="preload" as="image" href="/static/svg/compact-overview.624491e78f.svg"/><link rel="preload" as="image" href="/static/svg/compaction-layers.3b059d60fe.svg"/><link rel="preload" as="image" href="/static/svg/micro-compact.45959467ac.svg"/><link rel="preload" as="image" href="/static/svg/auto-compact.6f02681f94.svg"/><header class="rp-nav"><div class="rp-nav__left"><div class="rp-nav__title"><a href="/" class="rp-nav__title__link rp-link"><div class="rp-nav__title__logo"><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--light"/><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--dark"/></div></a></div></div><div class="rp-nav__right"><button class="rp-search-button"><div class="rp-search-button__content"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21" class="rp-search-button__icon"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg><span class="rp-search-button__word">搜索</span></div><div class="rp-search-button__hotkey" style="opacity:0"><span></span><span>K</span></div></button><div class="rp-search-button--mobile"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg></div><ul class="rp-nav-menu rp-nav-menu--right"><li class="rp-nav-menu__item"><a href="/book/preface.html" class="rp-nav-menu__item__container rp-link">Agent指南</a></li><li class="rp-nav-menu__item"><a href="/harness/1-four-frameworks-comparison.html" class="rp-nav-menu__item__container rp-link">Harness手册</a></li><li class="rp-nav-menu__item rp-nav-menu__item--active"><a href="/learn-claude/s01_agent_loop/index.html" class="rp-nav-menu__item__container rp-link">学习Claude</a></li></ul><div class="rp-nav__others"><div class="rp-nav-menu__divider"></div><li class="rp-nav-menu__item"><div class="rp-nav-menu__item__container">简体中文<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-menu__item__icon"><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--center"><li class="rp-hover-group__item" style="padding-left:8px" data-depth="0"><a href="/en/learn-claude/s08_context_compact/index.html" class="rp-hover-group__item__link rp-link" aria-label="English" lang="en" hrefLang="en" rel="alternate">English</a></li><li class="rp-hover-group__item rp-hover-group__item--active" style="padding-left:8px" data-depth="0"><a href="/s08_context_compact/index.html" class="rp-hover-group__item__link rp-link" aria-label="简体中文" lang="zh" hrefLang="zh" rel="alternate">简体中文</a></li></ul></li><div class="rp-switch-appearance"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" class="rp-switch-appearance__icon rp-switch-appearance__icon--sun"><path fill="currentColor" d="m7.001 15.848-1.226 1.226a.58.58 0 0 0 0 .818.58.58 0 0 0 .818 0l1.226-1.226a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0m-.352-8.735a.584.584 0 0 0 .825-.825L6.237 5.051a.584.584 0 0 0-.825.825zM5.011 11.07h-1.75a.584.584 0 0 0 0 1.167h1.75c.324 0 .584-.26.584-.583a.585.585 0 0 0-.584-.584m7.003-5.835c.324 0 .584-.26.584-.584V2.9a.58.58 0 0 0-.584-.584.58.58 0 0 0-.583.583V4.65c0 .323.262.584.583.584m5.616 1.621 1.226-1.225a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0l-1.226 1.225a.58.58 0 0 0 0 .818.576.576 0 0 0 .818 0m3.138 4.214h-1.75a.58.58 0 0 0-.584.584c0 .324.26.584.583.584h1.751a.584.584 0 1 0 0-1.167m-3.389 5.124a.584.584 0 0 0-.825.825l1.238 1.238a.584.584 0 0 0 .825-.826zm-5.365-9.795a5.256 5.256 0 0 0-5.257 5.258 5.256 5.256 0 0 0 5.257 5.257 5.256 5.256 0 0 0 5.257-5.257 5.256 5.256 0 0 0-5.257-5.258m0 11.675a.58.58 0 0 0-.583.583v1.751a.582.582 0 1 0 1.167 0v-1.75a.584.584 0 0 0-.584-.584"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" viewBox="0 0 19 19" class="rp-switch-appearance__icon rp-switch-appearance__icon--moon"><path fill="currentColor" d="M9.166 0a9.2 9.2 0 0 1 1.857.188.834.834 0 0 1 .042 1.623 4.47 4.47 0 1 0 5.457 5.457l.048-.135a.834.834 0 0 1 1.575.177q.186.902.188 1.856A9.168 9.168 0 1 1 9.166 0"></path></svg></div></div><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__sm"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg></button><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__md"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--right"><div class="rp-nav-menu__others-mobile__container"><div class="rp-nav-hamburger__md__hover-group"><div class="rp-nav-screen-appearance"><div class="rp-nav-screen-appearance__left">主题</div><div class="rp-nav-screen-appearance__right"></div></div><div class="rp-nav-screen-langs"><div class="rp-nav-screen-langs__left">语言</div><div class="rp-nav-screen-langs__right">简体中文<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-screen-langs__icon "><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div></div><div class="rp-nav-screen-langs-group" style="display:grid;grid-template-rows:0fr;transition:grid-template-rows 0.2s ease-out"><div class="rp-nav-screen-langs-group__inner"><a href="/en/learn-claude/s08_context_compact/index.html" class="rp-nav-screen-langs-group__item rp-link" hrefLang="en" lang="en" rel="alternate">English</a><span class="rp-nav-screen-langs-group__item rp-nav-screen-langs-group__item--active" aria-current="page" aria-disabled="true">简体中文</span></div></div><div class="rp-nav-screen-divider"></div></div></div></ul></button></div></header><div class="rp-doc-layout__menu"><div class="rp-sidebar-menu"><button type="button" class="rp-sidebar-menu__left"><svg width="1em" height="1em" viewBox="0 0 32 32"><path fill="currentColor" d="M4 6h24v2H4zm0 18h24v2H4zm0-12h24v2H4zm0 6h24v2H4z"></path></svg><span>菜单</span></button><button type="button" class="rp-sidebar-menu__right"><span class="rp-sidebar-menu__right__text">目录</span><svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-sidebar-menu__right__icon" style="transform:rotate(0deg);transition:transform 0.2s ease-out"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></button></div></div><div class="rp-doc-layout__container"><aside class="rp-doc-layout__sidebar rp-scrollbar"><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s01_agent_loop</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s01_agent_loop/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s01_agent_loop</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s02_tool_use</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s02_tool_use/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s02_tool_use</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s03_permission</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s03_permission/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s03_permission</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s04_hooks</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s04_hooks/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s04_hooks</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s05_todo_write</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s05_todo_write/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s05_todo_write</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s06_subagent</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s06_subagent/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s06_subagent</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s07_skill_loading</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s07_skill_loading/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s07_skill_loading</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s08_context_compact</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s08_context_compact/index.html" class="rp-sidebar-item rp-sidebar-item--active rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s08_context_compact</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s09_memory</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s09_memory/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s09_memory</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s10_system_prompt</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s10_system_prompt/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s10_system_prompt</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s11_error_recovery</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s11_error_recovery/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s11_error_recovery</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s12_task_system</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s12_task_system/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s12_task_system</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s13_background_tasks</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s13_background_tasks/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s13_background_tasks</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s14_cron_scheduler</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s14_cron_scheduler/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s14_cron_scheduler</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s15_agent_teams</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s15_agent_teams/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s15_agent_teams</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s16_team_protocols</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s16_team_protocols/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s16_team_protocols</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s17_autonomous_agents</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s17_autonomous_agents/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s17_autonomous_agents</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s18_worktree_isolation</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s18_worktree_isolation/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s18_worktree_isolation</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s19_mcp_plugin</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s19_mcp_plugin/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s19_mcp_plugin</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s20_comprehensive</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s20_comprehensive/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s20_comprehensive</span></div><div class="rp-sidebar-item__right"></div></a></aside><div class="rp-doc-layout__doc"><main class="rp-doc-layout__doc-container"><div class="rp-doc rspress-doc"><!--$--><h1 class="rp-toc-include" id="s08-context-compact--上下文总会满要有办法腾地方"><a href="#s08-context-compact--上下文总会满要有办法腾地方" class="rp-header-anchor rp-link" aria-hidden="true">#</a>s08: Context Compact — 上下文总会满，要有办法腾地方<!-- --> </h1>
+<p>s01 → s02 → s03 → s04 → s05 → s06 → s07 → <code>s08</code> → <a href="s09](./s09_memory/" class="rp-link">s09</a> → s10 → ... → s20</p>
+<blockquote>
+<p><em>&quot;上下文总会满, 要有办法腾地方&quot;</em> — 四层压缩策略, 便宜的先跑贵的后跑。</p>
+<p><strong>Harness 层</strong>: 压缩 — 干净的记忆, 无限的会话。</p>
+</blockquote>
+<hr/>
+<h2 class="rp-toc-include" id="问题"><a href="#问题" class="rp-header-anchor rp-link" aria-hidden="true">#</a>问题</h2>
+<p>Agent 跑着跑着，不动了。</p>
+<p>手里有 bash、有 read、有 write，能力是够的。但它读了一个 1000 行的文件（~4000 token），又读了 30 个文件，跑了 20 条命令。每条命令的输出、每个文件的内容，全都堆在 <code>messages</code> 列表里。</p>
+<p>上下文窗口是有限的。满了之后，API 直接拒绝：<code>prompt_too_long</code>。</p>
+<p>不压缩，Agent 根本没法在大项目里干活。</p>
+<hr/>
+<h2 class="rp-toc-include" id="解决方案"><a href="#解决方案" class="rp-header-anchor rp-link" aria-hidden="true">#</a>解决方案</h2>
+<p><img alt="Compact Overview" src="/static/svg/compact-overview.624491e78f.svg"/>)</p>
+<p>保留 s07 的 hook 结构、技能加载、子 Agent 等骨架，省略部分工具细节以聚焦压缩。核心变动：每轮 LLM 调用前插入三层预处理器（0 API），token 仍超阈值时触发 LLM 摘要（1 API），API 报错时应急裁剪。</p>
+<p>核心设计：便宜的先跑，贵的后跑。</p>
+<hr/>
+<h2 class="rp-toc-include" id="工作原理"><a href="#工作原理" class="rp-header-anchor rp-link" aria-hidden="true">#</a>工作原理</h2>
+<p><img alt="四层压缩管线" src="/static/svg/compaction-layers.3b059d60fe.svg"/>)</p>
+<h3 class="rp-toc-include" id="l1-snip_compact--裁掉无关的旧对话"><a href="#l1-snip_compact--裁掉无关的旧对话" class="rp-header-anchor rp-link" aria-hidden="true">#</a>L1: snip_compact — 裁掉无关的旧对话</h3>
+<p>Agent 跑了 80 轮对话，<code>messages</code> 攒了 160 条。最前面的&quot;帮我创建 hello.py&quot;和当前工作几乎无关了，但全占着位置。</p>
+<p>消息数超过 50 条 → 保留头部 3 条（初始上下文）和尾部 47 条（当前工作），中间裁掉：</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> snip_compact</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">messages</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> max_messages</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)">50</span><span style="color:var(--shiki-foreground)">):</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-token-function)"> len</span><span style="color:var(--shiki-token-punctuation)">(messages)</span><span style="color:var(--shiki-token-keyword)"> &lt;=</span><span style="color:var(--shiki-foreground)"> max_messages</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        return</span><span style="color:var(--shiki-foreground)"> messages</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    keep_head</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)"> keep_tail </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)"> 3</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)"> max_messages </span><span style="color:var(--shiki-token-keyword)">-</span><span style="color:var(--shiki-token-constant)"> 3</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    snipped </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> len</span><span style="color:var(--shiki-token-punctuation)">(messages)</span><span style="color:var(--shiki-token-keyword)"> -</span><span style="color:var(--shiki-foreground)"> keep_head </span><span style="color:var(--shiki-token-keyword)">-</span><span style="color:var(--shiki-foreground)"> keep_tail</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    placeholder </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-punctuation)"> {</span><span style="color:var(--shiki-token-string-expression)">&quot;role&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;user&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">                   &quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-keyword)"> f</span><span style="color:var(--shiki-token-string-expression)">&quot;[snipped </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">snipped</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)"> messages from conversation middle]&quot;</span><span style="color:var(--shiki-token-punctuation)">}</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-foreground)"> messages</span><span style="color:var(--shiki-token-punctuation)">[:</span><span style="color:var(--shiki-foreground)">keep_head</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-token-keyword)"> +</span><span style="color:var(--shiki-foreground)"> [placeholder] </span><span style="color:var(--shiki-token-keyword)">+</span><span style="color:var(--shiki-foreground)"> messages</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-token-keyword)">-</span><span style="color:var(--shiki-foreground)">keep_tail</span><span style="color:var(--shiki-token-punctuation)">:]</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>裁掉了整条消息，但剩下的消息里 <code>tool_result</code> 内容仍在累积——第 34 条消息里可能躺着 30KB 的旧文件内容。→ L2。</p>
+<h3 class="rp-toc-include" id="l2-micro_compact--旧工具结果占位"><a href="#l2-micro_compact--旧工具结果占位" class="rp-header-anchor rp-link" aria-hidden="true">#</a>L2: micro_compact — 旧工具结果占位</h3>
+<p><img alt="旧结果占位" src="/static/svg/micro-compact.45959467ac.svg"/>)</p>
+<p>Agent 连续读了 10 个文件。第 1-7 次的完整内容还躺在上下文里，早就不需要了，但占着大量空间。</p>
+<p>只保留最近 3 条 <code>tool_result</code> 的完整内容，更旧的替换为一行占位符：</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-foreground)">KEEP_RECENT_TOOL_RESULTS </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)"> 3</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> micro_compact</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">messages</span><span style="color:var(--shiki-foreground)">):</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    tool_results </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> collect_tool_result_blocks</span><span style="color:var(--shiki-token-punctuation)">(messages)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-token-function)"> len</span><span style="color:var(--shiki-token-punctuation)">(tool_results)</span><span style="color:var(--shiki-token-keyword)"> &lt;=</span><span style="color:var(--shiki-foreground)"> KEEP_RECENT_TOOL_RESULTS</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        return</span><span style="color:var(--shiki-foreground)"> messages</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    for</span><span style="color:var(--shiki-foreground)"> _</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)"> _</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)"> block </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-foreground)"> tool_results</span><span style="color:var(--shiki-token-punctuation)">[:</span><span style="color:var(--shiki-token-keyword)">-</span><span style="color:var(--shiki-foreground)">KEEP_RECENT_TOOL_RESULTS</span><span style="color:var(--shiki-token-punctuation)">]:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        if</span><span style="color:var(--shiki-token-function)"> len</span><span style="color:var(--shiki-token-punctuation)">(block.</span><span style="color:var(--shiki-token-function)">get</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">, </span><span style="color:var(--shiki-token-string-expression)">&quot;&quot;</span><span style="color:var(--shiki-token-punctuation)">))</span><span style="color:var(--shiki-token-keyword)"> &gt;</span><span style="color:var(--shiki-token-constant)"> 120</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            block</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-token-string-expression)">&quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-token-keyword)"> =</span><span style="color:var(--shiki-token-string-expression)"> &quot;[Earlier tool result compacted. Re-run if needed.]&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-foreground)"> messages</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>旧结果清掉了，但单条新结果可能就有 500KB——一个 <code>cat</code> 大文件的输出就能打满上下文。→ L3。</p>
+<h3 class="rp-toc-include" id="l3-tool_result_budget--大结果落盘"><a href="#l3-tool_result_budget--大结果落盘" class="rp-header-anchor rp-link" aria-hidden="true">#</a>L3: tool_result_budget — 大结果落盘</h3>
+<p><img alt="大结果落盘" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MjAgMzU2IiBmb250LWZhbWlseT0ic3lzdGVtLXVpLCAtYXBwbGUtc3lzdGVtLCBzYW5zLXNlcmlmIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iaGVhZGVyIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMCI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMxZTNhNWYiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMyNTYzZWIiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bWFya2VyIGlkPSJhcnJvdyIgdmlld0JveD0iMCAwIDEwIDEwIiByZWZYPSIxMCIgcmVmWT0iNSIgbWFya2VyV2lkdGg9IjYiIG1hcmtlckhlaWdodD0iNiIgb3JpZW50PSJhdXRvLXN0YXJ0LXJldmVyc2UiPgogICAgICA8cGF0aCBkPSJNIDAgMCBMIDEwIDUgTCAwIDEwIHoiIGZpbGw9IiMxNmEzNGEiLz4KICAgIDwvbWFya2VyPgogIDwvZGVmcz4KCiAgPHJlY3Qgd2lkdGg9IjcyMCIgaGVpZ2h0PSIzNTYiIGZpbGw9IiNmYWZiZmMiIHJ4PSI4Ii8+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjcyMCIgaGVpZ2h0PSIzOCIgZmlsbD0idXJsKCNoZWFkZXIpIiByeD0iOCIvPgogIDxyZWN0IHg9IjAiIHk9IjMwIiB3aWR0aD0iNzIwIiBoZWlnaHQ9IjgiIGZpbGw9InVybCgjaGVhZGVyKSIvPgogIDx0ZXh0IHg9IjM2MCIgeT0iMjUiIGZpbGw9IiNmZmYiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSI3MDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPkwzOiB0b29sUmVzdWx0QnVkZ2V0IOKAlCDlpKfnu5PmnpzokL3nm5g8L3RleHQ+CgogIDwhLS0g55eb54K5IC0tPgogIDxyZWN0IHg9IjIwIiB5PSI1NCIgd2lkdGg9IjY4MCIgaGVpZ2h0PSI0MiIgcng9IjYiIGZpbGw9IiNmZWYyZjIiIHN0cm9rZT0iI2ZjYTVhNSIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHRleHQgeD0iMzUiIHk9IjcyIiBmaWxsPSIjOTkxYjFiIiBmb250LXNpemU9IjExIiBmb250LXdlaWdodD0iNjAwIj7nl5vngrk8L3RleHQ+CiAgPHRleHQgeD0iNzUiIHk9IjcyIiBmaWxsPSIjOTkxYjFiIiBmb250LXNpemU9IjExIj7mqKHlnovkuIDmrKHor7vkuoYgMzAg5Liq5paH5Lu277yM5Y2V6L2uIHRvb2xfcmVzdWx0IOWKoOi1t+adpSA1MDBLQu+8jOebtOaOpeaKiuS4iuS4i+aWh+eql+WPo+aJk+a7oTwvdGV4dD4KCiAgPCEtLSBCZWZvcmUgLS0+CiAgPHRleHQgeD0iMTU1IiB5PSIxMTgiIGZpbGw9IiM2NDc0OGIiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI2MDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuWOi+e8qeWJjTwvdGV4dD4KICA8cmVjdCB4PSIyMCIgeT0iMTI4IiB3aWR0aD0iMjcwIiBoZWlnaHQ9IjgyIiByeD0iNiIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjOTRhM2I4IiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSIzNSIgeT0iMTQ4IiBmaWxsPSIjNDc1NTY5IiBmb250LXNpemU9IjEwIiBmb250LWZhbWlseT0ibW9ub3NwYWNlIj50b29sX3Jlc3VsdDogKDc4S0IpICAuLi48L3RleHQ+CiAgPHRleHQgeD0iMzUiIHk9IjE2NCIgZmlsbD0iIzQ3NTU2OSIgZm9udC1zaXplPSIxMCIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSI+dG9vbF9yZXN1bHQ6ICgxNDJLQikgLi4uPC90ZXh0PgogIDx0ZXh0IHg9IjM1IiB5PSIxODAiIGZpbGw9IiM0NzU1NjkiIGZvbnQtc2l6ZT0iMTAiIGZvbnQtZmFtaWx5PSJtb25vc3BhY2UiPnRvb2xfcmVzdWx0OiAoMjkwS0IpIC4uLjwvdGV4dD4KICA8dGV4dCB4PSIxNTUiIHk9IjIwMiIgZmlsbD0iI2VmNDQ0NCIgZm9udC1zaXplPSI5IiBmb250LXdlaWdodD0iNjAwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj7lkIjorqEgNTEwS0Ig4oaSIOi2hemihOeulzwvdGV4dD4KCiAgPCEtLSBBcnJvdyAtLT4KICA8bGluZSB4MT0iMjk1IiB5MT0iMTYzIiB4Mj0iMzYwIiB5Mj0iMTYzIiBzdHJva2U9IiMxNmEzNGEiIHN0cm9rZS13aWR0aD0iMiIgbWFya2VyLWVuZD0idXJsKCNhcnJvdykiLz4KCiAgPCEtLSBBZnRlciAtLT4KICA8dGV4dCB4PSI0ODUiIHk9IjExOCIgZmlsbD0iIzE2YTM0YSIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjYwMCIgdGV4dC1hbmNob3I9Im1pZGRsZSI+5Y6L57yp5ZCOPC90ZXh0PgogIDxyZWN0IHg9IjM2NSIgeT0iMTI4IiB3aWR0aD0iMzM1IiBoZWlnaHQ9IjgyIiByeD0iNiIgZmlsbD0iI2YwZmRmNCIgc3Ryb2tlPSIjMTZhMzRhIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSIzODAiIHk9IjE0OCIgZmlsbD0iIzE2NjUzNCIgZm9udC1zaXplPSIxMCIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSI+dG9vbF9yZXN1bHQ6ICZsdDtwZXJzaXN0ZWQtb3V0cHV0Jmd0OzwvdGV4dD4KICA8dGV4dCB4PSIzOTUiIHk9IjE2NCIgZmlsbD0iIzE2NjUzNCIgZm9udC1zaXplPSI5Ij5GdWxsIG91dHB1dDogLnRhc2tfb3V0cHV0cy90MS50eHQ8L3RleHQ+CiAgPHRleHQgeD0iMzk1IiB5PSIxNzgiIGZpbGw9IiMxNjY1MzQiIGZvbnQtc2l6ZT0iOSI+UHJldmlldzogKOWJjSAyMDAwIOWtl+espikgLi4uPC90ZXh0PgogIDx0ZXh0IHg9IjUzMiIgeT0iMjAyIiBmaWxsPSIjMTZhMzRhIiBmb250LXNpemU9IjkiIGZvbnQtd2VpZ2h0PSI2MDAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuWQiOiuoSAxOEtCIOKGkiDmraPluLg8L3RleHQ+CgogIDwhLS0g5Y6f55CG6K+05piOIC0tPgogIDxyZWN0IHg9IjIwIiB5PSIyMTQiIHdpZHRoPSI2ODAiIGhlaWdodD0iNjQiIHJ4PSI2IiBmaWxsPSIjZjhmYWZjIiBzdHJva2U9IiNjYmQ1ZTEiIHN0cm9rZS13aWR0aD0iMSIvPgogIDx0ZXh0IHg9IjM1IiB5PSIyMzQiIGZpbGw9IiMxZTNhNWYiIGZvbnQtc2l6ZT0iMTEiIGZvbnQtd2VpZ2h0PSI2MDAiPuaAjuS5iOWBmjwvdGV4dD4KICA8dGV4dCB4PSI4NSIgeT0iMjM0IiBmaWxsPSIjNDc1NTY5IiBmb250LXNpemU9IjEwIj4xLiDnu5/orqHmnIDlkI7kuIDova7miYDmnIkgdG9vbF9yZXN1bHQg55qE5oC75aSn5bCPPC90ZXh0PgogIDx0ZXh0IHg9Ijg1IiB5PSIyNTAiIGZpbGw9IiM0NzU1NjkiIGZvbnQtc2l6ZT0iMTAiPjIuIOi2hei/hyAyMDBLQiDihpIg5oyJ5aSn5bCP5o6S5bqP77yM5LuO5pyA5aSn55qE5byA5aeL6JC955uY5YiwIC50YXNrX291dHB1dHMvdG9vbC1yZXN1bHRzLzwvdGV4dD4KICA8dGV4dCB4PSI4NSIgeT0iMjY2IiBmaWxsPSIjNDc1NTY5IiBmb250LXNpemU9IjEwIj4zLiDkuIrkuIvmlofph4zlj6rnlZkgJmx0O3BlcnNpc3RlZC1vdXRwdXQmZ3Q7IOagh+iusCArIOWJjSAyMDAwIOWtl+espumihOiniDwvdGV4dD4KCiAgPCEtLSDlj5jljJbmkZjopoEgLS0+CiAgPHJlY3QgeD0iMjAiIHk9IjI5MCIgd2lkdGg9IjY4MCIgaGVpZ2h0PSIzNiIgcng9IjYiIGZpbGw9IiNmMGZkZjQiIHN0cm9rZT0iIzE2YTM0YSIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHRleHQgeD0iMzUiIHk9IjMxMiIgZmlsbD0iIzE2NjUzNCIgZm9udC1zaXplPSIxMSI+57uT5p6c77ya5L+h5oGv5rKh5Lii77yI56OB55uY5pyJ5a6M5pW05pWw5o2u77yJ77yM5LiK5LiL5paH5LuOIDUxMEtCIOmZjeWIsCB+MThLQu+8jDAg5qyhIEFQSSDosIPnlKg8L3RleHQ+Cjwvc3ZnPgo="/>)</p>
+<p>模型一次读了 5 个大文件，单条 user 消息里所有 <code>tool_result</code> 加起来 500KB。</p>
+<p>统计最后一条 user 消息里所有 <code>tool_result</code> 的总大小。超过 200KB → 按大小排序，从最大的开始落盘到 <code>.task_outputs/tool-results/</code>，上下文里只留 <code>&lt;persisted-output&gt;</code> 标记 + 前 2000 字符预览。模型看到标记后知道完整内容在磁盘上，需要时可以重新读。</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> tool_result_budget</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">messages</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> max_bytes</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)">200_000</span><span style="color:var(--shiki-foreground)">):</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    last </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> messages</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-token-keyword)">-</span><span style="color:var(--shiki-token-constant)">1</span><span style="color:var(--shiki-token-punctuation)">]</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    blocks </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> [(i</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)"> b) </span><span style="color:var(--shiki-token-keyword)">for</span><span style="color:var(--shiki-foreground)"> i</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)"> b </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-token-function)"> enumerate</span><span style="color:var(--shiki-token-punctuation)">(last[</span><span style="color:var(--shiki-token-string-expression)">&quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">])</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">              if</span><span style="color:var(--shiki-foreground)"> b</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">get</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot;type&quot;</span><span style="color:var(--shiki-token-punctuation)">)</span><span style="color:var(--shiki-token-keyword)"> ==</span><span style="color:var(--shiki-token-string-expression)"> &quot;tool_result&quot;</span><span style="color:var(--shiki-foreground)">]</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    total </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> sum</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-function)">len</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-constant)">str</span><span style="color:var(--shiki-token-punctuation)">(b.</span><span style="color:var(--shiki-token-function)">get</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">, </span><span style="color:var(--shiki-token-string-expression)">&quot;&quot;</span><span style="color:var(--shiki-token-punctuation)">))) </span><span style="color:var(--shiki-token-keyword)">for</span><span style="color:var(--shiki-token-punctuation)"> _, b </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-token-punctuation)"> blocks)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-foreground)"> total </span><span style="color:var(--shiki-token-keyword)">&lt;=</span><span style="color:var(--shiki-foreground)"> max_bytes</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        return</span><span style="color:var(--shiki-foreground)"> messages</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    ranked </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> sorted</span><span style="color:var(--shiki-token-punctuation)">(blocks, key</span><span style="color:var(--shiki-token-keyword)">=lambda</span><span style="color:var(--shiki-token-parameter)"> p</span><span style="color:var(--shiki-token-punctuation)">: </span><span style="color:var(--shiki-token-function)">len</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-constant)">str</span><span style="color:var(--shiki-token-punctuation)">(p[</span><span style="color:var(--shiki-token-constant)">1</span><span style="color:var(--shiki-token-punctuation)">].</span><span style="color:var(--shiki-token-function)">get</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">, </span><span style="color:var(--shiki-token-string-expression)">&quot;&quot;</span><span style="color:var(--shiki-token-punctuation)">))), reverse</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)">True</span><span style="color:var(--shiki-token-punctuation)">)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    for</span><span style="color:var(--shiki-foreground)"> idx</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)"> block </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-foreground)"> ranked</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        if</span><span style="color:var(--shiki-foreground)"> total </span><span style="color:var(--shiki-token-keyword)">&lt;=</span><span style="color:var(--shiki-foreground)"> max_bytes</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            break</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        block</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-token-string-expression)">&quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-token-keyword)"> =</span><span style="color:var(--shiki-token-function)"> persist_large_output</span><span style="color:var(--shiki-token-punctuation)">(block[</span><span style="color:var(--shiki-token-string-expression)">&quot;tool_use_id&quot;</span><span style="color:var(--shiki-token-punctuation)">], </span><span style="color:var(--shiki-token-constant)">str</span><span style="color:var(--shiki-token-punctuation)">(block[</span><span style="color:var(--shiki-token-string-expression)">&quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">]))</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        total </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> recalculate_total</span><span style="color:var(--shiki-token-punctuation)">(blocks)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-foreground)"> messages</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>前三层都是纯文本/结构操作，0 API 调用，但也无法&quot;理解&quot;对话内容。上下文可能仍然太大。→ L4。</p>
+<h3 class="rp-toc-include" id="l4-compact_history--llm-全量摘要"><a href="#l4-compact_history--llm-全量摘要" class="rp-header-anchor rp-link" aria-hidden="true">#</a>L4: compact_history — LLM 全量摘要</h3>
+<p><img alt="LLM 全量摘要" src="/static/svg/auto-compact.6f02681f94.svg"/>)</p>
+<p>前三层全跑完了，但在超大项目中连续工作 30 分钟后，token 仍然超过阈值。</p>
+<p>三步流程：</p>
+<ol>
+<li><strong>保存 transcript</strong>：完整对话写入 <code>.transcripts/</code>，JSONL 格式。transcript 保留了可恢复记录，但模型的活跃上下文里只剩摘要。对模型当下推理来说，细节已经不在上下文中了。教学代码没有提供 transcript 检索工具。</li>
+<li><strong>LLM 生成摘要</strong>：把对话历史发给 LLM，要求保留当前目标、重要发现、已改文件、剩余工作、用户约束等关键信息。</li>
+<li><strong>替换消息列表</strong>：所有旧消息被替换为一条摘要。教学版只保留摘要；真实 Claude Code 会在 compact 后重新附加部分最近文件、计划、agent/skill/tool 等上下文。</li>
+</ol>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> compact_history</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">messages</span><span style="color:var(--shiki-foreground)">):</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    transcript_path </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> write_transcript</span><span style="color:var(--shiki-token-punctuation)">(messages)</span><span style="color:var(--shiki-token-comment)">  # 先保存完整对话</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    summary </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> summarize_history</span><span style="color:var(--shiki-token-punctuation)">(messages)</span><span style="color:var(--shiki-token-comment)">          # LLM 生成摘要</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-foreground)"> [</span><span style="color:var(--shiki-token-punctuation)">{</span><span style="color:var(--shiki-token-string-expression)">&quot;role&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;user&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">             &quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-keyword)"> f</span><span style="color:var(--shiki-token-string-expression)">&quot;[Compacted]</span><span style="color:var(--shiki-foreground)">\n\n</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">summary</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&quot;</span><span style="color:var(--shiki-token-punctuation)">}</span><span style="color:var(--shiki-foreground)">]</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p><strong>熔断器</strong>：连续失败 3 次后停止重试，防止死循环浪费 API 调用。</p>
+<h3 class="rp-toc-include" id="应急-reactive_compact"><a href="#应急-reactive_compact" class="rp-header-anchor rp-link" aria-hidden="true">#</a>应急: reactive_compact</h3>
+<p>有时候 API 还是返回 <code>prompt_too_long</code>（413），上下文增长速度快于压缩触发速度时。</p>
+<p>这时触发 <strong>reactive_compact</strong>：比 compact_history 更激进，从尾部回退，以字节级精度裁剪到 API 可接受的大小，只保留最后 5 条消息 + 摘要。</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> reactive_compact</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">messages</span><span style="color:var(--shiki-foreground)">):</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    transcript </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> write_transcript</span><span style="color:var(--shiki-token-punctuation)">(messages)</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    summary </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> summarize_history</span><span style="color:var(--shiki-token-punctuation)">(messages)</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    tail </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> messages</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-token-keyword)">-</span><span style="color:var(--shiki-token-constant)">5</span><span style="color:var(--shiki-token-punctuation)">:]</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-foreground)"> [</span><span style="color:var(--shiki-token-punctuation)">{</span><span style="color:var(--shiki-token-string-expression)">&quot;role&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;user&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">             &quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-keyword)"> f</span><span style="color:var(--shiki-token-string-expression)">&quot;[Reactive compact]</span><span style="color:var(--shiki-foreground)">\n\n</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">summary</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&quot;</span><span style="color:var(--shiki-token-punctuation)">},</span><span style="color:var(--shiki-token-keyword)"> *</span><span style="color:var(--shiki-foreground)">tail]</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>reactive compact 有重试上限（默认 1 次）。再失败就抛出异常，不无限循环。完整的错误恢复逻辑留给 s11。</p>
+<h3 class="rp-toc-include" id="合起来跑"><a href="#合起来跑" class="rp-header-anchor rp-link" aria-hidden="true">#</a>合起来跑</h3>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> agent_loop</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">messages</span><span style="color:var(--shiki-foreground)">):</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    reactive_retries </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)"> 0</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    while</span><span style="color:var(--shiki-token-constant)"> True</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">        # 三个预处理器（0 API 调用）</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">        # 顺序：budget 先跑，确保大内容落盘后再做占位和裁剪</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        messages</span><span style="color:var(--shiki-token-punctuation)">[:]</span><span style="color:var(--shiki-token-keyword)"> =</span><span style="color:var(--shiki-token-function)"> tool_result_budget</span><span style="color:var(--shiki-token-punctuation)">(messages)</span><span style="color:var(--shiki-token-comment)">    # L3: 大结果落盘</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        messages</span><span style="color:var(--shiki-token-punctuation)">[:]</span><span style="color:var(--shiki-token-keyword)"> =</span><span style="color:var(--shiki-token-function)"> snip_compact</span><span style="color:var(--shiki-token-punctuation)">(messages)</span><span style="color:var(--shiki-token-comment)">          # L1: 裁中间</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        messages</span><span style="color:var(--shiki-token-punctuation)">[:]</span><span style="color:var(--shiki-token-keyword)"> =</span><span style="color:var(--shiki-token-function)"> micro_compact</span><span style="color:var(--shiki-token-punctuation)">(messages)</span><span style="color:var(--shiki-token-comment)">         # L2: 旧结果占位</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">        # 还不够？LLM 摘要（1 API 调用）</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        if</span><span style="color:var(--shiki-token-function)"> estimate_token_count</span><span style="color:var(--shiki-token-punctuation)">(messages)</span><span style="color:var(--shiki-token-keyword)"> &gt;</span><span style="color:var(--shiki-foreground)"> THRESHOLD</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            messages</span><span style="color:var(--shiki-token-punctuation)">[:]</span><span style="color:var(--shiki-token-keyword)"> =</span><span style="color:var(--shiki-token-function)"> compact_history</span><span style="color:var(--shiki-token-punctuation)">(messages)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        try</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            response </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> client</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">messages</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">create</span><span style="color:var(--shiki-token-punctuation)">(...)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        except</span><span style="color:var(--shiki-foreground)"> PromptTooLongError</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            if</span><span style="color:var(--shiki-foreground)"> reactive_retries </span><span style="color:var(--shiki-token-keyword)">&lt;</span><span style="color:var(--shiki-foreground)"> MAX_REACTIVE_RETRIES</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">                messages</span><span style="color:var(--shiki-token-punctuation)">[:]</span><span style="color:var(--shiki-token-keyword)"> =</span><span style="color:var(--shiki-token-function)"> reactive_compact</span><span style="color:var(--shiki-token-punctuation)">(messages)</span><span style="color:var(--shiki-token-comment)">  # 应急</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">                reactive_retries </span><span style="color:var(--shiki-token-keyword)">+=</span><span style="color:var(--shiki-token-constant)"> 1</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">                continue</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            raise</span><span style="color:var(--shiki-token-comment)">  # 超过重试上限，抛出异常</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">        # ... 工具执行 ...</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">        # compact 工具：模型主动调用时触发 compact_history</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        if</span><span style="color:var(--shiki-foreground)"> block</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">name </span><span style="color:var(--shiki-token-keyword)">==</span><span style="color:var(--shiki-token-string-expression)"> &quot;compact&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            messages</span><span style="color:var(--shiki-token-punctuation)">[:]</span><span style="color:var(--shiki-token-keyword)"> =</span><span style="color:var(--shiki-token-function)"> compact_history</span><span style="color:var(--shiki-token-punctuation)">(messages)</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            results</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">append</span><span style="color:var(--shiki-token-punctuation)">({..., </span><span style="color:var(--shiki-token-string-expression)">&quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">: </span><span style="color:var(--shiki-token-string-expression)">&quot;[Compacted. History summarized.]&quot;</span><span style="color:var(--shiki-token-punctuation)">})</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            messages</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">append</span><span style="color:var(--shiki-token-punctuation)">({</span><span style="color:var(--shiki-token-string-expression)">&quot;role&quot;</span><span style="color:var(--shiki-token-punctuation)">: </span><span style="color:var(--shiki-token-string-expression)">&quot;user&quot;</span><span style="color:var(--shiki-token-punctuation)">, </span><span style="color:var(--shiki-token-string-expression)">&quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">: results})</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            break</span><span style="color:var(--shiki-token-comment)">  # 结束当前 turn，用压缩后的上下文开始新一轮</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p><strong>顺序不能换。</strong> L3（budget）在 L2（micro）前面，因为 micro 会把旧的大 tool_result 替换成一行占位符，budget 必须在那之前把完整内容落盘。这也是为什么 CC 源码把 <code>applyToolResultBudget</code> 放在最前面。</p>
+<hr/>
+<h2 class="rp-toc-include" id="相对-s07-的变更"><a href="#相对-s07-的变更" class="rp-header-anchor rp-link" aria-hidden="true">#</a>相对 s07 的变更</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>组件</th><th>之前 (s07)</th><th>之后 (s08)</th></tr></thead><tbody><tr><td>上下文管理</td><td>无（上下文无限膨胀）</td><td>四层压缩管线 + 应急</td></tr><tr><td>新函数</td><td>—</td><td>snip_compact, micro_compact, tool_result_budget, compact_history, reactive_compact</td></tr><tr><td>工具</td><td>bash, read, write, edit, glob, todo_write, task, load_skill (8)</td><td>8 + compact (9)</td></tr><tr><td>循环</td><td>LLM 调用 → 工具执行</td><td>每轮前跑三层预处理器 + 阈值触发 compact_history</td></tr><tr><td>设计原则</td><td>—</td><td>便宜的先跑，贵的后跑</td></tr></tbody></table></div>
+<hr/>
+<h2 class="rp-toc-include" id="试一下"><a href="#试一下" class="rp-header-anchor rp-link" aria-hidden="true">#</a>试一下</h2>
+<div class="rp-codeblock language-sh"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="sh"><code><span class="line"><span style="color:var(--shiki-token-function)">cd</span><span style="color:var(--shiki-token-string)"> learn-claude-code</span></span>
+<span class="line"><span style="color:var(--shiki-token-function)">python</span><span style="color:var(--shiki-token-string)"> s08_context_compact/code.py</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>试试这些 prompt：</p>
+<ol>
+<li><code>Read the file README.md, then read code.py, then read s01_agent_loop/README.md</code>（连续读多个文件，观察 L2 压缩旧结果）</li>
+<li><code>Read every file in s08_context_compact/</code>（一次性读大量内容，观察 L3 落盘）</li>
+<li>反复对话 20+ 轮，观察是否出现 <code>[auto compact]</code> 或 <code>[reactive compact]</code></li>
+</ol>
+<p>观察重点：每次工具执行后，旧 tool_result 是否被压缩？连续对话后 token 超阈值时，是否自动触发了摘要？</p>
+<hr/>
+<h2 class="rp-toc-include" id="接下来"><a href="#接下来" class="rp-header-anchor rp-link" aria-hidden="true">#</a>接下来</h2>
+<p>上下文压缩让 Agent 能跑很久不会崩。但每次压缩后，用户之前告诉它的偏好、约束也跟着丢了。能不能让 Agent 有选择地记住重要的事？</p>
+<p>s09 Memory → 三个子系统：选择记什么、提取关键信息、整理巩固。跨压缩、跨会话。</p>
+<details>
+<summary>深入 CC 源码</summary>
+<blockquote>
+<p>以下基于 CC 源码 <code>compact.ts</code>、<code>autoCompact.ts</code>、<code>microCompact.ts</code>、<code>query.ts</code> 的分析。</p>
+</blockquote>
+<h3 class="rp-toc-include" id="执行顺序对照"><a href="#执行顺序对照" class="rp-header-anchor rp-link" aria-hidden="true">#</a>执行顺序对照</h3>
+<p>教学版为了讲解方便按 L1/L2/L3/L4 编号，但实际执行顺序和编号不完全对应：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>维度</th><th>教学版</th><th>Claude Code</th></tr></thead><tbody><tr><td>执行顺序</td><td>budget → snip → micro → auto</td><td>budget → snip → micro → collapse → auto（<code>query.ts:379-468</code>）</td></tr><tr><td>snip_compact</td><td>保留头 3 + 尾 47</td><td>CC 仅主线程启用；实现不在开源仓库中（<code>HISTORY_SNIP</code> feature gate），但接口可见：<code>snipCompactIfNeeded(messages)</code> → <code>{ messages, tokensFreed, boundaryMessage? }</code>，还暴露了 <code>SnipTool</code> 工具让模型主动调用。教学版的 3/47 是简化参数</td></tr><tr><td>micro_compact</td><td>文本占位符替换</td><td>两条路径：time-based 直接清内容，cached 走 API <code>cache_edits</code>（legacy path 已移除）</td></tr><tr><td>micro_compact 白名单</td><td>按位置（最近 3 条）</td><td>time-based 按时间阈值触发；cached 按计数触发（<code>microCompact.ts</code>）</td></tr><tr><td>tool_result_budget</td><td>200KB 字符</td><td>200,000 字符（<code>toolLimits.ts:49</code>）</td></tr><tr><td>compact_history 阈值</td><td>字符数估算</td><td>精确 token：<code>contextWindow - maxOutputTokens - 13_000</code></td></tr><tr><td>摘要要求</td><td>5 类信息</td><td>9 个部分 + <code>&lt;analysis&gt;</code>/<code>&lt;summary&gt;</code> 双标签</td></tr><tr><td>压缩 prompt</td><td>简单 prompt</td><td>首尾双重防呆禁止调工具</td></tr><tr><td>PTL retry</td><td>有（简化）</td><td><code>truncateHeadForPTLRetry()</code> 按消息组回退（<code>compact.ts:243-290</code>）</td></tr><tr><td>后压缩恢复</td><td>无（教学版只保留摘要）</td><td>自动重新读取最近文件、计划、agent/skill/tool 等</td></tr><tr><td>熔断器</td><td>3 次</td><td>3 次（<code>autoCompact.ts:70</code>）</td></tr><tr><td>reactive 重试</td><td>1 次</td><td>CC 有更精细的分级重试</td></tr></tbody></table></div>
+<h3 class="rp-toc-include" id="执行顺序详解"><a href="#执行顺序详解" class="rp-header-anchor rp-link" aria-hidden="true">#</a>执行顺序详解</h3>
+<p>CC 源码 <code>query.ts</code> 中的真实顺序：</p>
+<ol>
+<li><code>applyToolResultBudget</code>（L379）：先处理大结果，确保完整内容落盘</li>
+<li><code>snipCompact</code>（L403）：裁中间消息</li>
+<li><code>microcompact</code>（L414）：旧结果占位</li>
+<li><code>contextCollapse</code>（L441）：独立的上下文管理系统（教学版无）</li>
+<li><code>autoCompact</code>（L454）：LLM 全量摘要</li>
+</ol>
+<p>教学版的 budget → snip → micro 顺序与此一致。教学版没有 contextCollapse 机制。</p>
+<h3 class="rp-toc-include" id="完整常量参考"><a href="#完整常量参考" class="rp-header-anchor rp-link" aria-hidden="true">#</a>完整常量参考</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>常量</th><th>值</th><th>源文件</th></tr></thead><tbody><tr><td><code>AUTOCOMPACT_BUFFER_TOKENS</code></td><td>13,000</td><td><code>autoCompact.ts:62</code></td></tr><tr><td><code>MAX_CONSECUTIVE_AUTOCOMPACT_FAILURES</code></td><td>3</td><td><code>autoCompact.ts:70</code></td></tr><tr><td><code>MAX_OUTPUT_TOKENS_FOR_SUMMARY</code></td><td>20,000</td><td><code>autoCompact.ts:30</code></td></tr><tr><td><code>POST_COMPACT_TOKEN_BUDGET</code></td><td>50,000</td><td><code>compact.ts:123</code></td></tr><tr><td><code>POST_COMPACT_MAX_FILES_TO_RESTORE</code></td><td>5</td><td><code>compact.ts:122</code></td></tr><tr><td><code>POST_COMPACT_MAX_TOKENS_PER_FILE</code></td><td>5,000</td><td><code>compact.ts:124</code></td></tr><tr><td>时间 micro_compact 间隔</td><td>60 分钟</td><td><code>timeBasedMCConfig.ts</code></td></tr><tr><td><code>MAX_COMPACT_STREAMING_RETRIES</code></td><td>2</td><td><code>compact.ts:131</code></td></tr></tbody></table></div>
+<h3 class="rp-toc-include" id="contextcollapse-和-sessionmemorycompact"><a href="#contextcollapse-和-sessionmemorycompact" class="rp-header-anchor rp-link" aria-hidden="true">#</a>contextCollapse 和 sessionMemoryCompact</h3>
+<p>CC 源码中还有两个机制本教学版没有展开：</p>
+<ul>
+<li><strong>contextCollapse</strong>：独立的上下文管理系统，启用时抑制 proactive autocompact（<code>autoCompact.ts:215-222</code>），由 collapse 的 commit/blocking 流程接管上下文管理。但 manual <code>/compact</code> 和 reactive fallback 仍是独立路径，不受 contextCollapse 影响。</li>
+<li><strong>sessionMemoryCompact</strong>：compact_history 之前，CC 会先尝试用已有的 session memory（s09 会讲到）做轻量摘要，不调 LLM。这个机制等学完 s09 之后回头看会更清楚。</li>
+</ul>
+<h3 class="rp-toc-include" id="压缩-prompt-长什么样"><a href="#压缩-prompt-长什么样" class="rp-header-anchor rp-link" aria-hidden="true">#</a>压缩 prompt 长什么样？</h3>
+<p>CC 的压缩 prompt 有两个硬性要求：</p>
+<ol>
+<li><strong>绝对禁止调用工具</strong>：开头就是 <code>CRITICAL: Respond with TEXT ONLY. Do NOT call any tools.</code>，末尾还会再 REMINDER 一次</li>
+<li><strong>先分析再总结</strong>：模型需要先在 <code>&lt;analysis&gt;</code> 标签里理清思路，然后在 <code>&lt;summary&gt;</code> 标签里输出正式摘要。analysis 在格式化时被剥离</li>
+</ol>
+<h3 class="rp-toc-include" id="教学版的简化是刻意的"><a href="#教学版的简化是刻意的" class="rp-header-anchor rp-link" aria-hidden="true">#</a>教学版的简化是刻意的</h3>
+<ul>
+<li>micro_compact 用文本占位 → 我们没有 API 层的 <code>cache_edits</code> 权限</li>
+<li>token 用字符数估算 → 精确 tokenizer 不在教学范围内</li>
+<li>后压缩恢复省略 → 教学版只保留摘要，不自动重新附加文件</li>
+<li>两个辅助机制不展开 → 属于 10% 的细节</li>
+</ul>
+<p>核心设计思想，便宜的先跑贵的后跑，完整保留。</p>
+</details>
+<!--/$--></div><footer class="rp-doc-footer"><div class="rp-doc-footer__edit"></div><div class="rp-doc-footer__divider"></div><div class="rp-prev-next-page"><a href="/learn-claude/s07_skill_loading/index.html" class="rp-prev-next-page__item rp-prev-next-page__prev rp-link"><span class="rp-prev-next-page__item__desc">上一页</span><span class="rp-prev-next-page__item__title"><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon rp-prev-next-page__rotate_180"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg><span>s07_skill_loading</span></span></a><a href="/learn-claude/s09_memory/index.html" class="rp-prev-next-page__item rp-prev-next-page__next rp-link"><span class="rp-prev-next-page__item__desc">下一页</span><span class="rp-prev-next-page__item__title"><span>s09_memory</span><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></span></a></div></footer></main></div><aside class="rp-doc-layout__outline rp-scrollbar"><div class="rp-outline"><div class="rp-outline__title">目录<svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg></div><nav class="rp-outline__toc rp-scrollbar"><a href="#问题" class="rp-toc-item rp-link" title="问题" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">问题</span></a><a href="#解决方案" class="rp-toc-item rp-link" title="解决方案" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">解决方案</span></a><a href="#工作原理" class="rp-toc-item rp-link" title="工作原理" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">工作原理</span></a><a href="#l1-snip_compact--裁掉无关的旧对话" class="rp-toc-item rp-link" title="L1: snip_compact — 裁掉无关的旧对话" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">L1: snip_compact — 裁掉无关的旧对话</span></a><a href="#l2-micro_compact--旧工具结果占位" class="rp-toc-item rp-link" title="L2: micro_compact — 旧工具结果占位" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">L2: micro_compact — 旧工具结果占位</span></a><a href="#l3-tool_result_budget--大结果落盘" class="rp-toc-item rp-link" title="L3: tool_result_budget — 大结果落盘" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">L3: tool_result_budget — 大结果落盘</span></a><a href="#l4-compact_history--llm-全量摘要" class="rp-toc-item rp-link" title="L4: compact_history — LLM 全量摘要" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">L4: compact_history — LLM 全量摘要</span></a><a href="#应急-reactive_compact" class="rp-toc-item rp-link" title="应急: reactive_compact" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">应急: reactive_compact</span></a><a href="#合起来跑" class="rp-toc-item rp-link" title="合起来跑" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">合起来跑</span></a><a href="#相对-s07-的变更" class="rp-toc-item rp-link" title="相对 s07 的变更" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">相对 s07 的变更</span></a><a href="#试一下" class="rp-toc-item rp-link" title="试一下" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">试一下</span></a><a href="#接下来" class="rp-toc-item rp-link" title="接下来" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">接下来</span></a><a href="#执行顺序对照" class="rp-toc-item rp-link" title="执行顺序对照" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">执行顺序对照</span></a><a href="#执行顺序详解" class="rp-toc-item rp-link" title="执行顺序详解" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">执行顺序详解</span></a><a href="#完整常量参考" class="rp-toc-item rp-link" title="完整常量参考" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">完整常量参考</span></a><a href="#contextcollapse-和-sessionmemorycompact" class="rp-toc-item rp-link" title="contextCollapse 和 sessionMemoryCompact" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">contextCollapse 和 sessionMemoryCompact</span></a><a href="#压缩-prompt-长什么样" class="rp-toc-item rp-link" title="压缩 prompt 长什么样？" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">压缩 prompt 长什么样？</span></a><a href="#教学版的简化是刻意的" class="rp-toc-item rp-link" title="教学版的简化是刻意的" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">教学版的简化是刻意的</span></a></nav><div class="rp-outline__divider"></div><div class="rp-outline__bottom"></div></div></aside></div></div>
+    <div id="__rspress_modal_container"></div>
+  </body>
+</html>

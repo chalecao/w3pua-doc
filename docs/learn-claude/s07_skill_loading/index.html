@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="zh">
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>s07: Skill Loading — 用到的时候才加载</title>
+<script>{;const saved = localStorage.getItem('rspress-theme-appearance');const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;const isDark = !saved || saved === 'auto' ? preferDark : saved === 'dark';document.documentElement.classList.toggle('dark', isDark);document.documentElement.classList.toggle('rp-dark', isDark);document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';}</script>
+<script>window.onload=function(){document.title='「万维飘」w3pua.com';setTimeout(function(){var imgs=document.querySelectorAll('img.rp-home-hero__image-img');imgs.forEach(function(img){var num=Math.floor(Math.random()*19)+1;img.src='/logo/'+num+'.svg';});},100);};</script>
+<script src="/katex.min.js"></script>
+<script>
+    (function() {
+      function renderMathInElement(container) {
+        if (!container) return;
+        
+        var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+        var textNodes = [];
+        while(walker.nextNode()) textNodes.push(walker.currentNode);
+        
+        textNodes.forEach(function(textNode) {
+          var text = textNode.textContent;
+          if (!text || (!text.includes('$$') && !text.includes('$'))) return;
+          
+          var parent = textNode.parentNode;
+          if (!parent) return;
+          if (parent.tagName === 'PRE' || parent.tagName === 'CODE' || parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE') return;
+          
+          var newHtml = text.replace(/\$\$([\s\S]*?)\$\$/g, function(match, formula) {
+            try {
+              return '<div class="math math-display">' + katex.renderToString(formula.trim(), {displayMode: true, throwOnError: false}) + '</div>';
+            } catch(e) { return match; }
+          }).replace(/\$([^\$\n]+?)\$/g, function(match, formula) {
+            try {
+              return katex.renderToString(formula.trim(), {displayMode: false, throwOnError: false});
+            } catch(e) { return match; }
+          });
+          
+          if (newHtml !== text) {
+            var span = document.createElement('span');
+            span.innerHTML = newHtml;
+            parent.replaceChild(span, textNode);
+          }
+        });
+      }
+
+      function onRouteChange() {
+        setTimeout(function() {
+          var container = document.getElementById('__rspress_root');
+          if (container) {
+            renderMathInElement(container);
+          }
+        }, 100);
+      }
+
+      if (typeof window !== 'undefined') {
+        if (window.__RSPRESS__) {
+          window.__RSPRESS__.addEventListener('routeChangeComplete', onRouteChange);
+        } else {
+          window.addEventListener('popstate', onRouteChange);
+          var originalPushState = history.pushState;
+          history.pushState = function() {
+            originalPushState.apply(this, arguments);
+            onRouteChange();
+          };
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+          onRouteChange();
+        });
+        
+        setTimeout(onRouteChange, 500);
+        setTimeout(onRouteChange, 1000);
+        setTimeout(onRouteChange, 2000);
+      }
+    })();
+  </script>
+<link href="/static/css/styles.e6bedadc36.css" rel="stylesheet">
+<link rel="stylesheet" href="/katex.min.css">
+<script defer src="/static/js/styles.03ebfe3fca.js"></script>
+<script defer src="/static/js/lib-react.06aa503779.js"></script>
+<script defer src="/static/js/lib-router.a7a83a8399.js"></script>
+<script defer src="/static/js/6665.052760f3df.js"></script>
+<script defer src="/static/js/index.2a1d1b00fc.js"></script>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Rspress v2.0.11">
+<link rel="icon" href="/logo.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="s07: Skill Loading — 用到的时候才加载">
+<meta name="description" content="s01 → s02 → s03 → s04 → s05 → s06 → s07 → <a href=&quot;s08](./s08_context_compact/&quot;>s08</a> → s09 → ... → s20 &quot;用到时再加载, 别全塞 prompt 里&quot; — 通过 tool_result 注入, 不塞 system prompt。Harness 层: 知识 — 按需加载, 不堆满上下文。">
+<meta property="og:description" content="s01 → s02 → s03 → s04 → s05 → s06 → s07 → <a href=&quot;s08](./s08_context_compact/&quot;>s08</a> → s09 → ... → s20 &quot;用到时再加载, 别全塞 prompt 里&quot; — 通过 tool_result 注入, 不塞 system prompt。Harness 层: 知识 — 按需加载, 不堆满上下文。"></head>
+
+  <body>
+    <div id="__rspress_root"><link rel="preload" as="image" href="/logo.png"/><link rel="preload" as="image" href="/static/svg/skill-overview.7260694478.svg"/><header class="rp-nav"><div class="rp-nav__left"><div class="rp-nav__title"><a href="/" class="rp-nav__title__link rp-link"><div class="rp-nav__title__logo"><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--light"/><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--dark"/></div></a></div></div><div class="rp-nav__right"><button class="rp-search-button"><div class="rp-search-button__content"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21" class="rp-search-button__icon"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg><span class="rp-search-button__word">搜索</span></div><div class="rp-search-button__hotkey" style="opacity:0"><span></span><span>K</span></div></button><div class="rp-search-button--mobile"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg></div><ul class="rp-nav-menu rp-nav-menu--right"><li class="rp-nav-menu__item"><a href="/book/preface.html" class="rp-nav-menu__item__container rp-link">Agent指南</a></li><li class="rp-nav-menu__item"><a href="/harness/1-four-frameworks-comparison.html" class="rp-nav-menu__item__container rp-link">Harness手册</a></li><li class="rp-nav-menu__item rp-nav-menu__item--active"><a href="/learn-claude/s01_agent_loop/index.html" class="rp-nav-menu__item__container rp-link">学习Claude</a></li></ul><div class="rp-nav__others"><div class="rp-nav-menu__divider"></div><li class="rp-nav-menu__item"><div class="rp-nav-menu__item__container">简体中文<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-menu__item__icon"><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--center"><li class="rp-hover-group__item" style="padding-left:8px" data-depth="0"><a href="/en/learn-claude/s07_skill_loading/index.html" class="rp-hover-group__item__link rp-link" aria-label="English" lang="en" hrefLang="en" rel="alternate">English</a></li><li class="rp-hover-group__item rp-hover-group__item--active" style="padding-left:8px" data-depth="0"><a href="/s07_skill_loading/index.html" class="rp-hover-group__item__link rp-link" aria-label="简体中文" lang="zh" hrefLang="zh" rel="alternate">简体中文</a></li></ul></li><div class="rp-switch-appearance"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" class="rp-switch-appearance__icon rp-switch-appearance__icon--sun"><path fill="currentColor" d="m7.001 15.848-1.226 1.226a.58.58 0 0 0 0 .818.58.58 0 0 0 .818 0l1.226-1.226a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0m-.352-8.735a.584.584 0 0 0 .825-.825L6.237 5.051a.584.584 0 0 0-.825.825zM5.011 11.07h-1.75a.584.584 0 0 0 0 1.167h1.75c.324 0 .584-.26.584-.583a.585.585 0 0 0-.584-.584m7.003-5.835c.324 0 .584-.26.584-.584V2.9a.58.58 0 0 0-.584-.584.58.58 0 0 0-.583.583V4.65c0 .323.262.584.583.584m5.616 1.621 1.226-1.225a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0l-1.226 1.225a.58.58 0 0 0 0 .818.576.576 0 0 0 .818 0m3.138 4.214h-1.75a.58.58 0 0 0-.584.584c0 .324.26.584.583.584h1.751a.584.584 0 1 0 0-1.167m-3.389 5.124a.584.584 0 0 0-.825.825l1.238 1.238a.584.584 0 0 0 .825-.826zm-5.365-9.795a5.256 5.256 0 0 0-5.257 5.258 5.256 5.256 0 0 0 5.257 5.257 5.256 5.256 0 0 0 5.257-5.257 5.256 5.256 0 0 0-5.257-5.258m0 11.675a.58.58 0 0 0-.583.583v1.751a.582.582 0 1 0 1.167 0v-1.75a.584.584 0 0 0-.584-.584"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" viewBox="0 0 19 19" class="rp-switch-appearance__icon rp-switch-appearance__icon--moon"><path fill="currentColor" d="M9.166 0a9.2 9.2 0 0 1 1.857.188.834.834 0 0 1 .042 1.623 4.47 4.47 0 1 0 5.457 5.457l.048-.135a.834.834 0 0 1 1.575.177q.186.902.188 1.856A9.168 9.168 0 1 1 9.166 0"></path></svg></div></div><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__sm"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg></button><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__md"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--right"><div class="rp-nav-menu__others-mobile__container"><div class="rp-nav-hamburger__md__hover-group"><div class="rp-nav-screen-appearance"><div class="rp-nav-screen-appearance__left">主题</div><div class="rp-nav-screen-appearance__right"></div></div><div class="rp-nav-screen-langs"><div class="rp-nav-screen-langs__left">语言</div><div class="rp-nav-screen-langs__right">简体中文<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-screen-langs__icon "><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div></div><div class="rp-nav-screen-langs-group" style="display:grid;grid-template-rows:0fr;transition:grid-template-rows 0.2s ease-out"><div class="rp-nav-screen-langs-group__inner"><a href="/en/learn-claude/s07_skill_loading/index.html" class="rp-nav-screen-langs-group__item rp-link" hrefLang="en" lang="en" rel="alternate">English</a><span class="rp-nav-screen-langs-group__item rp-nav-screen-langs-group__item--active" aria-current="page" aria-disabled="true">简体中文</span></div></div><div class="rp-nav-screen-divider"></div></div></div></ul></button></div></header><div class="rp-doc-layout__menu"><div class="rp-sidebar-menu"><button type="button" class="rp-sidebar-menu__left"><svg width="1em" height="1em" viewBox="0 0 32 32"><path fill="currentColor" d="M4 6h24v2H4zm0 18h24v2H4zm0-12h24v2H4zm0 6h24v2H4z"></path></svg><span>菜单</span></button><button type="button" class="rp-sidebar-menu__right"><span class="rp-sidebar-menu__right__text">目录</span><svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-sidebar-menu__right__icon" style="transform:rotate(0deg);transition:transform 0.2s ease-out"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></button></div></div><div class="rp-doc-layout__container"><aside class="rp-doc-layout__sidebar rp-scrollbar"><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s01_agent_loop</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s01_agent_loop/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s01_agent_loop</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s02_tool_use</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s02_tool_use/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s02_tool_use</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s03_permission</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s03_permission/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s03_permission</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s04_hooks</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s04_hooks/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s04_hooks</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s05_todo_write</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s05_todo_write/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s05_todo_write</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s06_subagent</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s06_subagent/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s06_subagent</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s07_skill_loading</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s07_skill_loading/index.html" class="rp-sidebar-item rp-sidebar-item--active rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s07_skill_loading</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s08_context_compact</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s08_context_compact/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s08_context_compact</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s09_memory</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s09_memory/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s09_memory</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s10_system_prompt</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s10_system_prompt/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s10_system_prompt</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s11_error_recovery</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s11_error_recovery/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s11_error_recovery</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s12_task_system</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s12_task_system/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s12_task_system</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s13_background_tasks</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s13_background_tasks/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s13_background_tasks</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s14_cron_scheduler</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s14_cron_scheduler/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s14_cron_scheduler</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s15_agent_teams</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s15_agent_teams/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s15_agent_teams</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s16_team_protocols</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s16_team_protocols/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s16_team_protocols</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s17_autonomous_agents</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s17_autonomous_agents/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s17_autonomous_agents</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s18_worktree_isolation</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s18_worktree_isolation/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s18_worktree_isolation</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s19_mcp_plugin</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s19_mcp_plugin/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s19_mcp_plugin</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s20_comprehensive</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s20_comprehensive/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s20_comprehensive</span></div><div class="rp-sidebar-item__right"></div></a></aside><div class="rp-doc-layout__doc"><main class="rp-doc-layout__doc-container"><div class="rp-doc rspress-doc"><!--$--><h1 class="rp-toc-include" id="s07-skill-loading--用到的时候才加载"><a href="#s07-skill-loading--用到的时候才加载" class="rp-header-anchor rp-link" aria-hidden="true">#</a>s07: Skill Loading — 用到的时候才加载<!-- --> </h1>
+<p>s01 → s02 → s03 → s04 → s05 → s06 → <code>s07</code> → <a href="s08](./s08_context_compact/" class="rp-link">s08</a> → s09 → ... → s20</p>
+<blockquote>
+<p><em>&quot;用到时再加载, 别全塞 prompt 里&quot;</em> — 通过 tool_result 注入, 不塞 system prompt。</p>
+<p><strong>Harness 层</strong>: 知识 — 按需加载, 不堆满上下文。</p>
+</blockquote>
+<hr/>
+<h2 class="rp-toc-include" id="问题"><a href="#问题" class="rp-header-anchor rp-link" aria-hidden="true">#</a>问题</h2>
+<p>你的项目有一套 React 组件规范、一份 SQL 风格指南、一份 API 设计文档。你希望 Agent 自动遵守这些规范。最直接的想法，全塞进 system prompt：</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-foreground)">SYSTEM </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> (</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    f</span><span style="color:var(--shiki-token-string-expression)">&quot;You are a coding agent. &quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    +</span><span style="color:var(--shiki-token-function)"> open</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot;docs/react-style.md&quot;</span><span style="color:var(--shiki-token-punctuation)">).</span><span style="color:var(--shiki-token-function)">read</span><span style="color:var(--shiki-token-punctuation)">()</span><span style="color:var(--shiki-token-comment)">       # 2000 行</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    +</span><span style="color:var(--shiki-token-function)"> open</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot;docs/sql-style.md&quot;</span><span style="color:var(--shiki-token-punctuation)">).</span><span style="color:var(--shiki-token-function)">read</span><span style="color:var(--shiki-token-punctuation)">()</span><span style="color:var(--shiki-token-comment)">         # 1500 行</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    +</span><span style="color:var(--shiki-token-function)"> open</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot;docs/api-design.md&quot;</span><span style="color:var(--shiki-token-punctuation)">).</span><span style="color:var(--shiki-token-function)">read</span><span style="color:var(--shiki-token-punctuation)">()</span><span style="color:var(--shiki-token-comment)">        # 3000 行</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">)</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>6500 行 system prompt。Agent 每次调用 LLM 都带着这些文档——不管是在改 CSS 颜色还是修 SQL 查询。99% 的内容和当前任务无关，白白消耗 token。</p>
+<hr/>
+<h2 class="rp-toc-include" id="解决方案"><a href="#解决方案" class="rp-header-anchor rp-link" aria-hidden="true">#</a>解决方案</h2>
+<p><img alt="Skill Overview" src="/static/svg/skill-overview.7260694478.svg"/>)</p>
+<p>保留上一章的最小 hook 结构、<code>todo_write</code> 和子 Agent，本章重点转向新增的 <code>load_skill</code> 工具。启动时把技能目录注入 SYSTEM prompt，运行时多注册一个工具加载完整内容，用到才花 token。</p>
+<p>两层设计：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>层</th><th>位置</th><th>时机</th><th>代价</th></tr></thead><tbody><tr><td>1. 目录</td><td>system prompt</td><td>启动时注入（harness 扫描 skills/）</td><td>~100 tokens/skill，每轮都带</td></tr><tr><td>2. 内容</td><td>tool_result</td><td>Agent 调用 load_skill 时</td><td>~2000 tokens/skill，按需</td></tr></tbody></table></div>
+<p>dispatch 机制不变，load_skill 通过 <code>TOOL_HANDLERS[block.name]</code> 分发。</p>
+<hr/>
+<h2 class="rp-toc-include" id="工作原理"><a href="#工作原理" class="rp-header-anchor rp-link" aria-hidden="true">#</a>工作原理</h2>
+<p><strong>skills/ 目录</strong>，每个技能一个子目录，包含 <code>SKILL.md</code> 文件：</p>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>skills/</span></span>
+<span class="line"><span>  agent-builder/SKILL.md</span></span>
+<span class="line"><span>  code-review/SKILL.md</span></span>
+<span class="line"><span>  mcp-builder/SKILL.md</span></span>
+<span class="line"><span>  pdf/SKILL.md</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p><strong>第一级：启动时注入目录</strong>：harness 启动时调用 <code>_scan_skills()</code> 扫描 skills/ 目录，解析每个 SKILL.md 的 YAML frontmatter（<code>name</code>、<code>description</code>），存入 <code>SKILL_REGISTRY</code> 字典。<code>list_skills()</code> 从注册表生成目录，注入 SYSTEM prompt。Agent 每轮都能看到&quot;我有哪些技能可用&quot;，不花额外 API 调用：</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-foreground)">SKILL_REGISTRY</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> dict</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-token-constant)">str</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-constant)"> dict</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-token-keyword)"> =</span><span style="color:var(--shiki-token-punctuation)"> {}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> _scan_skills</span><span style="color:var(--shiki-foreground)">():</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-token-keyword)"> not</span><span style="color:var(--shiki-foreground)"> SKILLS_DIR</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">exists</span><span style="color:var(--shiki-token-punctuation)">():</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        return</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    for</span><span style="color:var(--shiki-foreground)"> d </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-token-function)"> sorted</span><span style="color:var(--shiki-token-punctuation)">(SKILLS_DIR.</span><span style="color:var(--shiki-token-function)">iterdir</span><span style="color:var(--shiki-token-punctuation)">()):</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        if</span><span style="color:var(--shiki-token-keyword)"> not</span><span style="color:var(--shiki-foreground)"> d</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">is_dir</span><span style="color:var(--shiki-token-punctuation)">():</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            continue</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        manifest </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> d </span><span style="color:var(--shiki-token-keyword)">/</span><span style="color:var(--shiki-token-string-expression)"> &quot;SKILL.md&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        if</span><span style="color:var(--shiki-foreground)"> manifest</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">exists</span><span style="color:var(--shiki-token-punctuation)">():</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            raw </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> manifest</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">read_text</span><span style="color:var(--shiki-token-punctuation)">()</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            meta</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)"> body </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> _parse_frontmatter</span><span style="color:var(--shiki-token-punctuation)">(raw)</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            name </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> meta</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">get</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot;name&quot;</span><span style="color:var(--shiki-token-punctuation)">, d.name)</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            desc </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> meta</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">get</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot;description&quot;</span><span style="color:var(--shiki-token-punctuation)">, raw.</span><span style="color:var(--shiki-token-function)">split</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot;\n&quot;</span><span style="color:var(--shiki-token-punctuation)">)[</span><span style="color:var(--shiki-token-constant)">0</span><span style="color:var(--shiki-token-punctuation)">].</span><span style="color:var(--shiki-token-function)">lstrip</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot;#&quot;</span><span style="color:var(--shiki-token-punctuation)">).</span><span style="color:var(--shiki-token-function)">strip</span><span style="color:var(--shiki-token-punctuation)">())</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            SKILL_REGISTRY</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-foreground)">name</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-token-keyword)"> =</span><span style="color:var(--shiki-token-punctuation)"> {</span><span style="color:var(--shiki-token-string-expression)">&quot;name&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> name</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-string-expression)"> &quot;description&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> desc</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-string-expression)"> &quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> raw</span><span style="color:var(--shiki-token-punctuation)">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-function)">_scan_skills</span><span style="color:var(--shiki-token-punctuation)">()</span><span style="color:var(--shiki-token-comment)">  # runs once at startup</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> list_skills</span><span style="color:var(--shiki-foreground)">() </span><span style="color:var(--shiki-token-punctuation)">-&gt;</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-foreground)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-token-string-expression)"> &quot;\n&quot;</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">join</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-keyword)">f</span><span style="color:var(--shiki-token-string-expression)">&quot;- **</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">s[</span><span style="color:var(--shiki-token-string-expression)">&#x27;name&#x27;</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">**: </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">s[</span><span style="color:var(--shiki-token-string-expression)">&#x27;description&#x27;</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&quot;</span><span style="color:var(--shiki-token-keyword)"> for</span><span style="color:var(--shiki-token-punctuation)"> s </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-token-punctuation)"> SKILL_REGISTRY.</span><span style="color:var(--shiki-token-function)">values</span><span style="color:var(--shiki-token-punctuation)">())</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> build_system</span><span style="color:var(--shiki-foreground)">() </span><span style="color:var(--shiki-token-punctuation)">-&gt;</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-foreground)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    catalog </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> list_skills</span><span style="color:var(--shiki-token-punctuation)">()</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-foreground)"> (</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        f</span><span style="color:var(--shiki-token-string-expression)">&quot;You are a coding agent at </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">WORKDIR</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">. &quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        f</span><span style="color:var(--shiki-token-string-expression)">&quot;Skills available:</span><span style="color:var(--shiki-foreground)">\n</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">catalog</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-foreground)">\n</span><span style="color:var(--shiki-token-string-expression)">&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">        &quot;Use load_skill to get full details when needed.&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    )</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-foreground)">SYSTEM </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> build_system</span><span style="color:var(--shiki-token-punctuation)">()</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p><strong>第二级：load_skill</strong>：Agent 决定&quot;我需要 SQL 风格指南&quot;，调用 <code>load_skill(&quot;sql-style&quot;)</code>。通过注册表查找，不走文件路径，没有路径遍历风险。内容通过 <code>tool_result</code> 注入：</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> load_skill</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">name</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-foreground)">) </span><span style="color:var(--shiki-token-punctuation)">-&gt;</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-foreground)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    skill </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> SKILL_REGISTRY</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">get</span><span style="color:var(--shiki-token-punctuation)">(name)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-token-keyword)"> not</span><span style="color:var(--shiki-foreground)"> skill</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        return</span><span style="color:var(--shiki-token-keyword)"> f</span><span style="color:var(--shiki-token-string-expression)">&quot;Skill not found: </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">name</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-foreground)"> skill</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-token-string-expression)">&quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">]</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>关键区别：技能内容不是 system prompt 的一部分，它作为一次工具结果进入当前 messages。后续调用会随历史一起携带，直到上下文压缩、截断或会话结束。这和 s08 的 compact 自然衔接：按需加载解决了&quot;不该提前带的不要带&quot;，compact 解决&quot;该丢的怎么丢&quot;。</p>
+<hr/>
+<h2 class="rp-toc-include" id="相对-s06-的变更"><a href="#相对-s06-的变更" class="rp-header-anchor rp-link" aria-hidden="true">#</a>相对 s06 的变更</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>组件</th><th>之前 (s06)</th><th>之后 (s07)</th></tr></thead><tbody><tr><td>工具数量</td><td>7 (bash, read, write, edit, glob, todo_write, task)</td><td>8 (+load_skill)</td></tr><tr><td>知识加载</td><td>无</td><td>两级：启动时目录注入 SYSTEM + 运行时 load_skill</td></tr><tr><td>SYSTEM 提示</td><td>静态字符串</td><td>启动时扫描 skills/ 注入目录</td></tr><tr><td>技能注册表</td><td>无</td><td>SKILL_REGISTRY（启动时填充，防路径遍历）</td></tr><tr><td>循环</td><td>不变</td><td>不变（skill 工具自动分发）</td></tr></tbody></table></div>
+<hr/>
+<h2 class="rp-toc-include" id="试一下"><a href="#试一下" class="rp-header-anchor rp-link" aria-hidden="true">#</a>试一下</h2>
+<div class="rp-codeblock language-sh"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="sh"><code><span class="line"><span style="color:var(--shiki-token-function)">cd</span><span style="color:var(--shiki-token-string)"> learn-claude-code</span></span>
+<span class="line"><span style="color:var(--shiki-token-function)">python</span><span style="color:var(--shiki-token-string)"> s07_skill_loading/code.py</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>试试这些 prompt：</p>
+<ol>
+<li><code>What skills are available?</code></li>
+<li><code>Load the code-review skill and follow its instructions</code></li>
+<li><code>I need to do a code review -- load the relevant skill first</code></li>
+</ol>
+<p>观察重点：Agent 是否直接从 SYSTEM 里的目录知道有哪些技能？需要完整规范时是否出现 <code>[HOOK] load_skill</code>？加载后回答是否使用了对应 skill 的说明？</p>
+<hr/>
+<h2 class="rp-toc-include" id="接下来"><a href="#接下来" class="rp-header-anchor rp-link" aria-hidden="true">#</a>接下来</h2>
+<p>按需加载解决了&quot;不该带的不要带&quot;。但另一个问题来了：Agent 连续工作 30 分钟后，messages 列表塞满了中间过程。旧的 tool_result、过时的文件内容，占着上下文但不产生价值。</p>
+<p>s08 Context Compact → 四层压缩策略。便宜的先跑，贵的后跑。</p>
+<details>
+<summary>深入 CC 源码</summary>
+<blockquote>
+<p>以下基于 CC 源码 <code>loadSkillsDir.ts</code>、<code>SkillTool.ts</code>、<code>bundledSkills.ts</code>、<code>commands.ts</code> 的分析。</p>
+</blockquote>
+<h3 class="rp-toc-include" id="一技能来源不是只有一个-skills-目录"><a href="#一技能来源不是只有一个-skills-目录" class="rp-header-anchor rp-link" aria-hidden="true">#</a>一、技能来源：不是只有一个 skills/ 目录</h3>
+<p>教学版假设所有技能在 <code>skills/</code> 目录下。CC 实际从多个来源加载，分布在多个文件中：<code>loadSkillsDir.ts</code> 负责从 user/project/<code>--add-dir</code> 目录和 legacy commands（<code>.claude/commands/</code>）加载；<code>bundledSkills.ts</code> 负责内置技能；<code>SkillTool.ts</code> 处理 MCP 远程技能；<code>commands.ts</code> 负责命令聚合。类型包括 managed/policy skills、user skills（<code>~/.claude/skills/</code>）、project skills（<code>.claude/skills/</code>）、<code>--add-dir</code> skills、legacy commands、dynamic skills、conditional skills（带 <code>paths</code> frontmatter，按文件路径激活）、bundled skills、plugin skills、MCP skills。</p>
+<h3 class="rp-toc-include" id="二skillmd-frontmatter-常见字段"><a href="#二skillmd-frontmatter-常见字段" class="rp-header-anchor rp-link" aria-hidden="true">#</a>二、SKILL.md Frontmatter 常见字段</h3>
+<p>CC 的 SKILL.md YAML frontmatter 由 <code>parseSkillFrontmatterFields()</code> 解析（<code>loadSkillsDir.ts</code>），常见字段包括：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>字段</th><th>用途</th></tr></thead><tbody><tr><td><code>name</code> / <code>description</code></td><td>显示名称和描述</td></tr><tr><td><code>when_to_use</code></td><td>指导模型何时调用</td></tr><tr><td><code>allowed-tools</code></td><td>技能可用工具的自动允许列表</td></tr><tr><td><code>context</code></td><td><code>inline</code>（默认）或 <code>fork</code>（作为子 Agent 运行）</td></tr><tr><td><code>model</code></td><td>模型覆盖（haiku/sonnet/opus/inherit）</td></tr><tr><td><code>hooks</code></td><td>技能级别的 hook 配置</td></tr><tr><td><code>paths</code></td><td>条件激活的 glob 模式</td></tr><tr><td><code>user-invocable</code></td><td>用户可以通过 <code>/name</code> 调用</td></tr></tbody></table></div>
+<p>完整字段列表随版本迭代会变化，以上仅列出教学版涉及的核心字段。</p>
+<h3 class="rp-toc-include" id="三两级加载的精确实现"><a href="#三两级加载的精确实现" class="rp-header-anchor rp-link" aria-hidden="true">#</a>三、两级加载的精确实现</h3>
+<ol>
+<li><strong>Catalog（启动时）</strong>：<code>getSkillDirCommands()</code> 扫描目录 → 注册为 <code>Command</code> 对象，只包含元数据。<code>getSkillListingAttachments()</code> 把技能列表格式化为附件，预算为上下文窗口的 ~1%（上限 8000 字符）。</li>
+<li><strong>Load（调用时）</strong>：模型调 <code>Skill</code> 工具（输入字段是 <code>skill</code> + 可选 <code>args</code>，教学版用 <code>name</code>）→ <code>getPromptForCommand()</code> 展开完整 SKILL.md 内容 → <code>SkillTool</code> 返回的 tool_result 展示文本只是 <code>&quot;Launching skill: {name}&quot;</code>，真正的技能内容通过 <code>newMessages</code> 注入对话。教学版把两者合并为&quot;通过 tool_result 注入&quot;是一种简化。</li>
+</ol>
+<h3 class="rp-toc-include" id="教学版的简化是刻意的"><a href="#教学版的简化是刻意的" class="rp-header-anchor rp-link" aria-hidden="true">#</a>教学版的简化是刻意的</h3>
+<ul>
+<li>多文件多来源 → 1 个 <code>skills/</code> 目录：足以展示两级加载的核心概念</li>
+<li>多个 frontmatter 字段 → 只解析 name/description：减少解析复杂度</li>
+<li>forked skills（<code>context: &#x27;fork&#x27;</code>）→ 省略：教学版只展开 inline 技能加载</li>
+<li><code>Skill</code> 工具输入 <code>skill</code>+<code>args</code> → 教学版用 <code>name</code>：避免参数解析的额外复杂度</li>
+</ul>
+</details>
+<!--/$--></div><footer class="rp-doc-footer"><div class="rp-doc-footer__edit"></div><div class="rp-doc-footer__divider"></div><div class="rp-prev-next-page"><a href="/learn-claude/s06_subagent/index.html" class="rp-prev-next-page__item rp-prev-next-page__prev rp-link"><span class="rp-prev-next-page__item__desc">上一页</span><span class="rp-prev-next-page__item__title"><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon rp-prev-next-page__rotate_180"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg><span>s06_subagent</span></span></a><a href="/learn-claude/s08_context_compact/index.html" class="rp-prev-next-page__item rp-prev-next-page__next rp-link"><span class="rp-prev-next-page__item__desc">下一页</span><span class="rp-prev-next-page__item__title"><span>s08_context_compact</span><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></span></a></div></footer></main></div><aside class="rp-doc-layout__outline rp-scrollbar"><div class="rp-outline"><div class="rp-outline__title">目录<svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg></div><nav class="rp-outline__toc rp-scrollbar"><a href="#问题" class="rp-toc-item rp-link" title="问题" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">问题</span></a><a href="#解决方案" class="rp-toc-item rp-link" title="解决方案" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">解决方案</span></a><a href="#工作原理" class="rp-toc-item rp-link" title="工作原理" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">工作原理</span></a><a href="#相对-s06-的变更" class="rp-toc-item rp-link" title="相对 s06 的变更" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">相对 s06 的变更</span></a><a href="#试一下" class="rp-toc-item rp-link" title="试一下" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">试一下</span></a><a href="#接下来" class="rp-toc-item rp-link" title="接下来" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">接下来</span></a><a href="#一技能来源不是只有一个-skills-目录" class="rp-toc-item rp-link" title="一、技能来源：不是只有一个 skills/ 目录" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">一、技能来源：不是只有一个 skills/ 目录</span></a><a href="#二skillmd-frontmatter-常见字段" class="rp-toc-item rp-link" title="二、SKILL.md Frontmatter 常见字段" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">二、SKILL.md Frontmatter 常见字段</span></a><a href="#三两级加载的精确实现" class="rp-toc-item rp-link" title="三、两级加载的精确实现" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">三、两级加载的精确实现</span></a><a href="#教学版的简化是刻意的" class="rp-toc-item rp-link" title="教学版的简化是刻意的" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">教学版的简化是刻意的</span></a></nav><div class="rp-outline__divider"></div><div class="rp-outline__bottom"></div></div></aside></div></div>
+    <div id="__rspress_modal_container"></div>
+  </body>
+</html>

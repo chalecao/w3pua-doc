@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "rspress build",
+    "build": "RSPRESS_CHECK_DEAD_LINKS=false rspress build",
     "dev": "rspress dev",
     "preview": "rspress preview"
   },

@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="zh">
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>s19: MCP Tools — 外接工具，标准协议</title>
+<script>{;const saved = localStorage.getItem('rspress-theme-appearance');const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;const isDark = !saved || saved === 'auto' ? preferDark : saved === 'dark';document.documentElement.classList.toggle('dark', isDark);document.documentElement.classList.toggle('rp-dark', isDark);document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';}</script>
+<script>window.onload=function(){document.title='「万维飘」w3pua.com';setTimeout(function(){var imgs=document.querySelectorAll('img.rp-home-hero__image-img');imgs.forEach(function(img){var num=Math.floor(Math.random()*19)+1;img.src='/logo/'+num+'.svg';});},100);};</script>
+<script src="/katex.min.js"></script>
+<script>
+    (function() {
+      function renderMathInElement(container) {
+        if (!container) return;
+        
+        var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+        var textNodes = [];
+        while(walker.nextNode()) textNodes.push(walker.currentNode);
+        
+        textNodes.forEach(function(textNode) {
+          var text = textNode.textContent;
+          if (!text || (!text.includes('$$') && !text.includes('$'))) return;
+          
+          var parent = textNode.parentNode;
+          if (!parent) return;
+          if (parent.tagName === 'PRE' || parent.tagName === 'CODE' || parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE') return;
+          
+          var newHtml = text.replace(/\$\$([\s\S]*?)\$\$/g, function(match, formula) {
+            try {
+              return '<div class="math math-display">' + katex.renderToString(formula.trim(), {displayMode: true, throwOnError: false}) + '</div>';
+            } catch(e) { return match; }
+          }).replace(/\$([^\$\n]+?)\$/g, function(match, formula) {
+            try {
+              return katex.renderToString(formula.trim(), {displayMode: false, throwOnError: false});
+            } catch(e) { return match; }
+          });
+          
+          if (newHtml !== text) {
+            var span = document.createElement('span');
+            span.innerHTML = newHtml;
+            parent.replaceChild(span, textNode);
+          }
+        });
+      }
+
+      function onRouteChange() {
+        setTimeout(function() {
+          var container = document.getElementById('__rspress_root');
+          if (container) {
+            renderMathInElement(container);
+          }
+        }, 100);
+      }
+
+      if (typeof window !== 'undefined') {
+        if (window.__RSPRESS__) {
+          window.__RSPRESS__.addEventListener('routeChangeComplete', onRouteChange);
+        } else {
+          window.addEventListener('popstate', onRouteChange);
+          var originalPushState = history.pushState;
+          history.pushState = function() {
+            originalPushState.apply(this, arguments);
+            onRouteChange();
+          };
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+          onRouteChange();
+        });
+        
+        setTimeout(onRouteChange, 500);
+        setTimeout(onRouteChange, 1000);
+        setTimeout(onRouteChange, 2000);
+      }
+    })();
+  </script>
+<link href="/static/css/styles.e6bedadc36.css" rel="stylesheet">
+<link rel="stylesheet" href="/katex.min.css">
+<script defer src="/static/js/styles.03ebfe3fca.js"></script>
+<script defer src="/static/js/lib-react.06aa503779.js"></script>
+<script defer src="/static/js/lib-router.a7a83a8399.js"></script>
+<script defer src="/static/js/6665.052760f3df.js"></script>
+<script defer src="/static/js/index.2a1d1b00fc.js"></script>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Rspress v2.0.11">
+<link rel="icon" href="/logo.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="s19: MCP Tools — 外接工具，标准协议">
+<meta name="description" content="s01 → ... → s17 → s18 → s19 → <a href=&quot;s20](./s20_comprehensive/&quot;>s20</a> &quot;外接工具, 标准协议&quot; — 发现、组装、调用，Agent 不需要知道工具是谁写的。Harness 层: 插件 — 外部能力通过标准协议接入。">
+<meta property="og:description" content="s01 → ... → s17 → s18 → s19 → <a href=&quot;s20](./s20_comprehensive/&quot;>s20</a> &quot;外接工具, 标准协议&quot; — 发现、组装、调用，Agent 不需要知道工具是谁写的。Harness 层: 插件 — 外部能力通过标准协议接入。"></head>
+
+  <body>
+    <div id="__rspress_root"><link rel="preload" as="image" href="/logo.png"/><link rel="preload" as="image" href="/static/svg/mcp-architecture.9878047f33.svg"/><header class="rp-nav"><div class="rp-nav__left"><div class="rp-nav__title"><a href="/" class="rp-nav__title__link rp-link"><div class="rp-nav__title__logo"><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--light"/><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--dark"/></div></a></div></div><div class="rp-nav__right"><button class="rp-search-button"><div class="rp-search-button__content"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21" class="rp-search-button__icon"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg><span class="rp-search-button__word">搜索</span></div><div class="rp-search-button__hotkey" style="opacity:0"><span></span><span>K</span></div></button><div class="rp-search-button--mobile"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg></div><ul class="rp-nav-menu rp-nav-menu--right"><li class="rp-nav-menu__item"><a href="/book/preface.html" class="rp-nav-menu__item__container rp-link">Agent指南</a></li><li class="rp-nav-menu__item"><a href="/harness/1-four-frameworks-comparison.html" class="rp-nav-menu__item__container rp-link">Harness手册</a></li><li class="rp-nav-menu__item rp-nav-menu__item--active"><a href="/learn-claude/s01_agent_loop/index.html" class="rp-nav-menu__item__container rp-link">学习Claude</a></li></ul><div class="rp-nav__others"><div class="rp-nav-menu__divider"></div><li class="rp-nav-menu__item"><div class="rp-nav-menu__item__container">简体中文<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-menu__item__icon"><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--center"><li class="rp-hover-group__item" style="padding-left:8px" data-depth="0"><a href="/en/learn-claude/s19_mcp_plugin/index.html" class="rp-hover-group__item__link rp-link" aria-label="English" lang="en" hrefLang="en" rel="alternate">English</a></li><li class="rp-hover-group__item rp-hover-group__item--active" style="padding-left:8px" data-depth="0"><a href="/s19_mcp_plugin/index.html" class="rp-hover-group__item__link rp-link" aria-label="简体中文" lang="zh" hrefLang="zh" rel="alternate">简体中文</a></li></ul></li><div class="rp-switch-appearance"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" class="rp-switch-appearance__icon rp-switch-appearance__icon--sun"><path fill="currentColor" d="m7.001 15.848-1.226 1.226a.58.58 0 0 0 0 .818.58.58 0 0 0 .818 0l1.226-1.226a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0m-.352-8.735a.584.584 0 0 0 .825-.825L6.237 5.051a.584.584 0 0 0-.825.825zM5.011 11.07h-1.75a.584.584 0 0 0 0 1.167h1.75c.324 0 .584-.26.584-.583a.585.585 0 0 0-.584-.584m7.003-5.835c.324 0 .584-.26.584-.584V2.9a.58.58 0 0 0-.584-.584.58.58 0 0 0-.583.583V4.65c0 .323.262.584.583.584m5.616 1.621 1.226-1.225a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0l-1.226 1.225a.58.58 0 0 0 0 .818.576.576 0 0 0 .818 0m3.138 4.214h-1.75a.58.58 0 0 0-.584.584c0 .324.26.584.583.584h1.751a.584.584 0 1 0 0-1.167m-3.389 5.124a.584.584 0 0 0-.825.825l1.238 1.238a.584.584 0 0 0 .825-.826zm-5.365-9.795a5.256 5.256 0 0 0-5.257 5.258 5.256 5.256 0 0 0 5.257 5.257 5.256 5.256 0 0 0 5.257-5.257 5.256 5.256 0 0 0-5.257-5.258m0 11.675a.58.58 0 0 0-.583.583v1.751a.582.582 0 1 0 1.167 0v-1.75a.584.584 0 0 0-.584-.584"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" viewBox="0 0 19 19" class="rp-switch-appearance__icon rp-switch-appearance__icon--moon"><path fill="currentColor" d="M9.166 0a9.2 9.2 0 0 1 1.857.188.834.834 0 0 1 .042 1.623 4.47 4.47 0 1 0 5.457 5.457l.048-.135a.834.834 0 0 1 1.575.177q.186.902.188 1.856A9.168 9.168 0 1 1 9.166 0"></path></svg></div></div><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__sm"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg></button><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__md"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--right"><div class="rp-nav-menu__others-mobile__container"><div class="rp-nav-hamburger__md__hover-group"><div class="rp-nav-screen-appearance"><div class="rp-nav-screen-appearance__left">主题</div><div class="rp-nav-screen-appearance__right"></div></div><div class="rp-nav-screen-langs"><div class="rp-nav-screen-langs__left">语言</div><div class="rp-nav-screen-langs__right">简体中文<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-screen-langs__icon "><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div></div><div class="rp-nav-screen-langs-group" style="display:grid;grid-template-rows:0fr;transition:grid-template-rows 0.2s ease-out"><div class="rp-nav-screen-langs-group__inner"><a href="/en/learn-claude/s19_mcp_plugin/index.html" class="rp-nav-screen-langs-group__item rp-link" hrefLang="en" lang="en" rel="alternate">English</a><span class="rp-nav-screen-langs-group__item rp-nav-screen-langs-group__item--active" aria-current="page" aria-disabled="true">简体中文</span></div></div><div class="rp-nav-screen-divider"></div></div></div></ul></button></div></header><div class="rp-doc-layout__menu"><div class="rp-sidebar-menu"><button type="button" class="rp-sidebar-menu__left"><svg width="1em" height="1em" viewBox="0 0 32 32"><path fill="currentColor" d="M4 6h24v2H4zm0 18h24v2H4zm0-12h24v2H4zm0 6h24v2H4z"></path></svg><span>菜单</span></button><button type="button" class="rp-sidebar-menu__right"><span class="rp-sidebar-menu__right__text">目录</span><svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-sidebar-menu__right__icon" style="transform:rotate(0deg);transition:transform 0.2s ease-out"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></button></div></div><div class="rp-doc-layout__container"><aside class="rp-doc-layout__sidebar rp-scrollbar"><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s01_agent_loop</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s01_agent_loop/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s01_agent_loop</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s02_tool_use</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s02_tool_use/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s02_tool_use</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s03_permission</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s03_permission/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s03_permission</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s04_hooks</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s04_hooks/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s04_hooks</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s05_todo_write</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s05_todo_write/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s05_todo_write</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s06_subagent</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s06_subagent/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s06_subagent</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s07_skill_loading</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s07_skill_loading/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s07_skill_loading</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s08_context_compact</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s08_context_compact/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s08_context_compact</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s09_memory</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s09_memory/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s09_memory</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s10_system_prompt</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s10_system_prompt/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s10_system_prompt</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s11_error_recovery</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s11_error_recovery/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s11_error_recovery</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s12_task_system</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s12_task_system/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s12_task_system</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s13_background_tasks</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s13_background_tasks/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s13_background_tasks</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s14_cron_scheduler</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s14_cron_scheduler/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s14_cron_scheduler</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s15_agent_teams</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s15_agent_teams/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s15_agent_teams</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s16_team_protocols</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s16_team_protocols/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s16_team_protocols</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s17_autonomous_agents</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s17_autonomous_agents/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s17_autonomous_agents</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s18_worktree_isolation</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s18_worktree_isolation/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s18_worktree_isolation</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s19_mcp_plugin</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s19_mcp_plugin/index.html" class="rp-sidebar-item rp-sidebar-item--active rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s19_mcp_plugin</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s20_comprehensive</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s20_comprehensive/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s20_comprehensive</span></div><div class="rp-sidebar-item__right"></div></a></aside><div class="rp-doc-layout__doc"><main class="rp-doc-layout__doc-container"><div class="rp-doc rspress-doc"><!--$--><h1 class="rp-toc-include" id="s19-mcp-tools--外接工具标准协议"><a href="#s19-mcp-tools--外接工具标准协议" class="rp-header-anchor rp-link" aria-hidden="true">#</a>s19: MCP Tools — 外接工具，标准协议<!-- --> </h1>
+<p>s01 → ... → s17 → s18 → <code>s19</code> → <a href="s20](./s20_comprehensive/" class="rp-link">s20</a></p>
+<blockquote>
+<p><em>&quot;外接工具, 标准协议&quot;</em> — 发现、组装、调用，Agent 不需要知道工具是谁写的。</p>
+<p><strong>Harness 层</strong>: 插件 — 外部能力通过标准协议接入。</p>
+</blockquote>
+<hr/>
+<h2 class="rp-toc-include" id="问题"><a href="#问题" class="rp-header-anchor rp-link" aria-hidden="true">#</a>问题</h2>
+<p>s01 到 s18，Agent 的所有工具都是手写的——bash、read、write、task、worktree。每个工具的输入验证、执行逻辑、错误处理，都是你一行行写的。</p>
+<p>现在你有 3 个外部服务想接入：公司的 Jira API（查 issue、建 ticket）、自建的部署系统（触发 deploy、看日志）、团队的 Notion 知识库（搜文档、建页面）。你不想为每个服务重写一套工具代码。</p>
+<p>你需要一个标准协议——外部服务只要实现它，Agent 就能直接调用，不管服务用什么语言写的。</p>
+<hr/>
+<h2 class="rp-toc-include" id="解决方案"><a href="#解决方案" class="rp-header-anchor rp-link" aria-hidden="true">#</a>解决方案</h2>
+<p><img alt="MCP Architecture" src="/static/svg/mcp-architecture.9878047f33.svg"/>)</p>
+<p>MCP（Model Context Protocol）定义了 Agent 如何发现和调用外部工具。核心概念：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>概念</th><th>作用</th></tr></thead><tbody><tr><td>MCPClient</td><td>Agent 端的客户端，连接 server、发现工具、调用工具</td></tr><tr><td>MCP Server</td><td>外部服务，实现 <code>tools/list</code> + <code>tools/call</code></td></tr><tr><td>assemble_tool_pool</td><td>把内置工具和 MCP 工具组装成一个工具池</td></tr><tr><td>mcp__server__tool 命名</td><td>避免不同 server 的工具名冲突</td></tr></tbody></table></div>
+<p>沿用 s18 的教学版 worktree 隔离、自主认领、空闲轮询、协议系统。本章新增：<code>connect_mcp</code> 工具——连接外部服务，发现工具，加入工具池。</p>
+<p>教学版用 mock handler 模拟外部 server。真实版会启动子进程，通过 stdin/stdout 发送 JSON-RPC 请求。mock 的好处是不依赖外部服务就能跑完整流程；代价是你看不到真正的网络通信和进程管理。</p>
+<hr/>
+<h2 class="rp-toc-include" id="工作原理"><a href="#工作原理" class="rp-header-anchor rp-link" aria-hidden="true">#</a>工作原理</h2>
+<h3 class="rp-toc-include" id="mcpclient发现--调用"><a href="#mcpclient发现--调用" class="rp-header-anchor rp-link" aria-hidden="true">#</a>MCPClient：发现 + 调用</h3>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">class</span><span style="color:var(--shiki-token-function)"> MCPClient</span><span style="color:var(--shiki-foreground)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    def</span><span style="color:var(--shiki-token-function)"> __init__</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">self</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> name</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-foreground)">):</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        self</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">name </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> name</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        self</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">tools</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> list</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-token-constant)">dict</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-token-keyword)"> =</span><span style="color:var(--shiki-foreground)"> []</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        self</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">_handlers</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> dict</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-token-constant)">str</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-function)"> callable</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-token-keyword)"> =</span><span style="color:var(--shiki-token-punctuation)"> {}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    def</span><span style="color:var(--shiki-token-function)"> register</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">self</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> tool_defs</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> handlers</span><span style="color:var(--shiki-foreground)">):</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">        &quot;&quot;&quot;Simulates tools/list discovery.&quot;&quot;&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        self</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">tools </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> tool_defs</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        self</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">_handlers </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> handlers</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    def</span><span style="color:var(--shiki-token-function)"> call_tool</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">self</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> tool_name</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> args</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> dict</span><span style="color:var(--shiki-foreground)">) </span><span style="color:var(--shiki-token-punctuation)">-&gt;</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-foreground)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">        &quot;&quot;&quot;Simulates tools/call.&quot;&quot;&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        handler </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> self</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">_handlers</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">get</span><span style="color:var(--shiki-token-punctuation)">(tool_name)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        if</span><span style="color:var(--shiki-token-keyword)"> not</span><span style="color:var(--shiki-foreground)"> handler</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            return</span><span style="color:var(--shiki-token-keyword)"> f</span><span style="color:var(--shiki-token-string-expression)">&quot;MCP error: unknown tool &#x27;</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">tool_name</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&#x27;&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        return</span><span style="color:var(--shiki-token-function)"> handler</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-keyword)">**</span><span style="color:var(--shiki-token-punctuation)">args)</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>教学版用 Python 函数模拟 server 的工具实现。真实版通过 stdio JSON-RPC 与子进程通信。</p>
+<h3 class="rp-toc-include" id="connect_mcp连接--发现"><a href="#connect_mcp连接--发现" class="rp-header-anchor rp-link" aria-hidden="true">#</a>connect_mcp：连接 + 发现</h3>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> connect_mcp</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">name</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-foreground)">) </span><span style="color:var(--shiki-token-punctuation)">-&gt;</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-foreground)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-foreground)"> name </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-foreground)"> mcp_clients</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        return</span><span style="color:var(--shiki-token-keyword)"> f</span><span style="color:var(--shiki-token-string-expression)">&quot;MCP server &#x27;</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">name</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&#x27; already connected&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    factory </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> MOCK_SERVERS</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">get</span><span style="color:var(--shiki-token-punctuation)">(name)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-token-keyword)"> not</span><span style="color:var(--shiki-foreground)"> factory</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        return</span><span style="color:var(--shiki-token-keyword)"> f</span><span style="color:var(--shiki-token-string-expression)">&quot;Unknown server &#x27;</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">name</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&#x27;. Available: ...&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    mcp_client </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> factory</span><span style="color:var(--shiki-token-punctuation)">()</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    mcp_clients</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-foreground)">name</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-token-keyword)"> =</span><span style="color:var(--shiki-foreground)"> mcp_client</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-token-keyword)"> f</span><span style="color:var(--shiki-token-string-expression)">&quot;Connected to &#x27;</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">name</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&#x27;. Discovered: ...&quot;</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>连接后，server 提供的工具立即可用。</p>
+<h3 class="rp-toc-include" id="normalize_mcp_name名称规范化"><a href="#normalize_mcp_name名称规范化" class="rp-header-anchor rp-link" aria-hidden="true">#</a>normalize_mcp_name：名称规范化</h3>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-foreground)">_DISALLOWED_CHARS </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> re</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">compile</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-keyword)">r</span><span style="color:var(--shiki-token-string-expression)">&#x27;[</span><span style="color:var(--shiki-token-keyword)">^</span><span style="color:var(--shiki-token-string-expression)">a-zA-Z0-9_-]&#x27;</span><span style="color:var(--shiki-token-punctuation)">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> normalize_mcp_name</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">name</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-foreground)">) </span><span style="color:var(--shiki-token-punctuation)">-&gt;</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-foreground)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-foreground)"> _DISALLOWED_CHARS</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">sub</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&#x27;_&#x27;</span><span style="color:var(--shiki-token-punctuation)">, name)</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>所有非 <code>[a-zA-Z0-9_-]</code> 的字符替换为 <code>_</code>。防止 server 名或工具名中包含特殊字符导致命名冲突或注入问题。</p>
+<h3 class="rp-toc-include" id="assemble_tool_pool组装工具池"><a href="#assemble_tool_pool组装工具池" class="rp-header-anchor rp-link" aria-hidden="true">#</a>assemble_tool_pool：组装工具池</h3>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> assemble_tool_pool</span><span style="color:var(--shiki-foreground)">() </span><span style="color:var(--shiki-token-punctuation)">-&gt;</span><span style="color:var(--shiki-foreground)"> tuple</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-foreground)">list</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-token-constant)">dict</span><span style="color:var(--shiki-token-punctuation)">],</span><span style="color:var(--shiki-token-constant)"> dict</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-foreground)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    tools </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)"> list</span><span style="color:var(--shiki-token-punctuation)">(BUILTIN_TOOLS)</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    handlers </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)"> dict</span><span style="color:var(--shiki-token-punctuation)">(BUILTIN_HANDLERS)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    for</span><span style="color:var(--shiki-foreground)"> server_name</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)"> mcp_client </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-foreground)"> mcp_clients</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">items</span><span style="color:var(--shiki-token-punctuation)">():</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        safe_server </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> normalize_mcp_name</span><span style="color:var(--shiki-token-punctuation)">(server_name)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        for</span><span style="color:var(--shiki-foreground)"> tool_def </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-foreground)"> mcp_client</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">tools</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            safe_tool </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> normalize_mcp_name</span><span style="color:var(--shiki-token-punctuation)">(tool_def[</span><span style="color:var(--shiki-token-string-expression)">&quot;name&quot;</span><span style="color:var(--shiki-token-punctuation)">])</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            prefixed </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-keyword)"> f</span><span style="color:var(--shiki-token-string-expression)">&quot;mcp__</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">safe_server</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">__</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">safe_tool</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            tools</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">append</span><span style="color:var(--shiki-token-punctuation)">(...)</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            handlers</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-foreground)">prefixed</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-token-keyword)"> =</span><span style="color:var(--shiki-foreground)"> (</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">                lambda</span><span style="color:var(--shiki-token-keyword)"> *</span><span style="color:var(--shiki-foreground)">, </span><span style="color:var(--shiki-token-parameter)">c</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)">mcp_client</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> t</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)">tool_def</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-token-string-expression)">&quot;name&quot;</span><span style="color:var(--shiki-token-punctuation)">],</span><span style="color:var(--shiki-token-keyword)"> **</span><span style="color:var(--shiki-token-parameter)">kw</span><span style="color:var(--shiki-foreground)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">                    c</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">call_tool</span><span style="color:var(--shiki-token-punctuation)">(t, kw)</span><span style="color:var(--shiki-foreground)">)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-foreground)"> tools</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)"> handlers</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>前缀 <code>mcp__{server}__{tool}</code> 避免不同 server 的工具名冲突。名称经过 <code>normalize_mcp_name</code> 规范化。</p>
+<p>MCP 工具的 description 带 <code>(readOnly)</code> 或 <code>(destructive)</code> 标注——教学版用文本标注，真实 CC 用 tool annotations 结构体让权限系统判断。</p>
+<h3 class="rp-toc-include" id="无缓存工具池变了prompt-也变"><a href="#无缓存工具池变了prompt-也变" class="rp-header-anchor rp-link" aria-hidden="true">#</a>无缓存：工具池变了，prompt 也变</h3>
+<p>s10-s18 的 agent_loop 用 prompt cache 避免重复序列化。s19 去掉了缓存：</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> agent_loop</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">messages</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> context</span><span style="color:var(--shiki-foreground)">):</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    tools</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)"> handlers </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> assemble_tool_pool</span><span style="color:var(--shiki-token-punctuation)">()</span><span style="color:var(--shiki-token-comment)">     # 每次重新构建</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    system </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> assemble_system_prompt</span><span style="color:var(--shiki-token-punctuation)">(context)</span><span style="color:var(--shiki-token-comment)">    # 每次重新生成</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    ...</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-token-function)"> any</span><span style="color:var(--shiki-token-punctuation)">(b.name </span><span style="color:var(--shiki-token-keyword)">==</span><span style="color:var(--shiki-token-string-expression)"> &quot;connect_mcp&quot;</span><span style="color:var(--shiki-token-punctuation)"> ...):</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        tools</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)"> handlers </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> assemble_tool_pool</span><span style="color:var(--shiki-token-punctuation)">()</span><span style="color:var(--shiki-token-comment)">  # 连接后重建</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        system </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> assemble_system_prompt</span><span style="color:var(--shiki-token-punctuation)">(context)</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>原因：<code>connect_mcp</code> 之后工具池变化了——新增了 <code>mcp__docs__search</code> 等工具。缓存中的工具列表是旧的，继续用会导致模型调用不到新工具。教学版直接去掉缓存，代价是多花一点序列化时间。</p>
+<h3 class="rp-toc-include" id="mcp-工具只有-lead-可用"><a href="#mcp-工具只有-lead-可用" class="rp-header-anchor rp-link" aria-hidden="true">#</a>MCP 工具只有 Lead 可用</h3>
+<p>教学版中，<code>connect_mcp</code> 是 Lead 工具，<code>assemble_tool_pool</code> 也只服务于 Lead 的 agent_loop。Teammate 仍使用固定的 8 个子集工具（bash、read_file、write_file、send_message、submit_plan、list_tasks、claim_task、complete_task）。</p>
+<p>这是教学简化。真实 CC 中，MCP 工具对主 agent 和子 agent 都可用——子 agent 继承父级的 MCP 配置。</p>
+<hr/>
+<h2 class="rp-toc-include" id="相对-s18-的变更"><a href="#相对-s18-的变更" class="rp-header-anchor rp-link" aria-hidden="true">#</a>相对 s18 的变更</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>组件</th><th>之前 (s18)</th><th>之后 (s19)</th></tr></thead><tbody><tr><td>工具来源</td><td>全部手写 builtin</td><td>手写 + MCP 外部工具动态发现</td></tr><tr><td>工具池</td><td>固定 BUILTIN_TOOLS</td><td>assemble_tool_pool 动态组装 mcp__ 前缀工具</td></tr><tr><td>名称安全</td><td>无</td><td>normalize_mcp_name 规范化</td></tr><tr><td>新类型</td><td>—</td><td>MCPClient 类（模拟 tools/list + tools/call）</td></tr><tr><td>命名空间</td><td>—</td><td>mcp__server__tool 避免冲突</td></tr><tr><td>工具描述</td><td>无标注</td><td>(readOnly)/(destructive) 标注</td></tr><tr><td>prompt 缓存</td><td>有（s10 起）</td><td>去掉——工具池动态变化后缓存失效</td></tr><tr><td>Lead 工具</td><td>17 (s18)</td><td>18 (+connect_mcp)</td></tr><tr><td>Teammate 工具</td><td>8 (s18)</td><td>8（不变，MCP 工具仅 Lead 可用）</td></tr><tr><td>扩展方式</td><td>写代码加工具</td><td>标准协议，任意语言实现 server</td></tr></tbody></table></div>
+<hr/>
+<h2 class="rp-toc-include" id="试一下"><a href="#试一下" class="rp-header-anchor rp-link" aria-hidden="true">#</a>试一下</h2>
+<div class="rp-codeblock language-sh"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="sh"><code><span class="line"><span style="color:var(--shiki-token-function)">cd</span><span style="color:var(--shiki-token-string)"> learn-claude-code</span></span>
+<span class="line"><span style="color:var(--shiki-token-function)">python</span><span style="color:var(--shiki-token-string)"> s19_mcp_plugin/code.py</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>试试这些 prompt：</p>
+<ol>
+<li><code>Connect to the docs MCP server and search for something</code></li>
+<li><code>Connect to the deploy server and trigger a deployment</code></li>
+<li><code>Connect both servers — what tools are now available?</code></li>
+</ol>
+<p>观察重点：连接 MCP server 后，工具名是否带 <code>mcp__docs__</code> 或 <code>mcp__deploy__</code> 前缀？两个 server 的工具是否同时可用？MCP 工具的 description 是否带 (readOnly)/(destructive) 标注？</p>
+<hr/>
+<h2 class="rp-toc-include" id="接下来"><a href="#接下来" class="rp-header-anchor rp-link" aria-hidden="true">#</a>接下来</h2>
+<p>现在 Agent 可以通过标准协议接入外部工具了。但前面 19 章每章都只加一个机制，真实 Agent 不会这样拆开运行。</p>
+<p>工具、权限、hooks、todo、任务图、记忆、压缩、后台、cron、团队、worktree、MCP 这些机制应该挂在同一个循环上，而不是散在 19 个 demo 里。</p>
+<p>s20 Comprehensive Agent → 把前 19 章的机制合回一个完整 harness。机制很多，循环一个。</p>
+<details>
+<summary>深入 CC 源码</summary>
+<blockquote>
+<p>以下基于 CC 源码 <code>services/mcp/client.ts</code>、<code>auth.ts</code>、<code>config.ts</code>、<code>channelNotification.ts</code> 的分析。</p>
+</blockquote>
+<h3 class="rp-toc-include" id="一6-种-transport-类型"><a href="#一6-种-transport-类型" class="rp-header-anchor rp-link" aria-hidden="true">#</a>一、6 种 Transport 类型</h3>
+<p>教学版只展示了 stdio mock。CC 支持 6 种传输（<code>types.ts:23-25</code>）：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>Transport</th><th>通信方式</th></tr></thead><tbody><tr><td><code>stdio</code></td><td>子进程 stdin/stdout（跨平台默认）</td></tr><tr><td><code>sse</code></td><td>HTTP Server-Sent Events</td></tr><tr><td><code>http</code></td><td>Streamable HTTP（POST/SSE 双向）</td></tr><tr><td><code>ws</code></td><td>WebSocket</td></tr><tr><td><code>sse-ide</code></td><td>IDE 内嵌 SSE 传输</td></tr><tr><td><code>sdk</code></td><td>进程内 SDK 传输</td></tr></tbody></table></div>
+<p>连接时本地（stdio）和远程（http/sse/ws）服务器分批并发：本地批量 3 个，远程批量 20 个。</p>
+<h3 class="rp-toc-include" id="二工具池组装算法"><a href="#二工具池组装算法" class="rp-header-anchor rp-link" aria-hidden="true">#</a>二、工具池组装算法</h3>
+<p><code>assembleToolPool()</code>（<code>tools.ts:345-364</code>）：</p>
+<div class="rp-codeblock language-typescript"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="typescript"><code><span class="line"><span style="color:var(--shiki-token-comment)">// 去重时优先保留内置工具（name 相同时内置在前）</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">return</span><span style="color:var(--shiki-token-function)"> uniqBy</span><span style="color:var(--shiki-foreground)">(</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">  [</span><span style="color:var(--shiki-token-keyword)">...</span><span style="color:var(--shiki-token-constant)">builtInTools</span><span style="color:var(--shiki-token-function)">.sort</span><span style="color:var(--shiki-foreground)">(byName)</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-keyword)"> ...</span><span style="color:var(--shiki-token-constant)">filteredMcpTools</span><span style="color:var(--shiki-token-function)">.sort</span><span style="color:var(--shiki-foreground)">(byName)]</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">  &#x27;name&#x27;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">)</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>内置工具和 MCP 工具分开排序，不是合起来排。原因是 CC 的 <code>claude_code_system_cache_policy</code> 在最后一个内置工具之后的某个位置放全局缓存断点——混排会破坏这个设计。</p>
+<h3 class="rp-toc-include" id="三命名规则mcp__server__tool"><a href="#三命名规则mcp__server__tool" class="rp-header-anchor rp-link" aria-hidden="true">#</a>三、命名规则：<code>mcp__server__tool</code></h3>
+<p><code>buildMcpToolName()</code>（<code>mcpStringUtils.ts:50-52</code>）：</p>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>mcp__&lt;normalizedServerName&gt;__&lt;normalizedToolName&gt;</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>所有非 <code>[a-zA-Z0-9_-]</code> 字符替换为 <code>_</code>（<code>normalization.ts:17-23</code>）。教学版的 <code>normalize_mcp_name</code> 用同样的规则。</p>
+<h3 class="rp-toc-include" id="四权限检查"><a href="#四权限检查" class="rp-header-anchor rp-link" aria-hidden="true">#</a>四、权限检查</h3>
+<p>CC 对 MCP 工具有独立的权限系统。<code>checkPermissions()</code> 对 MCP 工具的检查逻辑不同于内置工具——MCP 工具可以声明自己的权限需求（readOnly、destructive 等），CC 根据声明决定是否需要用户确认。教学版只在 description 中用文本标注 <code>(readOnly)</code> / <code>(destructive)</code>，不做权限拦截。</p>
+<h3 class="rp-toc-include" id="五配置来源与优先级"><a href="#五配置来源与优先级" class="rp-header-anchor rp-link" aria-hidden="true">#</a>五、配置来源与优先级</h3>
+<p>MCP 服务器配置来自多个来源。CC 的配置优先级从低到高：</p>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>claude.ai 连接器 &lt; plugin &lt; user settings.json &lt; approved project .mcp.json &lt; local settings.local.json</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p><code>claude.ai</code> 连接器单独拉取、按内容签名去重，以最低优先级合并（<code>config.ts:1267-1289</code>）。企业 <code>managed-mcp.json</code> 存在时完全排除其他配置。</p>
+<p>教学版直接传 server name 给 <code>MOCK_SERVERS</code> 字典，不做配置合并。</p>
+<h3 class="rp-toc-include" id="六channel-通知服务器反向推消息"><a href="#六channel-通知服务器反向推消息" class="rp-header-anchor rp-link" aria-hidden="true">#</a>六、Channel 通知：服务器反向推消息</h3>
+<p>教学版只讲了 Agent → MCP Server 的单向调用。CC 还支持反向通知（<code>channelNotification.ts</code>）：</p>
+<ol>
+<li>Server 声明 <code>capabilities.experimental[&#x27;claude/channel&#x27;]</code></li>
+<li>Server 通过 MCP 通知 <code>notifications/claude/channel</code> 给 Agent 发消息</li>
+<li>消息包装在 <code>&lt;channel source=&quot;serverName&quot;&gt;...&lt;/channel&gt;</code> XML 标签中</li>
+<li>Agent 被 SleepTool 唤醒（1 秒内）</li>
+</ol>
+<p>Server 还可以请求权限：<code>notifications/claude/channel/permission_request</code> → Agent 回复 <code>notifications/claude/channel/permission</code>。用户通过 5 字母短 ID 确认/拒绝。</p>
+<h3 class="rp-toc-include" id="七oauth-认证流程"><a href="#七oauth-认证流程" class="rp-header-anchor rp-link" aria-hidden="true">#</a>七、OAuth 认证流程</h3>
+<p>CC 的 MCP 认证（<code>auth.ts</code>）支持完整的 OAuth 2.0 + PKCE 流程：</p>
+<ul>
+<li>通过公钥客户端 + PKCE 发现 OAuth 元数据（RFC 8414 / RFC 9728）</li>
+<li>本地回调服务器接收授权码</li>
+<li>令牌通过 <code>getSecureStorage()</code> 持久化（macOS Keychain / Linux 加密文件 / Windows 凭据管理器）</li>
+<li>过期前 5 分钟自动刷新</li>
+<li>支持跨应用访问（XAA）：浏览器获取 id_token → RFC 8693 + RFC 7523 交换 → 无需反复弹浏览器</li>
+</ul>
+<h3 class="rp-toc-include" id="八连接生命周期的错误处理"><a href="#八连接生命周期的错误处理" class="rp-header-anchor rp-link" aria-hidden="true">#</a>八、连接生命周期的错误处理</h3>
+<p>CC 对 MCP 连接有精细的错误分类和重试（<code>client.ts:1266-1402</code>）：</p>
+<ul>
+<li>终局性错误（ECONNRESET、ETIMEDOUT、EPIPE 等）：连续 3 次 → 关闭 + 重连</li>
+<li>工具调用 401：令牌过期 → 抛出 <code>McpAuthError</code> → 触发重认证</li>
+<li>工具调用超时：<code>Promise.race</code> 超时（可配置，默认约 28 小时）</li>
+<li>Stdio 断连：按 SIGINT → SIGTERM → SIGKILL 顺序杀进程</li>
+</ul>
+<h3 class="rp-toc-include" id="教学版的简化"><a href="#教学版的简化" class="rp-header-anchor rp-link" aria-hidden="true">#</a>教学版的简化</h3>
+<ul>
+<li>6 种 transport → 1 种（mock stdio）：概念量可控</li>
+<li>Channel 反向通知 → 省略：教学版 Agent 是主动方</li>
+<li>OAuth 流程 → 省略：教学版假设 server 不需要认证</li>
+<li>多层配置优先级 → 省略：教学版直接传 server name</li>
+<li>复杂的错误分类 → 省略：教学版用 try/except 兜底</li>
+<li>MCP 工具只给 Lead → 省略子 agent 继承：简化代码结构</li>
+</ul>
+</details>
+<!--/$--></div><footer class="rp-doc-footer"><div class="rp-doc-footer__edit"></div><div class="rp-doc-footer__divider"></div><div class="rp-prev-next-page"><a href="/learn-claude/s18_worktree_isolation/index.html" class="rp-prev-next-page__item rp-prev-next-page__prev rp-link"><span class="rp-prev-next-page__item__desc">上一页</span><span class="rp-prev-next-page__item__title"><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon rp-prev-next-page__rotate_180"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg><span>s18_worktree_isolation</span></span></a><a href="/learn-claude/s20_comprehensive/index.html" class="rp-prev-next-page__item rp-prev-next-page__next rp-link"><span class="rp-prev-next-page__item__desc">下一页</span><span class="rp-prev-next-page__item__title"><span>s20_comprehensive</span><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></span></a></div></footer></main></div><aside class="rp-doc-layout__outline rp-scrollbar"><div class="rp-outline"><div class="rp-outline__title">目录<svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg></div><nav class="rp-outline__toc rp-scrollbar"><a href="#问题" class="rp-toc-item rp-link" title="问题" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">问题</span></a><a href="#解决方案" class="rp-toc-item rp-link" title="解决方案" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">解决方案</span></a><a href="#工作原理" class="rp-toc-item rp-link" title="工作原理" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">工作原理</span></a><a href="#mcpclient发现--调用" class="rp-toc-item rp-link" title="MCPClient：发现 + 调用" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">MCPClient：发现 + 调用</span></a><a href="#connect_mcp连接--发现" class="rp-toc-item rp-link" title="connect_mcp：连接 + 发现" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">connect_mcp：连接 + 发现</span></a><a href="#normalize_mcp_name名称规范化" class="rp-toc-item rp-link" title="normalize_mcp_name：名称规范化" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">normalize_mcp_name：名称规范化</span></a><a href="#assemble_tool_pool组装工具池" class="rp-toc-item rp-link" title="assemble_tool_pool：组装工具池" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">assemble_tool_pool：组装工具池</span></a><a href="#无缓存工具池变了prompt-也变" class="rp-toc-item rp-link" title="无缓存：工具池变了，prompt 也变" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">无缓存：工具池变了，prompt 也变</span></a><a href="#mcp-工具只有-lead-可用" class="rp-toc-item rp-link" title="MCP 工具只有 Lead 可用" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">MCP 工具只有 Lead 可用</span></a><a href="#相对-s18-的变更" class="rp-toc-item rp-link" title="相对 s18 的变更" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">相对 s18 的变更</span></a><a href="#试一下" class="rp-toc-item rp-link" title="试一下" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">试一下</span></a><a href="#接下来" class="rp-toc-item rp-link" title="接下来" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">接下来</span></a><a href="#一6-种-transport-类型" class="rp-toc-item rp-link" title="一、6 种 Transport 类型" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">一、6 种 Transport 类型</span></a><a href="#二工具池组装算法" class="rp-toc-item rp-link" title="二、工具池组装算法" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">二、工具池组装算法</span></a><a href="#三命名规则mcp__server__tool" class="rp-toc-item rp-link" title="三、命名规则：mcp__server__tool" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">三、命名规则：<code>mcp__server__tool</code></span></a><a href="#四权限检查" class="rp-toc-item rp-link" title="四、权限检查" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">四、权限检查</span></a><a href="#五配置来源与优先级" class="rp-toc-item rp-link" title="五、配置来源与优先级" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">五、配置来源与优先级</span></a><a href="#六channel-通知服务器反向推消息" class="rp-toc-item rp-link" title="六、Channel 通知：服务器反向推消息" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">六、Channel 通知：服务器反向推消息</span></a><a href="#七oauth-认证流程" class="rp-toc-item rp-link" title="七、OAuth 认证流程" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">七、OAuth 认证流程</span></a><a href="#八连接生命周期的错误处理" class="rp-toc-item rp-link" title="八、连接生命周期的错误处理" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">八、连接生命周期的错误处理</span></a><a href="#教学版的简化" class="rp-toc-item rp-link" title="教学版的简化" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">教学版的简化</span></a></nav><div class="rp-outline__divider"></div><div class="rp-outline__bottom"></div></div></aside></div></div>
+    <div id="__rspress_modal_container"></div>
+  </body>
+</html>

@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>s17: Autonomous Agents — Check the Board, Claim the Task</title>
+<script>{;const saved = localStorage.getItem('rspress-theme-appearance');const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;const isDark = !saved || saved === 'auto' ? preferDark : saved === 'dark';document.documentElement.classList.toggle('dark', isDark);document.documentElement.classList.toggle('rp-dark', isDark);document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';}</script>
+<script>window.onload=function(){document.title='「万维飘」w3pua.com';setTimeout(function(){var imgs=document.querySelectorAll('img.rp-home-hero__image-img');imgs.forEach(function(img){var num=Math.floor(Math.random()*19)+1;img.src='/logo/'+num+'.svg';});},100);};</script>
+<script src="/katex.min.js"></script>
+<script>
+    (function() {
+      function renderMathInElement(container) {
+        if (!container) return;
+        
+        var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+        var textNodes = [];
+        while(walker.nextNode()) textNodes.push(walker.currentNode);
+        
+        textNodes.forEach(function(textNode) {
+          var text = textNode.textContent;
+          if (!text || (!text.includes('$$') && !text.includes('$'))) return;
+          
+          var parent = textNode.parentNode;
+          if (!parent) return;
+          if (parent.tagName === 'PRE' || parent.tagName === 'CODE' || parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE') return;
+          
+          var newHtml = text.replace(/\$\$([\s\S]*?)\$\$/g, function(match, formula) {
+            try {
+              return '<div class="math math-display">' + katex.renderToString(formula.trim(), {displayMode: true, throwOnError: false}) + '</div>';
+            } catch(e) { return match; }
+          }).replace(/\$([^\$\n]+?)\$/g, function(match, formula) {
+            try {
+              return katex.renderToString(formula.trim(), {displayMode: false, throwOnError: false});
+            } catch(e) { return match; }
+          });
+          
+          if (newHtml !== text) {
+            var span = document.createElement('span');
+            span.innerHTML = newHtml;
+            parent.replaceChild(span, textNode);
+          }
+        });
+      }
+
+      function onRouteChange() {
+        setTimeout(function() {
+          var container = document.getElementById('__rspress_root');
+          if (container) {
+            renderMathInElement(container);
+          }
+        }, 100);
+      }
+
+      if (typeof window !== 'undefined') {
+        if (window.__RSPRESS__) {
+          window.__RSPRESS__.addEventListener('routeChangeComplete', onRouteChange);
+        } else {
+          window.addEventListener('popstate', onRouteChange);
+          var originalPushState = history.pushState;
+          history.pushState = function() {
+            originalPushState.apply(this, arguments);
+            onRouteChange();
+          };
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+          onRouteChange();
+        });
+        
+        setTimeout(onRouteChange, 500);
+        setTimeout(onRouteChange, 1000);
+        setTimeout(onRouteChange, 2000);
+      }
+    })();
+  </script>
+<link href="/static/css/styles.e6bedadc36.css" rel="stylesheet">
+<link rel="stylesheet" href="/katex.min.css">
+<script defer src="/static/js/styles.03ebfe3fca.js"></script>
+<script defer src="/static/js/lib-react.06aa503779.js"></script>
+<script defer src="/static/js/lib-router.a7a83a8399.js"></script>
+<script defer src="/static/js/6665.052760f3df.js"></script>
+<script defer src="/static/js/index.2a1d1b00fc.js"></script>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Rspress v2.0.11">
+<link rel="icon" href="/logo.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="s17: Autonomous Agents — Check the Board, Claim the Task">
+<meta name="description" content="s01 → ... → s15 → s16 → s17 → <a href=&quot;s18](./s18_worktree_isolation/&quot;>s18</a> → s19 → s20 &quot;Check the board, claim the task&quot; — poll when idle, work when found.Harness Layer: Autonomy — Self-organizing teammates, no leader assignment needed.">
+<meta property="og:description" content="s01 → ... → s15 → s16 → s17 → <a href=&quot;s18](./s18_worktree_isolation/&quot;>s18</a> → s19 → s20 &quot;Check the board, claim the task&quot; — poll when idle, work when found.Harness Layer: Autonomy — Self-organizing teammates, no leader assignment needed."></head>
+
+  <body>
+    <div id="__rspress_root"><link rel="preload" as="image" href="/logo.png"/><link rel="preload" as="image" href="/static/svg/autonomous-agents-overview.en.4f0ce90955.svg"/><header class="rp-nav"><div class="rp-nav__left"><div class="rp-nav__title"><a href="/en/" class="rp-nav__title__link rp-link"><div class="rp-nav__title__logo"><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--light"/><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--dark"/></div></a></div></div><div class="rp-nav__right"><button class="rp-search-button"><div class="rp-search-button__content"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21" class="rp-search-button__icon"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg><span class="rp-search-button__word">Search</span></div><div class="rp-search-button__hotkey" style="opacity:0"><span></span><span>K</span></div></button><div class="rp-search-button--mobile"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg></div><ul class="rp-nav-menu rp-nav-menu--right"><li class="rp-nav-menu__item"><a href="/en/book/preface.html" class="rp-nav-menu__item__container rp-link">Agent Guide</a></li><li class="rp-nav-menu__item"><a href="/en/harness/1-four-frameworks-comparison.html" class="rp-nav-menu__item__container rp-link">Harness Handbook</a></li><li class="rp-nav-menu__item rp-nav-menu__item--active"><a href="/en/learn-claude/s01_agent_loop/index.html" class="rp-nav-menu__item__container rp-link">Learn Claude</a></li></ul><div class="rp-nav__others"><div class="rp-nav-menu__divider"></div><li class="rp-nav-menu__item"><div class="rp-nav-menu__item__container">English<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-menu__item__icon"><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--center"><li class="rp-hover-group__item rp-hover-group__item--active" style="padding-left:8px" data-depth="0"><a href="/en/learn-claude/s17_autonomous_agents/index.html" class="rp-hover-group__item__link rp-link" aria-label="English" lang="en" hrefLang="en" rel="alternate">English</a></li><li class="rp-hover-group__item" style="padding-left:8px" data-depth="0"><a href="/learn-claude/s17_autonomous_agents/index.html" class="rp-hover-group__item__link rp-link" aria-label="简体中文" lang="zh" hrefLang="zh" rel="alternate">简体中文</a></li></ul></li><div class="rp-switch-appearance"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" class="rp-switch-appearance__icon rp-switch-appearance__icon--sun"><path fill="currentColor" d="m7.001 15.848-1.226 1.226a.58.58 0 0 0 0 .818.58.58 0 0 0 .818 0l1.226-1.226a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0m-.352-8.735a.584.584 0 0 0 .825-.825L6.237 5.051a.584.584 0 0 0-.825.825zM5.011 11.07h-1.75a.584.584 0 0 0 0 1.167h1.75c.324 0 .584-.26.584-.583a.585.585 0 0 0-.584-.584m7.003-5.835c.324 0 .584-.26.584-.584V2.9a.58.58 0 0 0-.584-.584.58.58 0 0 0-.583.583V4.65c0 .323.262.584.583.584m5.616 1.621 1.226-1.225a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0l-1.226 1.225a.58.58 0 0 0 0 .818.576.576 0 0 0 .818 0m3.138 4.214h-1.75a.58.58 0 0 0-.584.584c0 .324.26.584.583.584h1.751a.584.584 0 1 0 0-1.167m-3.389 5.124a.584.584 0 0 0-.825.825l1.238 1.238a.584.584 0 0 0 .825-.826zm-5.365-9.795a5.256 5.256 0 0 0-5.257 5.258 5.256 5.256 0 0 0 5.257 5.257 5.256 5.256 0 0 0 5.257-5.257 5.256 5.256 0 0 0-5.257-5.258m0 11.675a.58.58 0 0 0-.583.583v1.751a.582.582 0 1 0 1.167 0v-1.75a.584.584 0 0 0-.584-.584"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" viewBox="0 0 19 19" class="rp-switch-appearance__icon rp-switch-appearance__icon--moon"><path fill="currentColor" d="M9.166 0a9.2 9.2 0 0 1 1.857.188.834.834 0 0 1 .042 1.623 4.47 4.47 0 1 0 5.457 5.457l.048-.135a.834.834 0 0 1 1.575.177q.186.902.188 1.856A9.168 9.168 0 1 1 9.166 0"></path></svg></div></div><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__sm"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg></button><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__md"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--right"><div class="rp-nav-menu__others-mobile__container"><div class="rp-nav-hamburger__md__hover-group"><div class="rp-nav-screen-appearance"><div class="rp-nav-screen-appearance__left">Theme</div><div class="rp-nav-screen-appearance__right"></div></div><div class="rp-nav-screen-langs"><div class="rp-nav-screen-langs__left">Languages</div><div class="rp-nav-screen-langs__right">English<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-screen-langs__icon "><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div></div><div class="rp-nav-screen-langs-group" style="display:grid;grid-template-rows:0fr;transition:grid-template-rows 0.2s ease-out"><div class="rp-nav-screen-langs-group__inner"><span class="rp-nav-screen-langs-group__item rp-nav-screen-langs-group__item--active" aria-current="page" aria-disabled="true">English</span><a href="/learn-claude/s17_autonomous_agents/index.html" class="rp-nav-screen-langs-group__item rp-link" hrefLang="zh" lang="zh" rel="alternate">简体中文</a></div></div><div class="rp-nav-screen-divider"></div></div></div></ul></button></div></header><div class="rp-doc-layout__menu"><div class="rp-sidebar-menu"><button type="button" class="rp-sidebar-menu__left"><svg width="1em" height="1em" viewBox="0 0 32 32"><path fill="currentColor" d="M4 6h24v2H4zm0 18h24v2H4zm0-12h24v2H4zm0 6h24v2H4z"></path></svg><span>Menu</span></button><button type="button" class="rp-sidebar-menu__right"><span class="rp-sidebar-menu__right__text">ON THIS PAGE</span><svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-sidebar-menu__right__icon" style="transform:rotate(0deg);transition:transform 0.2s ease-out"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></button></div></div><div class="rp-doc-layout__container"><aside class="rp-doc-layout__sidebar rp-scrollbar"><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s01_agent_loop</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s01_agent_loop/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s01_agent_loop</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s02_tool_use</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s02_tool_use/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s02_tool_use</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s03_permission</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s03_permission/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s03_permission</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s04_hooks</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s04_hooks/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s04_hooks</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s05_todo_write</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s05_todo_write/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s05_todo_write</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s06_subagent</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s06_subagent/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s06_subagent</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s07_skill_loading</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s07_skill_loading/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s07_skill_loading</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s08_context_compact</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s08_context_compact/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s08_context_compact</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s09_memory</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s09_memory/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s09_memory</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s10_system_prompt</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s10_system_prompt/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s10_system_prompt</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s11_error_recovery</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s11_error_recovery/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s11_error_recovery</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s12_task_system</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s12_task_system/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s12_task_system</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s13_background_tasks</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s13_background_tasks/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s13_background_tasks</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s14_cron_scheduler</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s14_cron_scheduler/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s14_cron_scheduler</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s15_agent_teams</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s15_agent_teams/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s15_agent_teams</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s16_team_protocols</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s16_team_protocols/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s16_team_protocols</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s17_autonomous_agents</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s17_autonomous_agents/index.html" class="rp-sidebar-item rp-sidebar-item--active rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s17_autonomous_agents</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s18_worktree_isolation</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s18_worktree_isolation/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s18_worktree_isolation</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s19_mcp_plugin</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s19_mcp_plugin/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s19_mcp_plugin</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s20_comprehensive</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s20_comprehensive/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s20_comprehensive</span></div><div class="rp-sidebar-item__right"></div></a></aside><div class="rp-doc-layout__doc"><main class="rp-doc-layout__doc-container"><div class="rp-doc rspress-doc"><!--$--><h1 class="rp-toc-include" id="s17-autonomous-agents--check-the-board-claim-the-task"><a href="#s17-autonomous-agents--check-the-board-claim-the-task" class="rp-header-anchor rp-link" aria-hidden="true">#</a>s17: Autonomous Agents — Check the Board, Claim the Task<!-- --> </h1>
+<p>s01 → ... → s15 → s16 → <code>s17</code> → <a href="s18](./s18_worktree_isolation/" class="rp-link">s18</a> → s19 → s20</p>
+<blockquote>
+<p><em>&quot;Check the board, claim the task&quot;</em> — poll when idle, work when found.</p>
+<p><strong>Harness Layer</strong>: Autonomy — Self-organizing teammates, no leader assignment needed.</p>
+</blockquote>
+<hr/>
+<h2 class="rp-toc-include" id="the-problem"><a href="#the-problem" class="rp-header-anchor rp-link" aria-hidden="true">#</a>The Problem</h2>
+<p>s16&#x27;s teammates can communicate and handshake shutdown. But each teammate waits for Lead to assign tasks — with 10 unclaimed tasks on the board, Lead has to manually assign 10 times. This doesn&#x27;t scale. Teammates should check the task board themselves, claim unowned tasks, and look for the next one when done.</p>
+<hr/>
+<h2 class="rp-toc-include" id="the-solution"><a href="#the-solution" class="rp-header-anchor rp-link" aria-hidden="true">#</a>The Solution</h2>
+<p><img alt="Autonomous Agents Overview" src="/static/svg/autonomous-agents-overview.en.4f0ce90955.svg"/>)</p>
+<p>Carries forward S16&#x27;s teaching-version MessageBus and protocol tools. This chapter adds: <strong>idle_poll</strong> (poll every 5 seconds when idle), <strong>scan_unclaimed_tasks</strong> (scan the board for claimable tasks), <strong>auto-claim</strong> (claim on sight, no Lead needed).</p>
+<p>Teammate lifecycle expands from two phases to three:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>Phase</th><th>Behavior</th><th>Exit condition</th></tr></thead><tbody><tr><td>WORK</td><td>inbox → LLM → tool loop</td><td><code>stop_reason != tool_use</code></td></tr><tr><td>IDLE</td><td>5s poll inbox + task board</td><td>60s timeout</td></tr><tr><td>SHUTDOWN</td><td>Send summary, exit</td><td>—</td></tr></tbody></table></div>
+<hr/>
+<h2 class="rp-toc-include" id="how-it-works"><a href="#how-it-works" class="rp-header-anchor rp-link" aria-hidden="true">#</a>How It Works</h2>
+<h3 class="rp-toc-include" id="idle_poll-idle-polling"><a href="#idle_poll-idle-polling" class="rp-header-anchor rp-link" aria-hidden="true">#</a>idle_poll: Idle Polling</h3>
+<p>After completing a task, the teammate doesn&#x27;t exit. It enters the IDLE phase — checking every 5 seconds for new work:</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-foreground)">IDLE_POLL_INTERVAL </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)"> 5</span><span style="color:var(--shiki-token-comment)">   # seconds</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">IDLE_TIMEOUT </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)"> 60</span><span style="color:var(--shiki-token-comment)">         # seconds</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> idle_poll</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">agent_name</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> messages</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> name</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> role</span><span style="color:var(--shiki-foreground)">) </span><span style="color:var(--shiki-token-punctuation)">-&gt;</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-foreground)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">    &quot;&quot;&quot;Return &#x27;work&#x27;, &#x27;shutdown&#x27;, or &#x27;timeout&#x27;.&quot;&quot;&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    for</span><span style="color:var(--shiki-foreground)"> _ </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-token-function)"> range</span><span style="color:var(--shiki-token-punctuation)">(IDLE_TIMEOUT </span><span style="color:var(--shiki-token-keyword)">//</span><span style="color:var(--shiki-token-punctuation)"> IDLE_POLL_INTERVAL):</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        time</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">sleep</span><span style="color:var(--shiki-token-punctuation)">(IDLE_POLL_INTERVAL)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">        # ① Check inbox (priority)</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        inbox </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> BUS</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">read_inbox</span><span style="color:var(--shiki-token-punctuation)">(agent_name)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        if</span><span style="color:var(--shiki-foreground)"> inbox</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">            # shutdown_request handled immediately</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            for</span><span style="color:var(--shiki-foreground)"> msg </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-foreground)"> inbox</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">                if</span><span style="color:var(--shiki-foreground)"> msg</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">get</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot;type&quot;</span><span style="color:var(--shiki-token-punctuation)">)</span><span style="color:var(--shiki-token-keyword)"> ==</span><span style="color:var(--shiki-token-string-expression)"> &quot;shutdown_request&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">                    # ... reply shutdown_response</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">                    return</span><span style="color:var(--shiki-token-string-expression)"> &quot;shutdown&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">            # Regular messages: inject into context, return to WORK</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            messages</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">append</span><span style="color:var(--shiki-token-punctuation)">(...)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            return</span><span style="color:var(--shiki-token-string-expression)"> &quot;work&quot;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">        # ② Scan task board</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        unclaimed </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> scan_unclaimed_tasks</span><span style="color:var(--shiki-token-punctuation)">()</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        if</span><span style="color:var(--shiki-foreground)"> unclaimed</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            task </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> unclaimed</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-token-constant)">0</span><span style="color:var(--shiki-token-punctuation)">]</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            result </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> claim_task</span><span style="color:var(--shiki-token-punctuation)">(task[</span><span style="color:var(--shiki-token-string-expression)">&quot;id&quot;</span><span style="color:var(--shiki-token-punctuation)">], agent_name)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            if</span><span style="color:var(--shiki-token-string-expression)"> &quot;Claimed&quot;</span><span style="color:var(--shiki-token-keyword)"> in</span><span style="color:var(--shiki-foreground)"> result</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">                messages</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">append</span><span style="color:var(--shiki-token-punctuation)">(...)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">                return</span><span style="color:var(--shiki-token-string-expression)"> &quot;work&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-token-string-expression)"> &quot;timeout&quot;</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>Inbox takes priority (may contain protocol messages like shutdown_request), task board second. A shutdown_request received during IDLE is dispatched immediately — no need to wait for the next WORK phase.</p>
+<h3 class="rp-toc-include" id="scan_unclaimed_tasks-scan-the-task-board"><a href="#scan_unclaimed_tasks-scan-the-task-board" class="rp-header-anchor rp-link" aria-hidden="true">#</a>scan_unclaimed_tasks: Scan the Task Board</h3>
+<p>Find tasks that are pending, unowned, with all dependencies completed (<code>can_start</code>):</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> scan_unclaimed_tasks</span><span style="color:var(--shiki-foreground)">() </span><span style="color:var(--shiki-token-punctuation)">-&gt;</span><span style="color:var(--shiki-foreground)"> list</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-token-constant)">dict</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-foreground)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    unclaimed </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> []</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    for</span><span style="color:var(--shiki-foreground)"> f </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-token-function)"> sorted</span><span style="color:var(--shiki-token-punctuation)">(TASKS_DIR.</span><span style="color:var(--shiki-token-function)">glob</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot;task_*.json&quot;</span><span style="color:var(--shiki-token-punctuation)">)):</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        task </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> json</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">loads</span><span style="color:var(--shiki-token-punctuation)">(f.</span><span style="color:var(--shiki-token-function)">read_text</span><span style="color:var(--shiki-token-punctuation)">())</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        if</span><span style="color:var(--shiki-foreground)"> (task</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">get</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot;status&quot;</span><span style="color:var(--shiki-token-punctuation)">)</span><span style="color:var(--shiki-token-keyword)"> ==</span><span style="color:var(--shiki-token-string-expression)"> &quot;pending&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">                and</span><span style="color:var(--shiki-token-keyword)"> not</span><span style="color:var(--shiki-foreground)"> task</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">get</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot;owner&quot;</span><span style="color:var(--shiki-token-punctuation)">)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">                and</span><span style="color:var(--shiki-token-function)"> can_start</span><span style="color:var(--shiki-token-punctuation)">(task[</span><span style="color:var(--shiki-token-string-expression)">&quot;id&quot;</span><span style="color:var(--shiki-token-punctuation)">])</span><span style="color:var(--shiki-foreground)">)</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            unclaimed</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">append</span><span style="color:var(--shiki-token-punctuation)">(task)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-foreground)"> unclaimed</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>Three conditions: must be pending, no owner, all blockedBy dependencies completed. <code>can_start</code> checks dependency task status — having dependencies doesn&#x27;t mean the task can&#x27;t start, only unresolved dependencies block it. Teaching version picks the first by filename; CC uses file locks to prevent multiple teammates from claiming the same task.</p>
+<h3 class="rp-toc-include" id="claim_task-owner-check"><a href="#claim_task-owner-check" class="rp-header-anchor rp-link" aria-hidden="true">#</a>claim_task: Owner Check</h3>
+<p>Auto-claim checks the claim result, not treating failure as success:</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> claim_task</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">task_id</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> owner</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-token-keyword)"> =</span><span style="color:var(--shiki-token-string-expression)"> &quot;agent&quot;</span><span style="color:var(--shiki-foreground)">) </span><span style="color:var(--shiki-token-punctuation)">-&gt;</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-foreground)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    task </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> load_task</span><span style="color:var(--shiki-token-punctuation)">(task_id)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-foreground)"> task</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">status </span><span style="color:var(--shiki-token-keyword)">!=</span><span style="color:var(--shiki-token-string-expression)"> &quot;pending&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        return</span><span style="color:var(--shiki-token-keyword)"> f</span><span style="color:var(--shiki-token-string-expression)">&quot;Task </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">task_id</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)"> is </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">task</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">status</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">, cannot claim&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-foreground)"> task</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">owner</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        return</span><span style="color:var(--shiki-token-keyword)"> f</span><span style="color:var(--shiki-token-string-expression)">&quot;Task </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">task_id</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)"> already owned by </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">task</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">owner</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-token-keyword)"> not</span><span style="color:var(--shiki-token-function)"> can_start</span><span style="color:var(--shiki-token-punctuation)">(task_id):</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        return</span><span style="color:var(--shiki-token-keyword)"> f</span><span style="color:var(--shiki-token-string-expression)">&quot;Blocked by: </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">deps</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    task</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">owner </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> owner</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    task</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">status </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-string-expression)"> &quot;in_progress&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-function)">    save_task</span><span style="color:var(--shiki-token-punctuation)">(task)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-token-keyword)"> f</span><span style="color:var(--shiki-token-string-expression)">&quot;Claimed </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">task</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">id</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)"> (</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">task</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">subject</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">)&quot;</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>Teaching version has no file locks, so concurrent claims may still race. But the <code>task.owner</code> check avoids the most obvious &quot;last writer wins&quot; problem. CC uses <code>proper-lockfile</code> to protect task files, with <code>claimTask</code> doing read-modify-write inside a file lock (<code>utils/tasks.ts:541-612</code>).</p>
+<h3 class="rp-toc-include" id="teammate-lifecycle-work--idle--shutdown"><a href="#teammate-lifecycle-work--idle--shutdown" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Teammate Lifecycle: WORK → IDLE → SHUTDOWN</h3>
+<p>s16&#x27;s teammates exit after finishing. s17 adds the IDLE phase — teammates cycle through WORK → IDLE in an outer loop:</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-comment)"># Outer loop: WORK → IDLE cycle</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">while</span><span style="color:var(--shiki-token-constant)"> True</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">    # WORK phase: inner loop (max 10 LLM rounds)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    for</span><span style="color:var(--shiki-foreground)"> _ </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-token-function)"> range</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-constant)">10</span><span style="color:var(--shiki-token-punctuation)">):</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">        # Check inbox, dispatch protocol, call LLM, execute tools</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        ...</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        if</span><span style="color:var(--shiki-foreground)"> response</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">stop_reason </span><span style="color:var(--shiki-token-keyword)">!=</span><span style="color:var(--shiki-token-string-expression)"> &quot;tool_use&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            break</span><span style="color:var(--shiki-token-comment)">  # WORK phase ends</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">    # IDLE phase</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    idle_result </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> idle_poll</span><span style="color:var(--shiki-token-punctuation)">(name, messages, name, role)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-foreground)"> idle_result </span><span style="color:var(--shiki-token-keyword)">==</span><span style="color:var(--shiki-token-string-expression)"> &quot;shutdown&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        break</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-foreground)"> idle_result </span><span style="color:var(--shiki-token-keyword)">==</span><span style="color:var(--shiki-token-string-expression)"> &quot;timeout&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        break</span><span style="color:var(--shiki-token-comment)">  # 60s timeout → SHUTDOWN</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-comment)"># SHUTDOWN: send summary to Lead</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">BUS</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">send</span><span style="color:var(--shiki-token-punctuation)">(name, </span><span style="color:var(--shiki-token-string-expression)">&quot;lead&quot;</span><span style="color:var(--shiki-token-punctuation)">, summary, </span><span style="color:var(--shiki-token-string-expression)">&quot;result&quot;</span><span style="color:var(--shiki-token-punctuation)">)</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>Key design:</p>
+<ul>
+<li><strong>Outer while True</strong>: WORK and IDLE alternate until timeout or shutdown request</li>
+<li><strong>Inner for 10</strong>: WORK phase caps at 10 LLM rounds (prevents infinite loops)</li>
+<li><strong>IDLE timeout 60s</strong>: 12 polls × 5s = 60s. Timeout sends summary and exits</li>
+<li><strong>shutdown_request works in both phases</strong>: WORK phase dispatches via <code>handle_inbox_message</code>; IDLE phase&#x27;s <code>idle_poll</code> checks and replies directly</li>
+</ul>
+<h3 class="rp-toc-include" id="identity-re-injection"><a href="#identity-re-injection" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Identity Re-injection</h3>
+<p>After autoCompact (s08), a teammate&#x27;s messages list may be compressed into a summary. On each new WORK phase entry, check:</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">if</span><span style="color:var(--shiki-token-function)"> len</span><span style="color:var(--shiki-token-punctuation)">(messages)</span><span style="color:var(--shiki-token-keyword)"> &lt;=</span><span style="color:var(--shiki-token-constant)"> 3</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    messages</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">insert</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-constant)">0</span><span style="color:var(--shiki-token-punctuation)">, {</span><span style="color:var(--shiki-token-string-expression)">&quot;role&quot;</span><span style="color:var(--shiki-token-punctuation)">: </span><span style="color:var(--shiki-token-string-expression)">&quot;user&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">        &quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">: </span><span style="color:var(--shiki-token-keyword)">f</span><span style="color:var(--shiki-token-string-expression)">&quot;&lt;identity&gt;You are &#x27;</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">name</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&#x27;, role: </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">role</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">. &quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">                   f</span><span style="color:var(--shiki-token-string-expression)">&quot;Continue your work.&lt;/identity&gt;&quot;</span><span style="color:var(--shiki-token-punctuation)">})</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>Short messages suggest compression happened — re-inject identity. In real CC, context compaction preserves the system prompt; the teaching version&#x27;s simplified implementation needs manual handling.</p>
+<h3 class="rp-toc-include" id="consume_lead_inbox-unified-inbox-consumer"><a href="#consume_lead_inbox-unified-inbox-consumer" class="rp-header-anchor rp-link" aria-hidden="true">#</a>consume_lead_inbox: Unified Inbox Consumer</h3>
+<p>Both the <code>check_inbox</code> tool and the main loop call the same <code>consume_lead_inbox()</code> function: route protocol responses to update state first, then inject all messages into Lead&#x27;s conversation history. Teammates&#x27; summaries and results don&#x27;t just print to terminal — Lead&#x27;s LLM can see them and coordinate next steps.</p>
+<h3 class="rp-toc-include" id="putting-it-together"><a href="#putting-it-together" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Putting It Together</h3>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>1. Lead: &quot;Build the backend — too many tasks, let teammates self-claim&quot;</span></span>
+<span class="line"><span>2. Lead → create_task(&quot;Create database schema&quot;)</span></span>
+<span class="line"><span>3. Lead → create_task(&quot;Write API routes&quot;)</span></span>
+<span class="line"><span>4. Lead → create_task(&quot;Write unit tests&quot;)</span></span>
+<span class="line"><span>5. Lead → spawn_teammate(&quot;alice&quot;, &quot;backend&quot;, &quot;You are a backend developer&quot;)</span></span>
+<span class="line"><span>6. Lead → spawn_teammate(&quot;bob&quot;, &quot;backend&quot;, &quot;You are a backend developer&quot;)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>7. alice thread starts → WORK: no initial inbox → spins → IDLE</span></span>
+<span class="line"><span>8. bob thread starts → WORK: no initial inbox → spins → IDLE</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>9. alice IDLE poll 1 → scan_unclaimed → finds &quot;Create database schema&quot;</span></span>
+<span class="line"><span>10. alice → claim_task → &quot;Create database schema&quot; → back to WORK</span></span>
+<span class="line"><span>11. bob IDLE poll 1 → scan_unclaimed → finds &quot;Write API routes&quot;</span></span>
+<span class="line"><span>12. bob → claim_task → &quot;Write API routes&quot; → back to WORK</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>13. alice WORK: write_file(&quot;schema.sql&quot;, ...) → complete_task → WORK ends</span></span>
+<span class="line"><span>14. alice IDLE → scan → &quot;Write unit tests&quot; → claim → WORK</span></span>
+<span class="line"><span>15. alice WORK: write_file(&quot;test_api.py&quot;, ...) → complete_task → WORK ends</span></span>
+<span class="line"><span>16. alice IDLE → 60s no new tasks → SHUTDOWN</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>17. bob similar flow → done → SHUTDOWN</span></span>
+<span class="line"><span>18. Lead consume_lead_inbox → sees alice and bob&#x27;s summaries</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>Two teammates claim and work in parallel. Lead only creates tasks and spawns teammates — no manual assignment needed.</p>
+<hr/>
+<h2 class="rp-toc-include" id="changes-from-s16"><a href="#changes-from-s16" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Changes from s16</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>Component</th><th>Before (s16)</th><th>After (s17)</th></tr></thead><tbody><tr><td>Task assignment</td><td>Lead manually assigns</td><td>Teammates auto-claim (can_start checks deps)</td></tr><tr><td>Teammate state</td><td>WORK or exit</td><td>WORK → IDLE (60s poll) → SHUTDOWN</td></tr><tr><td>claim_task</td><td>No owner check</td><td>Rejects tasks that already have an owner</td></tr><tr><td>IDLE phase shutdown</td><td>Doesn&#x27;t handle shutdown_request</td><td>Dispatches shutdown immediately and exits</td></tr><tr><td>Lead inbox</td><td>Prints only, not in context</td><td>consume_lead_inbox injects into history</td></tr><tr><td>New functions</td><td>—</td><td>idle_poll, scan_unclaimed_tasks, consume_lead_inbox</td></tr><tr><td>Identity persistence</td><td>System prompt only</td><td>Auto re-inject after compression</td></tr><tr><td>Lead tools</td><td>14 (s16)</td><td>14 (unchanged)</td></tr><tr><td>Teammate tools</td><td>5</td><td>8 (+ list_tasks, claim_task, complete_task)</td></tr><tr><td>Teammate exit</td><td>Exit after task done</td><td>Exit only after 60s idle timeout</td></tr></tbody></table></div>
+<hr/>
+<h2 class="rp-toc-include" id="try-it"><a href="#try-it" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Try It</h2>
+<div class="rp-codeblock language-sh"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="sh"><code><span class="line"><span style="color:var(--shiki-token-function)">cd</span><span style="color:var(--shiki-token-string)"> learn-claude-code</span></span>
+<span class="line"><span style="color:var(--shiki-token-function)">python</span><span style="color:var(--shiki-token-string)"> s17_autonomous_agents/code.py</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>Try this prompt:</p>
+<p><code>Create 3 tasks on the board, then spawn alice and bob. Watch them auto-claim and work.</code></p>
+<p>What to observe: Do teammates auto-claim unassigned tasks? Are tasks with blockedBy dependencies claimed only after their dependencies complete? Does idle timeout trigger shutdown? Does a shutdown_request in IDLE phase get an immediate response? How do task states change in <code>.tasks/</code>?</p>
+<hr/>
+<h2 class="rp-toc-include" id="whats-next"><a href="#whats-next" class="rp-header-anchor rp-link" aria-hidden="true">#</a>What&#x27;s Next</h2>
+<p>Teammates self-organize now. But Alice and Bob both work in the same directory — Alice edits <code>config.py</code>, Bob also edits <code>config.py</code>, overwriting each other.</p>
+<p>s18 Worktree Isolation → Each task gets its own working directory, no conflicts.</p>
+<details>
+<summary>Deep Dive into CC Source</summary>
+<blockquote>
+<p>Teaching note: This chapter&#x27;s idle_poll + auto-claim mechanism is a teaching design, using a unified polling function to demonstrate &quot;find work when idle.&quot; CC&#x27;s actual implementation combines multiple mechanisms, but shares the same goal — reducing Lead&#x27;s manual assignment burden.</p>
+</blockquote>
+<h3 class="rp-toc-include" id="1-ccs-idle-mechanism-combined-approach-not-single-polling"><a href="#1-ccs-idle-mechanism-combined-approach-not-single-polling" class="rp-header-anchor rp-link" aria-hidden="true">#</a>1. CC&#x27;s Idle Mechanism: Combined Approach, Not Single Polling</h3>
+<p>Teaching version uses a single <code>idle_poll()</code> to handle both inbox checking and task claiming during idle. CC&#x27;s actual implementation combines four mechanisms:</p>
+<p><strong>idle_notification</strong>: After completing a round of work, <code>sendIdleNotification()</code> (<code>inProcessRunner.ts:569-589</code>) sends an idle notification to Lead. Lead knows the teammate is available and can assign new tasks or request shutdown.</p>
+<p><strong>mailbox polling</strong>: <code>waitForNextPromptOrShutdown()</code> (<code>inProcessRunner.ts:689-868</code>) is a <strong>500ms polling loop</strong> that continuously checks three sources: pending user messages, mailbox file messages, and task list. Shutdown requests are prioritized (<code>inProcessRunner.ts:768-804</code>), preventing starvation by regular messages.</p>
+<p><strong>task watcher</strong>: <code>useTaskListWatcher</code> (<code>hooks/useTaskListWatcher.ts:34-189</code>) uses <code>fs.watch()</code> to monitor the <code>.claude/tasks/</code> directory with 1-second debounce, triggering checks when new tasks are created or dependencies unblock. The dependency check (<code>L197-207</code>) verifies &quot;no incomplete tasks in blockedBy&quot;, not &quot;blockedBy is empty&quot;.</p>
+<p><strong>active claiming</strong>: The polling loop also calls <code>tryClaimNextTask()</code> (<code>inProcessRunner.ts:853-860</code>) — actively claiming tasks from the task list while waiting. So &quot;teammates don&#x27;t actively poll for tasks&quot; is inaccurate; CC has both passive notification and active claiming.</p>
+<h3 class="rp-toc-include" id="2-task-claiming-file-locks--atomic-operations"><a href="#2-task-claiming-file-locks--atomic-operations" class="rp-header-anchor rp-link" aria-hidden="true">#</a>2. Task Claiming: File Locks + Atomic Operations</h3>
+<p><code>claimTask()</code> (<code>utils/tasks.ts:541-612</code>) uses <code>proper-lockfile</code> task-level locks, performing read-check-modify-write within the lock. Checks: owner already exists (<code>L575-576</code>), already completed (<code>L580-581</code>), unresolved blockers in blockedBy (<code>L585-594</code>). <code>claimTaskWithBusyCheck()</code> (<code>utils/tasks.ts:614-692</code>) uses task-list level locks, making busy check and claim atomic to avoid TOCTOU.</p>
+<p><code>findAvailableTask()</code> (<code>inProcessRunner.ts:595-604</code>) checks &quot;all blockedBy completed&quot; using <code>task.blockedBy.every(id =&gt; !unresolvedTaskIds.has(id))</code>. <code>tryClaimNextTask()</code> (<code>inProcessRunner.ts:624-657</code>) updates status to <code>in_progress</code> after claiming, so the UI immediately reflects the change.</p>
+<h3 class="rp-toc-include" id="3-teaching-version-vs-cc-comparison"><a href="#3-teaching-version-vs-cc-comparison" class="rp-header-anchor rp-link" aria-hidden="true">#</a>3. Teaching Version vs CC Comparison</h3>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>Dimension</th><th>Teaching (s17)</th><th>CC</th></tr></thead><tbody><tr><td>Idle mechanism</td><td>idle_poll unified polling (5s)</td><td>idle_notification + 500ms mailbox polling + task watcher</td></tr><tr><td>Task discovery</td><td>scan_unclaimed_tasks (polling)</td><td>useTaskListWatcher (file watching) + tryClaimNextTask (active polling)</td></tr><tr><td>Dependency check</td><td>can_start (all blockedBy completed)</td><td>findAvailableTask (same semantics)</td></tr><tr><td>Concurrency safety</td><td>Owner check (no file lock)</td><td>proper-lockfile task lock + task-list lock</td></tr><tr><td>Shutdown handling</td><td>IDLE dispatches directly, WORK via handle_inbox_message</td><td>500ms polling loop prioritizes shutdown_request</td></tr><tr><td>Timeout exit</td><td>60s with no new tasks</td><td>No fixed timeout, Lead manual shutdown</td></tr><tr><td>Identity persistence</td><td>Messages length detection</td><td>Context compaction preserves system prompt</td></tr><tr><td>Claim failure handling</td><td>Check return value, skip on failure</td><td>File locks guarantee atomicity</td></tr></tbody></table></div>
+<p>Teaching version&#x27;s <code>idle_poll()</code> merges CC&#x27;s four mechanisms into one polling function — a reasonable simplification since the core semantics (find work when idle, claim after deps resolve, prioritize shutdown) are consistent.</p>
+</details>
+<!--/$--></div><footer class="rp-doc-footer"><div class="rp-doc-footer__edit"></div><div class="rp-doc-footer__divider"></div><div class="rp-prev-next-page"><a href="/en/learn-claude/s16_team_protocols/index.html" class="rp-prev-next-page__item rp-prev-next-page__prev rp-link"><span class="rp-prev-next-page__item__desc">Previous page</span><span class="rp-prev-next-page__item__title"><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon rp-prev-next-page__rotate_180"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg><span>s16_team_protocols</span></span></a><a href="/en/learn-claude/s18_worktree_isolation/index.html" class="rp-prev-next-page__item rp-prev-next-page__next rp-link"><span class="rp-prev-next-page__item__desc">Next page</span><span class="rp-prev-next-page__item__title"><span>s18_worktree_isolation</span><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></span></a></div></footer></main></div><aside class="rp-doc-layout__outline rp-scrollbar"><div class="rp-outline"><div class="rp-outline__title">ON THIS PAGE<svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg></div><nav class="rp-outline__toc rp-scrollbar"><a href="#the-problem" class="rp-toc-item rp-link" title="The Problem" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">The Problem</span></a><a href="#the-solution" class="rp-toc-item rp-link" title="The Solution" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">The Solution</span></a><a href="#how-it-works" class="rp-toc-item rp-link" title="How It Works" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">How It Works</span></a><a href="#idle_poll-idle-polling" class="rp-toc-item rp-link" title="idle_poll: Idle Polling" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">idle_poll: Idle Polling</span></a><a href="#scan_unclaimed_tasks-scan-the-task-board" class="rp-toc-item rp-link" title="scan_unclaimed_tasks: Scan the Task Board" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">scan_unclaimed_tasks: Scan the Task Board</span></a><a href="#claim_task-owner-check" class="rp-toc-item rp-link" title="claim_task: Owner Check" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">claim_task: Owner Check</span></a><a href="#teammate-lifecycle-work--idle--shutdown" class="rp-toc-item rp-link" title="Teammate Lifecycle: WORK → IDLE → SHUTDOWN" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">Teammate Lifecycle: WORK → IDLE → SHUTDOWN</span></a><a href="#identity-re-injection" class="rp-toc-item rp-link" title="Identity Re-injection" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">Identity Re-injection</span></a><a href="#consume_lead_inbox-unified-inbox-consumer" class="rp-toc-item rp-link" title="consume_lead_inbox: Unified Inbox Consumer" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">consume_lead_inbox: Unified Inbox Consumer</span></a><a href="#putting-it-together" class="rp-toc-item rp-link" title="Putting It Together" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">Putting It Together</span></a><a href="#changes-from-s16" class="rp-toc-item rp-link" title="Changes from s16" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">Changes from s16</span></a><a href="#try-it" class="rp-toc-item rp-link" title="Try It" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">Try It</span></a><a href="#whats-next" class="rp-toc-item rp-link" title="What&#x27;s Next" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">What&#x27;s Next</span></a><a href="#1-ccs-idle-mechanism-combined-approach-not-single-polling" class="rp-toc-item rp-link" title="1. CC&#x27;s Idle Mechanism: Combined Approach, Not Single Polling" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">1. CC&#x27;s Idle Mechanism: Combined Approach, Not Single Polling</span></a><a href="#2-task-claiming-file-locks--atomic-operations" class="rp-toc-item rp-link" title="2. Task Claiming: File Locks + Atomic Operations" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">2. Task Claiming: File Locks + Atomic Operations</span></a><a href="#3-teaching-version-vs-cc-comparison" class="rp-toc-item rp-link" title="3. Teaching Version vs CC Comparison" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">3. Teaching Version vs CC Comparison</span></a></nav><div class="rp-outline__divider"></div><div class="rp-outline__bottom"></div></div></aside></div></div>
+    <div id="__rspress_modal_container"></div>
+  </body>
+</html>

@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="zh">
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>s02: Tool Use — 多加一个工具，只加一行</title>
+<script>{;const saved = localStorage.getItem('rspress-theme-appearance');const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;const isDark = !saved || saved === 'auto' ? preferDark : saved === 'dark';document.documentElement.classList.toggle('dark', isDark);document.documentElement.classList.toggle('rp-dark', isDark);document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';}</script>
+<script>window.onload=function(){document.title='「万维飘」w3pua.com';setTimeout(function(){var imgs=document.querySelectorAll('img.rp-home-hero__image-img');imgs.forEach(function(img){var num=Math.floor(Math.random()*19)+1;img.src='/logo/'+num+'.svg';});},100);};</script>
+<script src="/katex.min.js"></script>
+<script>
+    (function() {
+      function renderMathInElement(container) {
+        if (!container) return;
+        
+        var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+        var textNodes = [];
+        while(walker.nextNode()) textNodes.push(walker.currentNode);
+        
+        textNodes.forEach(function(textNode) {
+          var text = textNode.textContent;
+          if (!text || (!text.includes('$$') && !text.includes('$'))) return;
+          
+          var parent = textNode.parentNode;
+          if (!parent) return;
+          if (parent.tagName === 'PRE' || parent.tagName === 'CODE' || parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE') return;
+          
+          var newHtml = text.replace(/\$\$([\s\S]*?)\$\$/g, function(match, formula) {
+            try {
+              return '<div class="math math-display">' + katex.renderToString(formula.trim(), {displayMode: true, throwOnError: false}) + '</div>';
+            } catch(e) { return match; }
+          }).replace(/\$([^\$\n]+?)\$/g, function(match, formula) {
+            try {
+              return katex.renderToString(formula.trim(), {displayMode: false, throwOnError: false});
+            } catch(e) { return match; }
+          });
+          
+          if (newHtml !== text) {
+            var span = document.createElement('span');
+            span.innerHTML = newHtml;
+            parent.replaceChild(span, textNode);
+          }
+        });
+      }
+
+      function onRouteChange() {
+        setTimeout(function() {
+          var container = document.getElementById('__rspress_root');
+          if (container) {
+            renderMathInElement(container);
+          }
+        }, 100);
+      }
+
+      if (typeof window !== 'undefined') {
+        if (window.__RSPRESS__) {
+          window.__RSPRESS__.addEventListener('routeChangeComplete', onRouteChange);
+        } else {
+          window.addEventListener('popstate', onRouteChange);
+          var originalPushState = history.pushState;
+          history.pushState = function() {
+            originalPushState.apply(this, arguments);
+            onRouteChange();
+          };
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+          onRouteChange();
+        });
+        
+        setTimeout(onRouteChange, 500);
+        setTimeout(onRouteChange, 1000);
+        setTimeout(onRouteChange, 2000);
+      }
+    })();
+  </script>
+<link href="/static/css/styles.e6bedadc36.css" rel="stylesheet">
+<link rel="stylesheet" href="/katex.min.css">
+<script defer src="/static/js/styles.03ebfe3fca.js"></script>
+<script defer src="/static/js/lib-react.06aa503779.js"></script>
+<script defer src="/static/js/lib-router.a7a83a8399.js"></script>
+<script defer src="/static/js/6665.052760f3df.js"></script>
+<script defer src="/static/js/index.2a1d1b00fc.js"></script>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Rspress v2.0.11">
+<link rel="icon" href="/logo.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="s02: Tool Use — 多加一个工具，只加一行">
+<meta name="description" content="s01 → s02 → <a href=&quot;s03](./s03_permission/&quot;>s03</a> → s04 → ... → s20 &quot;加一个工具, 只加一个 handler&quot; — 循环不用动, 新工具注册进 dispatch map 就行。Harness 层: 工具分发 — 扩展模型能触达的边界。">
+<meta property="og:description" content="s01 → s02 → <a href=&quot;s03](./s03_permission/&quot;>s03</a> → s04 → ... → s20 &quot;加一个工具, 只加一个 handler&quot; — 循环不用动, 新工具注册进 dispatch map 就行。Harness 层: 工具分发 — 扩展模型能触达的边界。"></head>
+
+  <body>
+    <div id="__rspress_root"><link rel="preload" as="image" href="/logo.png"/><link rel="preload" as="image" href="/static/svg/tool-dispatch.3b006ee3e0.svg"/><link rel="preload" as="image" href="/static/svg/concurrency-comparison.fb4748ff66.svg"/><header class="rp-nav"><div class="rp-nav__left"><div class="rp-nav__title"><a href="/" class="rp-nav__title__link rp-link"><div class="rp-nav__title__logo"><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--light"/><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--dark"/></div></a></div></div><div class="rp-nav__right"><button class="rp-search-button"><div class="rp-search-button__content"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21" class="rp-search-button__icon"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg><span class="rp-search-button__word">搜索</span></div><div class="rp-search-button__hotkey" style="opacity:0"><span></span><span>K</span></div></button><div class="rp-search-button--mobile"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg></div><ul class="rp-nav-menu rp-nav-menu--right"><li class="rp-nav-menu__item"><a href="/book/preface.html" class="rp-nav-menu__item__container rp-link">Agent指南</a></li><li class="rp-nav-menu__item"><a href="/harness/1-four-frameworks-comparison.html" class="rp-nav-menu__item__container rp-link">Harness手册</a></li><li class="rp-nav-menu__item rp-nav-menu__item--active"><a href="/learn-claude/s01_agent_loop/index.html" class="rp-nav-menu__item__container rp-link">学习Claude</a></li></ul><div class="rp-nav__others"><div class="rp-nav-menu__divider"></div><li class="rp-nav-menu__item"><div class="rp-nav-menu__item__container">简体中文<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-menu__item__icon"><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--center"><li class="rp-hover-group__item" style="padding-left:8px" data-depth="0"><a href="/en/learn-claude/s02_tool_use/index.html" class="rp-hover-group__item__link rp-link" aria-label="English" lang="en" hrefLang="en" rel="alternate">English</a></li><li class="rp-hover-group__item rp-hover-group__item--active" style="padding-left:8px" data-depth="0"><a href="/s02_tool_use/index.html" class="rp-hover-group__item__link rp-link" aria-label="简体中文" lang="zh" hrefLang="zh" rel="alternate">简体中文</a></li></ul></li><div class="rp-switch-appearance"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" class="rp-switch-appearance__icon rp-switch-appearance__icon--sun"><path fill="currentColor" d="m7.001 15.848-1.226 1.226a.58.58 0 0 0 0 .818.58.58 0 0 0 .818 0l1.226-1.226a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0m-.352-8.735a.584.584 0 0 0 .825-.825L6.237 5.051a.584.584 0 0 0-.825.825zM5.011 11.07h-1.75a.584.584 0 0 0 0 1.167h1.75c.324 0 .584-.26.584-.583a.585.585 0 0 0-.584-.584m7.003-5.835c.324 0 .584-.26.584-.584V2.9a.58.58 0 0 0-.584-.584.58.58 0 0 0-.583.583V4.65c0 .323.262.584.583.584m5.616 1.621 1.226-1.225a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0l-1.226 1.225a.58.58 0 0 0 0 .818.576.576 0 0 0 .818 0m3.138 4.214h-1.75a.58.58 0 0 0-.584.584c0 .324.26.584.583.584h1.751a.584.584 0 1 0 0-1.167m-3.389 5.124a.584.584 0 0 0-.825.825l1.238 1.238a.584.584 0 0 0 .825-.826zm-5.365-9.795a5.256 5.256 0 0 0-5.257 5.258 5.256 5.256 0 0 0 5.257 5.257 5.256 5.256 0 0 0 5.257-5.257 5.256 5.256 0 0 0-5.257-5.258m0 11.675a.58.58 0 0 0-.583.583v1.751a.582.582 0 1 0 1.167 0v-1.75a.584.584 0 0 0-.584-.584"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" viewBox="0 0 19 19" class="rp-switch-appearance__icon rp-switch-appearance__icon--moon"><path fill="currentColor" d="M9.166 0a9.2 9.2 0 0 1 1.857.188.834.834 0 0 1 .042 1.623 4.47 4.47 0 1 0 5.457 5.457l.048-.135a.834.834 0 0 1 1.575.177q.186.902.188 1.856A9.168 9.168 0 1 1 9.166 0"></path></svg></div></div><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__sm"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg></button><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__md"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--right"><div class="rp-nav-menu__others-mobile__container"><div class="rp-nav-hamburger__md__hover-group"><div class="rp-nav-screen-appearance"><div class="rp-nav-screen-appearance__left">主题</div><div class="rp-nav-screen-appearance__right"></div></div><div class="rp-nav-screen-langs"><div class="rp-nav-screen-langs__left">语言</div><div class="rp-nav-screen-langs__right">简体中文<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-screen-langs__icon "><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div></div><div class="rp-nav-screen-langs-group" style="display:grid;grid-template-rows:0fr;transition:grid-template-rows 0.2s ease-out"><div class="rp-nav-screen-langs-group__inner"><a href="/en/learn-claude/s02_tool_use/index.html" class="rp-nav-screen-langs-group__item rp-link" hrefLang="en" lang="en" rel="alternate">English</a><span class="rp-nav-screen-langs-group__item rp-nav-screen-langs-group__item--active" aria-current="page" aria-disabled="true">简体中文</span></div></div><div class="rp-nav-screen-divider"></div></div></div></ul></button></div></header><div class="rp-doc-layout__menu"><div class="rp-sidebar-menu"><button type="button" class="rp-sidebar-menu__left"><svg width="1em" height="1em" viewBox="0 0 32 32"><path fill="currentColor" d="M4 6h24v2H4zm0 18h24v2H4zm0-12h24v2H4zm0 6h24v2H4z"></path></svg><span>菜单</span></button><button type="button" class="rp-sidebar-menu__right"><span class="rp-sidebar-menu__right__text">目录</span><svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-sidebar-menu__right__icon" style="transform:rotate(0deg);transition:transform 0.2s ease-out"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></button></div></div><div class="rp-doc-layout__container"><aside class="rp-doc-layout__sidebar rp-scrollbar"><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s01_agent_loop</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s01_agent_loop/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s01_agent_loop</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s02_tool_use</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s02_tool_use/index.html" class="rp-sidebar-item rp-sidebar-item--active rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s02_tool_use</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s03_permission</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s03_permission/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s03_permission</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s04_hooks</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s04_hooks/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s04_hooks</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s05_todo_write</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s05_todo_write/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s05_todo_write</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s06_subagent</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s06_subagent/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s06_subagent</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s07_skill_loading</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s07_skill_loading/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s07_skill_loading</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s08_context_compact</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s08_context_compact/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s08_context_compact</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s09_memory</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s09_memory/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s09_memory</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s10_system_prompt</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s10_system_prompt/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s10_system_prompt</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s11_error_recovery</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s11_error_recovery/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s11_error_recovery</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s12_task_system</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s12_task_system/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s12_task_system</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s13_background_tasks</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s13_background_tasks/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s13_background_tasks</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s14_cron_scheduler</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s14_cron_scheduler/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s14_cron_scheduler</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s15_agent_teams</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s15_agent_teams/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s15_agent_teams</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s16_team_protocols</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s16_team_protocols/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s16_team_protocols</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s17_autonomous_agents</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s17_autonomous_agents/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s17_autonomous_agents</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s18_worktree_isolation</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s18_worktree_isolation/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s18_worktree_isolation</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s19_mcp_plugin</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s19_mcp_plugin/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s19_mcp_plugin</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s20_comprehensive</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s20_comprehensive/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s20_comprehensive</span></div><div class="rp-sidebar-item__right"></div></a></aside><div class="rp-doc-layout__doc"><main class="rp-doc-layout__doc-container"><div class="rp-doc rspress-doc"><!--$--><h1 class="rp-toc-include" id="s02-tool-use--多加一个工具只加一行"><a href="#s02-tool-use--多加一个工具只加一行" class="rp-header-anchor rp-link" aria-hidden="true">#</a>s02: Tool Use — 多加一个工具，只加一行<!-- --> </h1>
+<p>s01 → <code>s02</code> → <a href="s03](./s03_permission/" class="rp-link">s03</a> → s04 → ... → s20</p>
+<blockquote>
+<p><em>&quot;加一个工具, 只加一个 handler&quot;</em> — 循环不用动, 新工具注册进 dispatch map 就行。</p>
+<p><strong>Harness 层</strong>: 工具分发 — 扩展模型能触达的边界。</p>
+</blockquote>
+<hr/>
+<h2 class="rp-toc-include" id="只有-bash-一个工具"><a href="#只有-bash-一个工具" class="rp-header-anchor rp-link" aria-hidden="true">#</a>只有 bash 一个工具</h2>
+<p>s01 的 Agent 只有一个 bash 工具。读文件要 <code>cat</code>，写文件要 <code>echo &quot;...&quot; &gt; file.py</code>，改文件要 <code>sed</code>。</p>
+<p>模型想的是&quot;读这个文件&quot;，却要拼出 <code>cat path/to/file</code>。多了一层翻译，浪费 token，还容易拼错。</p>
+<hr/>
+<h2 class="rp-toc-include" id="全局视角工具分发"><a href="#全局视角工具分发" class="rp-header-anchor rp-link" aria-hidden="true">#</a>全局视角：工具分发</h2>
+<p><img alt="Tool Dispatch" src="/static/svg/tool-dispatch.3b006ee3e0.svg"/>)</p>
+<p>s01 的循环完全保留（LLM 调用、stop_reason 判断、消息追加）。唯一的变动在工具执行那 1 行：<code>run_bash()</code> 替换为 <code>TOOL_HANDLERS[block.name]()</code> 查表分发。</p>
+<p>给 Agent 加一个工具只需要做两件事：</p>
+<ol>
+<li><strong>定义工具</strong>：在 <code>TOOLS</code> 数组里加一条描述</li>
+<li><strong>注册处理函数</strong>：在 <code>TOOL_HANDLERS</code> 字典里加一个映射</li>
+</ol>
+<hr/>
+<h2 class="rp-toc-include" id="从-1-个工具到-5-个工具"><a href="#从-1-个工具到-5-个工具" class="rp-header-anchor rp-link" aria-hidden="true">#</a>从 1 个工具到 5 个工具</h2>
+<p>s01 只有一个 bash：</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-foreground)">TOOLS </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> [</span><span style="color:var(--shiki-token-punctuation)">{</span><span style="color:var(--shiki-token-string-expression)">&quot;name&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;bash&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)"> ...</span><span style="color:var(--shiki-token-punctuation)">}</span><span style="color:var(--shiki-foreground)">]</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> run_bash</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">command</span><span style="color:var(--shiki-foreground)">): ...</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>s02 加到 5 个，每个工具都是独立定义：</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-foreground)">TOOLS </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> [</span></span>
+<span class="line"><span style="color:var(--shiki-token-punctuation)">    {</span><span style="color:var(--shiki-token-string-expression)">&quot;name&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;bash&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-string-expression)">       &quot;description&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;Run a shell command.&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)"> ...</span><span style="color:var(--shiki-token-punctuation)">},</span></span>
+<span class="line"><span style="color:var(--shiki-token-punctuation)">    {</span><span style="color:var(--shiki-token-string-expression)">&quot;name&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;read_file&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-string-expression)">  &quot;description&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;Read file contents.&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)">  ...</span><span style="color:var(--shiki-token-punctuation)">},</span></span>
+<span class="line"><span style="color:var(--shiki-token-punctuation)">    {</span><span style="color:var(--shiki-token-string-expression)">&quot;name&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;write_file&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-string-expression)"> &quot;description&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;Write content to file.&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)"> ...</span><span style="color:var(--shiki-token-punctuation)">},</span></span>
+<span class="line"><span style="color:var(--shiki-token-punctuation)">    {</span><span style="color:var(--shiki-token-string-expression)">&quot;name&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;edit_file&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-string-expression)">  &quot;description&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;Replace text in file once.&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)"> ...</span><span style="color:var(--shiki-token-punctuation)">},</span></span>
+<span class="line"><span style="color:var(--shiki-token-punctuation)">    {</span><span style="color:var(--shiki-token-string-expression)">&quot;name&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;glob&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-string-expression)">       &quot;description&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;Find files by pattern.&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)"> ...</span><span style="color:var(--shiki-token-punctuation)">},</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">]</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>每个工具有自己的实现函数：</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> run_read</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">path</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> limit</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)">None</span><span style="color:var(--shiki-foreground)">):</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    lines </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> safe_path</span><span style="color:var(--shiki-token-punctuation)">(path).</span><span style="color:var(--shiki-token-function)">read_text</span><span style="color:var(--shiki-token-punctuation)">().</span><span style="color:var(--shiki-token-function)">splitlines</span><span style="color:var(--shiki-token-punctuation)">()</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-foreground)"> limit</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        lines </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> lines</span><span style="color:var(--shiki-token-punctuation)">[:</span><span style="color:var(--shiki-foreground)">limit</span><span style="color:var(--shiki-token-punctuation)">]</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-token-string-expression)"> &quot;\n&quot;</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">join</span><span style="color:var(--shiki-token-punctuation)">(lines)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> run_write</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">path</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> content</span><span style="color:var(--shiki-foreground)">):</span></span>
+<span class="line"><span style="color:var(--shiki-token-function)">    safe_path</span><span style="color:var(--shiki-token-punctuation)">(path).</span><span style="color:var(--shiki-token-function)">write_text</span><span style="color:var(--shiki-token-punctuation)">(content)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-token-keyword)"> f</span><span style="color:var(--shiki-token-string-expression)">&quot;Wrote </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-function)">len</span><span style="color:var(--shiki-token-punctuation)">(content)</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)"> bytes to </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">path</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&quot;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> run_edit</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">path</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> old_text</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> new_text</span><span style="color:var(--shiki-foreground)">):</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    text </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> safe_path</span><span style="color:var(--shiki-token-punctuation)">(path).</span><span style="color:var(--shiki-token-function)">read_text</span><span style="color:var(--shiki-token-punctuation)">()</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-foreground)"> old_text </span><span style="color:var(--shiki-token-keyword)">not</span><span style="color:var(--shiki-token-keyword)"> in</span><span style="color:var(--shiki-foreground)"> text</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        return</span><span style="color:var(--shiki-token-string-expression)"> &quot;Error: text not found&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-function)">    safe_path</span><span style="color:var(--shiki-token-punctuation)">(path).</span><span style="color:var(--shiki-token-function)">write_text</span><span style="color:var(--shiki-token-punctuation)">(text.</span><span style="color:var(--shiki-token-function)">replace</span><span style="color:var(--shiki-token-punctuation)">(old_text, new_text, </span><span style="color:var(--shiki-token-constant)">1</span><span style="color:var(--shiki-token-punctuation)">))</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-token-keyword)"> f</span><span style="color:var(--shiki-token-string-expression)">&quot;Edited </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">path</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&quot;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> run_glob</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">pattern</span><span style="color:var(--shiki-foreground)">):</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    import</span><span style="color:var(--shiki-foreground)"> glob </span><span style="color:var(--shiki-token-keyword)">as</span><span style="color:var(--shiki-foreground)"> g</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    return</span><span style="color:var(--shiki-token-string-expression)"> &quot;\n&quot;</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">join</span><span style="color:var(--shiki-token-punctuation)">(g.</span><span style="color:var(--shiki-token-function)">glob</span><span style="color:var(--shiki-token-punctuation)">(pattern, root_dir</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-punctuation)">WORKDIR))</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<hr/>
+<h2 class="rp-toc-include" id="工具分发"><a href="#工具分发" class="rp-header-anchor rp-link" aria-hidden="true">#</a>工具分发</h2>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-foreground)">TOOL_HANDLERS </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-punctuation)"> {</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">    &quot;bash&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)">       run_bash</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">    &quot;read_file&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)">  run_read</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">    &quot;write_file&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> run_write</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">    &quot;edit_file&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)">  run_edit</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">    &quot;glob&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)">       run_glob</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-punctuation)">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-comment)"># 循环里只改了一行——从硬编码 run_bash 变成查表：</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">for</span><span style="color:var(--shiki-foreground)"> block </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-foreground)"> response</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">content</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-foreground)"> block</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">type </span><span style="color:var(--shiki-token-keyword)">==</span><span style="color:var(--shiki-token-string-expression)"> &quot;tool_use&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        handler </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> TOOL_HANDLERS</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-foreground)">block</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">name</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-token-comment)">    # 查表</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        output </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> handler</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-keyword)">**</span><span style="color:var(--shiki-token-punctuation)">block.input)</span><span style="color:var(--shiki-token-comment)">         # 调用</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        results</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">append</span><span style="color:var(--shiki-token-punctuation)">(...)</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>加一个工具 = 在 <code>TOOLS</code> 数组加一条 + 在 <code>TOOL_HANDLERS</code> 字典加一行。循环不变。</p>
+<hr/>
+<h2 class="rp-toc-include" id="多个工具调用"><a href="#多个工具调用" class="rp-header-anchor rp-link" aria-hidden="true">#</a>多个工具调用</h2>
+<p>模型经常一次返回多个 tool_use：&quot;读一下 a.py 和 b.py，然后列出所有 .py 文件&quot;。</p>
+<p>教学版按 <code>response.content</code> 原始顺序逐个执行。CC 的做法更复杂：按原始顺序切成连续 batch，batch 内并发安全的工具并行执行，batch 间严格顺序（见附录）。</p>
+<hr/>
+<h2 class="rp-toc-include" id="速查"><a href="#速查" class="rp-header-anchor rp-link" aria-hidden="true">#</a>速查</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>概念</th><th>一句话</th></tr></thead><tbody><tr><td>TOOL_HANDLERS</td><td>工具名 → 处理函数的字典。加工具 = 加一行映射</td></tr><tr><td>工具定义</td><td>告诉模型&quot;我能做什么&quot;的 JSON schema</td></tr><tr><td>多工具调用</td><td>模型可一次返回多个 tool_use，教学版按原始顺序逐个执行</td></tr><tr><td>循环不变</td><td>s01 的 <code>while True</code> 循环一行都没改</td></tr></tbody></table></div>
+<hr/>
+<h2 class="rp-toc-include" id="相对-s01-的变更"><a href="#相对-s01-的变更" class="rp-header-anchor rp-link" aria-hidden="true">#</a>相对 s01 的变更</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>组件</th><th>之前 (s01)</th><th>之后 (s02)</th></tr></thead><tbody><tr><td>工具数量</td><td>1 (bash)</td><td>5 (+read, write, edit, glob)</td></tr><tr><td>工具执行</td><td>硬编码 <code>run_bash()</code></td><td>TOOL_HANDLERS 查表分发</td></tr><tr><td>路径安全</td><td>无</td><td>safe_path 校验（仅 file tools）</td></tr><tr><td>循环</td><td><code>while True</code> + <code>stop_reason</code></td><td>与 s01 完全一致</td></tr></tbody></table></div>
+<hr/>
+<h2 class="rp-toc-include" id="试一下"><a href="#试一下" class="rp-header-anchor rp-link" aria-hidden="true">#</a>试一下</h2>
+<div class="rp-codeblock language-sh"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="sh"><code><span class="line"><span style="color:var(--shiki-token-function)">cd</span><span style="color:var(--shiki-token-string)"> learn-claude-code</span></span>
+<span class="line"><span style="color:var(--shiki-token-function)">python</span><span style="color:var(--shiki-token-string)"> s02_tool_use/code.py</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>试试这些 prompt：</p>
+<ol>
+<li><code>Read the file README.md and tell me what this project is about</code></li>
+<li><code>Create a file called test.py that prints &quot;hello&quot;, then read it back</code></li>
+<li><code>Find all Python files in this directory</code></li>
+<li><code>Read both README.md and requirements.txt, then create a summary file</code></li>
+</ol>
+<p>观察重点：模型什么时候只调一个工具，什么时候一次调多个？多个工具调用的顺序和结果是否正确？</p>
+<hr/>
+<h2 class="rp-toc-include" id="接下来"><a href="#接下来" class="rp-header-anchor rp-link" aria-hidden="true">#</a>接下来</h2>
+<p>现在 Agent 有 5 个专用工具。file tools 受 <code>safe_path</code> 保护，但 bash 不受限制，<code>rm -rf /</code> 还是能跑。</p>
+<p>s03 Permission → 在工具执行之前加一道门：这个操作安全吗？需要用户批准吗？</p>
+<details>
+<summary>深入 CC 源码</summary>
+<blockquote>
+<p>以下基于 CC 源码 <code>Tool.ts</code>、<code>tools.ts</code>、<code>toolOrchestration.ts</code>、<code>toolExecution.ts</code>、<code>StreamingToolExecutor.ts</code> 的核查。</p>
+</blockquote>
+<h3 class="rp-toc-include" id="一工具定义方式"><a href="#一工具定义方式" class="rp-header-anchor rp-link" aria-hidden="true">#</a>一、工具定义方式</h3>
+<p><strong>教学版</strong>：<code>TOOLS</code> 数组 + <code>TOOL_HANDLERS</code> 字典。定义和实现分开。
+<strong>CC</strong>：每个工具是 <code>buildTool()</code> 创建的独立对象，包含 schema、验证、权限、执行。<code>getAllBaseTools()</code> 汇总所有工具。</p>
+<p>教学版的分离方式对教学更清晰——读者一眼看到&quot;加一个工具 = 两条定义&quot;。</p>
+<h3 class="rp-toc-include" id="二并发安全判断isconcurrencysafe"><a href="#二并发安全判断isconcurrencysafe" class="rp-header-anchor rp-link" aria-hidden="true">#</a>二、并发安全判断：isConcurrencySafe()</h3>
+<p><img alt="Tool Concurrency" src="/static/svg/concurrency-comparison.fb4748ff66.svg"/>)</p>
+<p>教学版按原始顺序逐个执行，不做并发。CC 用 <code>isConcurrencySafe(input)</code> 判断能否并发——注意这不是简单的&quot;只读 vs 写&quot;，而是按具体输入判断：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th></th><th>isReadOnly</th><th>isConcurrencySafe</th></tr></thead><tbody><tr><td>FileRead</td><td>true</td><td>true</td></tr><tr><td>Glob</td><td>true</td><td>true</td></tr><tr><td>Bash <code>ls</code></td><td>true</td><td><strong>true</strong> ← 关键差异</td></tr><tr><td>Bash <code>rm</code></td><td>false</td><td>false</td></tr><tr><td>TaskCreate</td><td>false</td><td><strong>true</strong> ← 改状态但可并发（TaskCreate 在 s12 介绍）</td></tr></tbody></table></div>
+<p>CC 的 Bash tool 的 <code>isConcurrencySafe</code> 等于 <code>isReadOnly</code>——只读命令可并发，写命令不可。TaskCreate 虽然改了任务文件，但每次都写不同的文件，所以可以并发。</p>
+<h3 class="rp-toc-include" id="三分区算法"><a href="#三分区算法" class="rp-header-anchor rp-link" aria-hidden="true">#</a>三、分区算法</h3>
+<p>CC 的 <code>partitionToolCalls()</code>（<code>toolOrchestration.ts:91-115</code>）不是分两组，而是把工具调用<strong>按连续块分批</strong>：</p>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>[read A, read B, glob *.py, bash &quot;rm x&quot;, read C]</span></span>
+<span class="line"><span>  → batch1(并发): [read A, read B, glob *.py]</span></span>
+<span class="line"><span>  → batch2(串行): [bash &quot;rm x&quot;]</span></span>
+<span class="line"><span>  → batch3(并发): [read C]</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>并发安全的连续块编入同一个 batch，batch 内真正并发执行（<code>toolOrchestration.ts:152-176</code>，有并发上限）。遇到非并发安全的就开新 batch 串行执行。batch 之间严格顺序。</p>
+<h3 class="rp-toc-include" id="四验证管线"><a href="#四验证管线" class="rp-header-anchor rp-link" aria-hidden="true">#</a>四、验证管线</h3>
+<p>CC 的每个工具调用经过严格的 5 步验证（<code>toolExecution.ts</code>）：</p>
+<ol>
+<li><strong>Zod schema 验证</strong>（<code>614-680</code>，教学版用 JSON Schema 替代）：参数类型/结构检查</li>
+<li><strong>工具级 validateInput()</strong>（<code>682-733</code>）：参数值验证（如路径是否在工作区内）</li>
+<li><strong>PreToolUse hooks</strong>（<code>800-862</code>，s04 详细介绍）：钩子可以返回消息、修改输入、阻止执行</li>
+<li><strong>权限检查</strong>（<code>921-931</code>，s03 的核心内容）：canUseTool + checkPermissions → allow/deny/ask</li>
+<li><strong>执行 tool.call()</strong>（<code>1207-1222</code>）</li>
+</ol>
+<p>教学版省略了 Zod（用 JSON Schema）、省略了 validateInput（用安全函数）、保留了权限检查和钩子概念。</p>
+<h3 class="rp-toc-include" id="五流式工具执行"><a href="#五流式工具执行" class="rp-header-anchor rp-link" aria-hidden="true">#</a>五、流式工具执行</h3>
+<p>CC 的 <code>StreamingToolExecutor</code>（<code>StreamingToolExecutor.ts</code>）让工具在模型还在生成时就启动——不等模型说完。<code>read_file</code> 可能在模型还在输出&quot;我来分析&quot;的时候就跑完了。教学版不实现这个，目标和 s01 一致——概念清晰，不追求性能极致。</p>
+<h3 class="rp-toc-include" id="六工具结果持久化"><a href="#六工具结果持久化" class="rp-header-anchor rp-link" aria-hidden="true">#</a>六、工具结果持久化</h3>
+<p>每个工具有一个 <code>maxResultSizeChars</code> 字段。结果超过这个值就落盘，模型看到的是预览 + 文件路径。FileRead 特殊——设为 <code>Infinity</code>，防止读文件的输出又被当成文件落盘。具体来说，如果 FileRead 的结果超过阈值被落盘，模型下次读那个落盘文件时又会触发落盘 → 无限循环（读文件 → 落盘 → 再读 → 再落盘 → ...）。</p>
+</details>
+<!--/$--></div><footer class="rp-doc-footer"><div class="rp-doc-footer__edit"></div><div class="rp-doc-footer__divider"></div><div class="rp-prev-next-page"><a href="/learn-claude/s01_agent_loop/index.html" class="rp-prev-next-page__item rp-prev-next-page__prev rp-link"><span class="rp-prev-next-page__item__desc">上一页</span><span class="rp-prev-next-page__item__title"><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon rp-prev-next-page__rotate_180"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg><span>s01_agent_loop</span></span></a><a href="/learn-claude/s03_permission/index.html" class="rp-prev-next-page__item rp-prev-next-page__next rp-link"><span class="rp-prev-next-page__item__desc">下一页</span><span class="rp-prev-next-page__item__title"><span>s03_permission</span><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></span></a></div></footer></main></div><aside class="rp-doc-layout__outline rp-scrollbar"><div class="rp-outline"><div class="rp-outline__title">目录<svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg></div><nav class="rp-outline__toc rp-scrollbar"><a href="#只有-bash-一个工具" class="rp-toc-item rp-link" title="只有 bash 一个工具" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">只有 bash 一个工具</span></a><a href="#全局视角工具分发" class="rp-toc-item rp-link" title="全局视角：工具分发" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">全局视角：工具分发</span></a><a href="#从-1-个工具到-5-个工具" class="rp-toc-item rp-link" title="从 1 个工具到 5 个工具" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">从 1 个工具到 5 个工具</span></a><a href="#工具分发" class="rp-toc-item rp-link" title="工具分发" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">工具分发</span></a><a href="#多个工具调用" class="rp-toc-item rp-link" title="多个工具调用" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">多个工具调用</span></a><a href="#速查" class="rp-toc-item rp-link" title="速查" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">速查</span></a><a href="#相对-s01-的变更" class="rp-toc-item rp-link" title="相对 s01 的变更" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">相对 s01 的变更</span></a><a href="#试一下" class="rp-toc-item rp-link" title="试一下" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">试一下</span></a><a href="#接下来" class="rp-toc-item rp-link" title="接下来" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">接下来</span></a><a href="#一工具定义方式" class="rp-toc-item rp-link" title="一、工具定义方式" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">一、工具定义方式</span></a><a href="#二并发安全判断isconcurrencysafe" class="rp-toc-item rp-link" title="二、并发安全判断：isConcurrencySafe()" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">二、并发安全判断：isConcurrencySafe()</span></a><a href="#三分区算法" class="rp-toc-item rp-link" title="三、分区算法" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">三、分区算法</span></a><a href="#四验证管线" class="rp-toc-item rp-link" title="四、验证管线" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">四、验证管线</span></a><a href="#五流式工具执行" class="rp-toc-item rp-link" title="五、流式工具执行" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">五、流式工具执行</span></a><a href="#六工具结果持久化" class="rp-toc-item rp-link" title="六、工具结果持久化" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">六、工具结果持久化</span></a></nav><div class="rp-outline__divider"></div><div class="rp-outline__bottom"></div></div></aside></div></div>
+    <div id="__rspress_modal_container"></div>
+  </body>
+</html>

@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="zh">
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>s15: Agent Teams — 一个搞不定，组队来</title>
+<script>{;const saved = localStorage.getItem('rspress-theme-appearance');const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;const isDark = !saved || saved === 'auto' ? preferDark : saved === 'dark';document.documentElement.classList.toggle('dark', isDark);document.documentElement.classList.toggle('rp-dark', isDark);document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';}</script>
+<script>window.onload=function(){document.title='「万维飘」w3pua.com';setTimeout(function(){var imgs=document.querySelectorAll('img.rp-home-hero__image-img');imgs.forEach(function(img){var num=Math.floor(Math.random()*19)+1;img.src='/logo/'+num+'.svg';});},100);};</script>
+<script src="/katex.min.js"></script>
+<script>
+    (function() {
+      function renderMathInElement(container) {
+        if (!container) return;
+        
+        var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+        var textNodes = [];
+        while(walker.nextNode()) textNodes.push(walker.currentNode);
+        
+        textNodes.forEach(function(textNode) {
+          var text = textNode.textContent;
+          if (!text || (!text.includes('$$') && !text.includes('$'))) return;
+          
+          var parent = textNode.parentNode;
+          if (!parent) return;
+          if (parent.tagName === 'PRE' || parent.tagName === 'CODE' || parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE') return;
+          
+          var newHtml = text.replace(/\$\$([\s\S]*?)\$\$/g, function(match, formula) {
+            try {
+              return '<div class="math math-display">' + katex.renderToString(formula.trim(), {displayMode: true, throwOnError: false}) + '</div>';
+            } catch(e) { return match; }
+          }).replace(/\$([^\$\n]+?)\$/g, function(match, formula) {
+            try {
+              return katex.renderToString(formula.trim(), {displayMode: false, throwOnError: false});
+            } catch(e) { return match; }
+          });
+          
+          if (newHtml !== text) {
+            var span = document.createElement('span');
+            span.innerHTML = newHtml;
+            parent.replaceChild(span, textNode);
+          }
+        });
+      }
+
+      function onRouteChange() {
+        setTimeout(function() {
+          var container = document.getElementById('__rspress_root');
+          if (container) {
+            renderMathInElement(container);
+          }
+        }, 100);
+      }
+
+      if (typeof window !== 'undefined') {
+        if (window.__RSPRESS__) {
+          window.__RSPRESS__.addEventListener('routeChangeComplete', onRouteChange);
+        } else {
+          window.addEventListener('popstate', onRouteChange);
+          var originalPushState = history.pushState;
+          history.pushState = function() {
+            originalPushState.apply(this, arguments);
+            onRouteChange();
+          };
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+          onRouteChange();
+        });
+        
+        setTimeout(onRouteChange, 500);
+        setTimeout(onRouteChange, 1000);
+        setTimeout(onRouteChange, 2000);
+      }
+    })();
+  </script>
+<link href="/static/css/styles.e6bedadc36.css" rel="stylesheet">
+<link rel="stylesheet" href="/katex.min.css">
+<script defer src="/static/js/styles.03ebfe3fca.js"></script>
+<script defer src="/static/js/lib-react.06aa503779.js"></script>
+<script defer src="/static/js/lib-router.a7a83a8399.js"></script>
+<script defer src="/static/js/6665.052760f3df.js"></script>
+<script defer src="/static/js/index.2a1d1b00fc.js"></script>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Rspress v2.0.11">
+<link rel="icon" href="/logo.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="s15: Agent Teams — 一个搞不定，组队来">
+<meta name="description" content="s01 → ... → s13 → s14 → s15 → <a href=&quot;s16](./s16_team_protocols/&quot;>s16</a> → s17 → s18 → s19 → s20 &quot;一个搞不定, 组队来&quot; — 文件收件箱 + 队友线程。Harness 层: 团队 — 多 Agent 协作, 消息总线。">
+<meta property="og:description" content="s01 → ... → s13 → s14 → s15 → <a href=&quot;s16](./s16_team_protocols/&quot;>s16</a> → s17 → s18 → s19 → s20 &quot;一个搞不定, 组队来&quot; — 文件收件箱 + 队友线程。Harness 层: 团队 — 多 Agent 协作, 消息总线。"></head>
+
+  <body>
+    <div id="__rspress_root"><link rel="preload" as="image" href="/logo.png"/><link rel="preload" as="image" href="/static/svg/agent-teams-overview.afdc683893.svg"/><link rel="preload" as="image" href="/static/svg/team-topology.fa54062bb4.svg"/><header class="rp-nav"><div class="rp-nav__left"><div class="rp-nav__title"><a href="/" class="rp-nav__title__link rp-link"><div class="rp-nav__title__logo"><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--light"/><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--dark"/></div></a></div></div><div class="rp-nav__right"><button class="rp-search-button"><div class="rp-search-button__content"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21" class="rp-search-button__icon"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg><span class="rp-search-button__word">搜索</span></div><div class="rp-search-button__hotkey" style="opacity:0"><span></span><span>K</span></div></button><div class="rp-search-button--mobile"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg></div><ul class="rp-nav-menu rp-nav-menu--right"><li class="rp-nav-menu__item"><a href="/book/preface.html" class="rp-nav-menu__item__container rp-link">Agent指南</a></li><li class="rp-nav-menu__item"><a href="/harness/1-four-frameworks-comparison.html" class="rp-nav-menu__item__container rp-link">Harness手册</a></li><li class="rp-nav-menu__item rp-nav-menu__item--active"><a href="/learn-claude/s01_agent_loop/index.html" class="rp-nav-menu__item__container rp-link">学习Claude</a></li></ul><div class="rp-nav__others"><div class="rp-nav-menu__divider"></div><li class="rp-nav-menu__item"><div class="rp-nav-menu__item__container">简体中文<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-menu__item__icon"><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--center"><li class="rp-hover-group__item" style="padding-left:8px" data-depth="0"><a href="/en/learn-claude/s15_agent_teams/index.html" class="rp-hover-group__item__link rp-link" aria-label="English" lang="en" hrefLang="en" rel="alternate">English</a></li><li class="rp-hover-group__item rp-hover-group__item--active" style="padding-left:8px" data-depth="0"><a href="/s15_agent_teams/index.html" class="rp-hover-group__item__link rp-link" aria-label="简体中文" lang="zh" hrefLang="zh" rel="alternate">简体中文</a></li></ul></li><div class="rp-switch-appearance"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" class="rp-switch-appearance__icon rp-switch-appearance__icon--sun"><path fill="currentColor" d="m7.001 15.848-1.226 1.226a.58.58 0 0 0 0 .818.58.58 0 0 0 .818 0l1.226-1.226a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0m-.352-8.735a.584.584 0 0 0 .825-.825L6.237 5.051a.584.584 0 0 0-.825.825zM5.011 11.07h-1.75a.584.584 0 0 0 0 1.167h1.75c.324 0 .584-.26.584-.583a.585.585 0 0 0-.584-.584m7.003-5.835c.324 0 .584-.26.584-.584V2.9a.58.58 0 0 0-.584-.584.58.58 0 0 0-.583.583V4.65c0 .323.262.584.583.584m5.616 1.621 1.226-1.225a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0l-1.226 1.225a.58.58 0 0 0 0 .818.576.576 0 0 0 .818 0m3.138 4.214h-1.75a.58.58 0 0 0-.584.584c0 .324.26.584.583.584h1.751a.584.584 0 1 0 0-1.167m-3.389 5.124a.584.584 0 0 0-.825.825l1.238 1.238a.584.584 0 0 0 .825-.826zm-5.365-9.795a5.256 5.256 0 0 0-5.257 5.258 5.256 5.256 0 0 0 5.257 5.257 5.256 5.256 0 0 0 5.257-5.257 5.256 5.256 0 0 0-5.257-5.258m0 11.675a.58.58 0 0 0-.583.583v1.751a.582.582 0 1 0 1.167 0v-1.75a.584.584 0 0 0-.584-.584"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" viewBox="0 0 19 19" class="rp-switch-appearance__icon rp-switch-appearance__icon--moon"><path fill="currentColor" d="M9.166 0a9.2 9.2 0 0 1 1.857.188.834.834 0 0 1 .042 1.623 4.47 4.47 0 1 0 5.457 5.457l.048-.135a.834.834 0 0 1 1.575.177q.186.902.188 1.856A9.168 9.168 0 1 1 9.166 0"></path></svg></div></div><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__sm"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg></button><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__md"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--right"><div class="rp-nav-menu__others-mobile__container"><div class="rp-nav-hamburger__md__hover-group"><div class="rp-nav-screen-appearance"><div class="rp-nav-screen-appearance__left">主题</div><div class="rp-nav-screen-appearance__right"></div></div><div class="rp-nav-screen-langs"><div class="rp-nav-screen-langs__left">语言</div><div class="rp-nav-screen-langs__right">简体中文<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-screen-langs__icon "><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div></div><div class="rp-nav-screen-langs-group" style="display:grid;grid-template-rows:0fr;transition:grid-template-rows 0.2s ease-out"><div class="rp-nav-screen-langs-group__inner"><a href="/en/learn-claude/s15_agent_teams/index.html" class="rp-nav-screen-langs-group__item rp-link" hrefLang="en" lang="en" rel="alternate">English</a><span class="rp-nav-screen-langs-group__item rp-nav-screen-langs-group__item--active" aria-current="page" aria-disabled="true">简体中文</span></div></div><div class="rp-nav-screen-divider"></div></div></div></ul></button></div></header><div class="rp-doc-layout__menu"><div class="rp-sidebar-menu"><button type="button" class="rp-sidebar-menu__left"><svg width="1em" height="1em" viewBox="0 0 32 32"><path fill="currentColor" d="M4 6h24v2H4zm0 18h24v2H4zm0-12h24v2H4zm0 6h24v2H4z"></path></svg><span>菜单</span></button><button type="button" class="rp-sidebar-menu__right"><span class="rp-sidebar-menu__right__text">目录</span><svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-sidebar-menu__right__icon" style="transform:rotate(0deg);transition:transform 0.2s ease-out"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></button></div></div><div class="rp-doc-layout__container"><aside class="rp-doc-layout__sidebar rp-scrollbar"><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s01_agent_loop</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s01_agent_loop/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s01_agent_loop</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s02_tool_use</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s02_tool_use/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s02_tool_use</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s03_permission</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s03_permission/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s03_permission</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s04_hooks</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s04_hooks/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s04_hooks</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s05_todo_write</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s05_todo_write/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s05_todo_write</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s06_subagent</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s06_subagent/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s06_subagent</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s07_skill_loading</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s07_skill_loading/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s07_skill_loading</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s08_context_compact</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s08_context_compact/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s08_context_compact</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s09_memory</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s09_memory/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s09_memory</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s10_system_prompt</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s10_system_prompt/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s10_system_prompt</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s11_error_recovery</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s11_error_recovery/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s11_error_recovery</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s12_task_system</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s12_task_system/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s12_task_system</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s13_background_tasks</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s13_background_tasks/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s13_background_tasks</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s14_cron_scheduler</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s14_cron_scheduler/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s14_cron_scheduler</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s15_agent_teams</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s15_agent_teams/index.html" class="rp-sidebar-item rp-sidebar-item--active rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s15_agent_teams</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s16_team_protocols</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s16_team_protocols/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s16_team_protocols</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s17_autonomous_agents</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s17_autonomous_agents/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s17_autonomous_agents</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s18_worktree_isolation</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s18_worktree_isolation/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s18_worktree_isolation</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s19_mcp_plugin</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s19_mcp_plugin/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s19_mcp_plugin</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s20_comprehensive</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/learn-claude/s20_comprehensive/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s20_comprehensive</span></div><div class="rp-sidebar-item__right"></div></a></aside><div class="rp-doc-layout__doc"><main class="rp-doc-layout__doc-container"><div class="rp-doc rspress-doc"><!--$--><h1 class="rp-toc-include" id="s15-agent-teams--一个搞不定组队来"><a href="#s15-agent-teams--一个搞不定组队来" class="rp-header-anchor rp-link" aria-hidden="true">#</a>s15: Agent Teams — 一个搞不定，组队来<!-- --> </h1>
+<p>s01 → ... → s13 → s14 → <code>s15</code> → <a href="s16](./s16_team_protocols/" class="rp-link">s16</a> → s17 → s18 → s19 → s20</p>
+<blockquote>
+<p><em>&quot;一个搞不定, 组队来&quot;</em> — 文件收件箱 + 队友线程。</p>
+<p><strong>Harness 层</strong>: 团队 — 多 Agent 协作, 消息总线。</p>
+</blockquote>
+<hr/>
+<h2 class="rp-toc-include" id="问题"><a href="#问题" class="rp-header-anchor rp-link" aria-hidden="true">#</a>问题</h2>
+<p>&quot;重构整个后端&quot;涉及认证模块、数据库层、API 路由、测试。一个 Agent 在修 API 路由时，认证模块的细节已经不在上下文里了。上下文窗口就那么大，单个 Agent 的注意力覆盖不了所有模块。</p>
+<p>s06 的子 Agent 是临时工，叫来干一件事就走了。但有些任务需要能通信、能协作的队友。</p>
+<hr/>
+<h2 class="rp-toc-include" id="解决方案"><a href="#解决方案" class="rp-header-anchor rp-link" aria-hidden="true">#</a>解决方案</h2>
+<p><img alt="Agent Teams Overview" src="/static/svg/agent-teams-overview.afdc683893.svg"/>)</p>
+<p>教学代码沿用 S14 的能力（prompt 组装、任务系统、后台执行、cron 调度）。为了聚焦团队机制，省略了完整错误恢复、记忆和技能系统。新增三样：<strong>MessageBus</strong>（文件收件箱）、<strong>spawn_teammate_thread</strong>（启动队友线程）、<strong>inbox 注入</strong>（Lead 接收队友消息并注入 history）。</p>
+<p>子 Agent vs 队友：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th></th><th>s06 子 Agent</th><th>s15 队友</th></tr></thead><tbody><tr><td>生命周期</td><td>一次性，用完销毁</td><td>多轮（教学版限 10 轮，真实 CC 用 idle loop）</td></tr><tr><td>通信</td><td>只回传结论</td><td>异步收件箱，随时通信</td></tr><tr><td>上下文</td><td>完全隔离</td><td>通过消息共享信息</td></tr><tr><td>数量</td><td>一个主 Agent + 偶尔子 Agent</td><td>一个 Lead + 多个队友</td></tr></tbody></table></div>
+<hr/>
+<h2 class="rp-toc-include" id="工作原理"><a href="#工作原理" class="rp-header-anchor rp-link" aria-hidden="true">#</a>工作原理</h2>
+<p><img alt="Team Topology" src="/static/svg/team-topology.fa54062bb4.svg"/>)</p>
+<h3 class="rp-toc-include" id="messagebus-文件收件箱"><a href="#messagebus-文件收件箱" class="rp-header-anchor rp-link" aria-hidden="true">#</a>MessageBus: 文件收件箱</h3>
+<p>每个 Agent（包括 Lead 和队友）有一个 <code>.jsonl</code> 邮箱。发消息 = 往对方的文件里 append 一行 JSON。读消息 = 读文件 + 删除（消费式）：</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">class</span><span style="color:var(--shiki-token-function)"> MessageBus</span><span style="color:var(--shiki-foreground)">:</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    def</span><span style="color:var(--shiki-token-function)"> send</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">self</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> from_agent</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> to_agent</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-parameter)">             content</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> msg_type</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-token-keyword)"> =</span><span style="color:var(--shiki-token-string-expression)"> &quot;message&quot;</span><span style="color:var(--shiki-foreground)">):</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        msg </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-punctuation)"> {</span><span style="color:var(--shiki-token-string-expression)">&quot;from&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> from_agent</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-string-expression)"> &quot;to&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> to_agent</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">               &quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> content</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-string-expression)"> &quot;type&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> msg_type</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">               &quot;ts&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> time</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">time</span><span style="color:var(--shiki-token-punctuation)">()}</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        inbox </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> MAILBOX_DIR </span><span style="color:var(--shiki-token-keyword)">/</span><span style="color:var(--shiki-token-keyword)"> f</span><span style="color:var(--shiki-token-string-expression)">&quot;</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">to_agent</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">.jsonl&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        with</span><span style="color:var(--shiki-token-function)"> open</span><span style="color:var(--shiki-token-punctuation)">(inbox, </span><span style="color:var(--shiki-token-string-expression)">&quot;a&quot;</span><span style="color:var(--shiki-token-punctuation)">)</span><span style="color:var(--shiki-token-keyword)"> as</span><span style="color:var(--shiki-foreground)"> f</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            f</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">write</span><span style="color:var(--shiki-token-punctuation)">(json.</span><span style="color:var(--shiki-token-function)">dumps</span><span style="color:var(--shiki-token-punctuation)">(msg) </span><span style="color:var(--shiki-token-keyword)">+</span><span style="color:var(--shiki-token-string-expression)"> &quot;\n&quot;</span><span style="color:var(--shiki-token-punctuation)">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    def</span><span style="color:var(--shiki-token-function)"> read_inbox</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">self</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> agent</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-foreground)">) </span><span style="color:var(--shiki-token-punctuation)">-&gt;</span><span style="color:var(--shiki-foreground)"> list</span><span style="color:var(--shiki-token-punctuation)">[</span><span style="color:var(--shiki-token-constant)">dict</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-foreground)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        inbox </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> MAILBOX_DIR </span><span style="color:var(--shiki-token-keyword)">/</span><span style="color:var(--shiki-token-keyword)"> f</span><span style="color:var(--shiki-token-string-expression)">&quot;</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">agent</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">.jsonl&quot;</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        if</span><span style="color:var(--shiki-token-keyword)"> not</span><span style="color:var(--shiki-foreground)"> inbox</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">exists</span><span style="color:var(--shiki-token-punctuation)">():</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            return</span><span style="color:var(--shiki-foreground)"> []</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        msgs </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> [json</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">loads</span><span style="color:var(--shiki-token-punctuation)">(line)</span><span style="color:var(--shiki-token-keyword)"> for</span><span style="color:var(--shiki-foreground)"> line </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-foreground)"> inbox</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">read_text</span><span style="color:var(--shiki-token-punctuation)">().</span><span style="color:var(--shiki-token-function)">splitlines</span><span style="color:var(--shiki-token-punctuation)">()</span><span style="color:var(--shiki-foreground)">]</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        inbox</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">unlink</span><span style="color:var(--shiki-token-punctuation)">()</span><span style="color:var(--shiki-token-comment)">  # 消费式：读完删除</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        return</span><span style="color:var(--shiki-foreground)"> msgs</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>为什么用文件而不是内存队列？教学版选文件是因为直观、跨线程可观察。真实 CC 也用文件收件箱（<code>~/.claude/teams/{team}/inboxes/</code>），但加了 <code>proper-lockfile</code> 防并发写冲突。教学版的 <code>read_inbox</code> 有 read + unlink 竞态，多线程同时读可能丢消息，对教学场景可以接受。</p>
+<h3 class="rp-toc-include" id="spawn_teammate_thread-启动队友"><a href="#spawn_teammate_thread-启动队友" class="rp-header-anchor rp-link" aria-hidden="true">#</a>spawn_teammate_thread: 启动队友</h3>
+<p>Lead 调用 <code>spawn_teammate</code> 工具启动一个队友。队友跑在自己的 daemon 线程里，有自己的 system prompt、自己的 messages、自己的简化工具集：</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">def</span><span style="color:var(--shiki-token-function)"> spawn_teammate_thread</span><span style="color:var(--shiki-foreground)">(</span><span style="color:var(--shiki-token-parameter)">name</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> role</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-parameter)"> prompt</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-foreground)">) </span><span style="color:var(--shiki-token-punctuation)">-&gt;</span><span style="color:var(--shiki-token-constant)"> str</span><span style="color:var(--shiki-foreground)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    system </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-keyword)"> f</span><span style="color:var(--shiki-token-string-expression)">&quot;You are &#x27;</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">name</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&#x27;, a </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-foreground)">role</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">. Use tools to complete tasks.&quot;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    def</span><span style="color:var(--shiki-token-function)"> run</span><span style="color:var(--shiki-foreground)">():</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        messages </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> [</span><span style="color:var(--shiki-token-punctuation)">{</span><span style="color:var(--shiki-token-string-expression)">&quot;role&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;user&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-token-string-expression)"> &quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> prompt</span><span style="color:var(--shiki-token-punctuation)">}</span><span style="color:var(--shiki-foreground)">]</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        sub_tools </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> [bash</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)"> read_file</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)"> write_file</span><span style="color:var(--shiki-token-punctuation)">,</span><span style="color:var(--shiki-foreground)"> send_message]</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        for</span><span style="color:var(--shiki-foreground)"> _ </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-token-function)"> range</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-constant)">10</span><span style="color:var(--shiki-token-punctuation)">):</span><span style="color:var(--shiki-token-comment)">           # 最多 10 轮</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            inbox </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> BUS</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">read_inbox</span><span style="color:var(--shiki-token-punctuation)">(name)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">            if</span><span style="color:var(--shiki-foreground)"> inbox</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">                messages</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">append</span><span style="color:var(--shiki-token-punctuation)">({</span><span style="color:var(--shiki-token-string-expression)">&quot;role&quot;</span><span style="color:var(--shiki-token-punctuation)">: </span><span style="color:var(--shiki-token-string-expression)">&quot;user&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">                    &quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">: </span><span style="color:var(--shiki-token-keyword)">f</span><span style="color:var(--shiki-token-string-expression)">&quot;&lt;inbox&gt;</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">json.</span><span style="color:var(--shiki-token-function)">dumps</span><span style="color:var(--shiki-token-punctuation)">(inbox)</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&lt;/inbox&gt;&quot;</span><span style="color:var(--shiki-token-punctuation)">})</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">            response </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> client</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-foreground)">messages</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">create</span><span style="color:var(--shiki-token-punctuation)">(</span></span>
+<span class="line"><span style="color:var(--shiki-token-punctuation)">                model</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-punctuation)">MODEL, system</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-punctuation)">system, messages</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-punctuation)">messages[</span><span style="color:var(--shiki-token-keyword)">-</span><span style="color:var(--shiki-token-constant)">20</span><span style="color:var(--shiki-token-punctuation)">:],</span></span>
+<span class="line"><span style="color:var(--shiki-token-punctuation)">                tools</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-punctuation)">sub_tools, max_tokens</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)">8000</span><span style="color:var(--shiki-token-punctuation)">)</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">            # ... 执行工具、处理结果</span></span>
+<span class="line"><span style="color:var(--shiki-token-comment)">        # 完成后发 summary 给 Lead</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">        BUS</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">send</span><span style="color:var(--shiki-token-punctuation)">(name, </span><span style="color:var(--shiki-token-string-expression)">&quot;lead&quot;</span><span style="color:var(--shiki-token-punctuation)">, summary, </span><span style="color:var(--shiki-token-string-expression)">&quot;result&quot;</span><span style="color:var(--shiki-token-punctuation)">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    threading</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">Thread</span><span style="color:var(--shiki-token-punctuation)">(target</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-punctuation)">run, daemon</span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-constant)">True</span><span style="color:var(--shiki-token-punctuation)">).</span><span style="color:var(--shiki-token-function)">start</span><span style="color:var(--shiki-token-punctuation)">()</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>关键设计：</p>
+<ul>
+<li><strong>队友有简化工具集</strong>：bash、read、write、send_message。教学版省略了任务和 cron，聚焦通信机制。真实 CC 的队友也有 TaskCreate、TaskUpdate 等工具，任务系统是团队共享的</li>
+<li><strong>教学版限 10 轮</strong>：防止队友无限循环。真实 CC 用 idle loop：跑完一轮后发 <code>idle_notification</code>，等 inbox 消息，收到后继续，直到 <code>shutdown_request</code> 才退出</li>
+<li><strong>完成后自动汇报</strong>：<code>BUS.send(name, &quot;lead&quot;, summary)</code> 把最终结果发到 Lead 的收件箱</li>
+</ul>
+<h3 class="rp-toc-include" id="lead-的-inbox-注入"><a href="#lead-的-inbox-注入" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Lead 的 inbox 注入</h3>
+<p>Lead 在每轮主循环结束后检查收件箱。队友发来的消息注入到 history 里，让 LLM 能看到并做出反应：</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-comment)"># 主循环结束后</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">inbox </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-foreground)"> BUS</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">read_inbox</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot;lead&quot;</span><span style="color:var(--shiki-token-punctuation)">)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">if</span><span style="color:var(--shiki-foreground)"> inbox</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    inbox_text </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-string-expression)"> &quot;\n&quot;</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">join</span><span style="color:var(--shiki-token-punctuation)">(</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        f</span><span style="color:var(--shiki-token-string-expression)">&quot;From </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">m[</span><span style="color:var(--shiki-token-string-expression)">&#x27;from&#x27;</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">: </span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">m[</span><span style="color:var(--shiki-token-string-expression)">&#x27;content&#x27;</span><span style="color:var(--shiki-token-punctuation)">][:</span><span style="color:var(--shiki-token-constant)">200</span><span style="color:var(--shiki-token-punctuation)">]</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&quot;</span><span style="color:var(--shiki-token-keyword)"> for</span><span style="color:var(--shiki-token-punctuation)"> m </span><span style="color:var(--shiki-token-keyword)">in</span><span style="color:var(--shiki-token-punctuation)"> inbox)</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    history</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">append</span><span style="color:var(--shiki-token-punctuation)">({</span><span style="color:var(--shiki-token-string-expression)">&quot;role&quot;</span><span style="color:var(--shiki-token-punctuation)">: </span><span style="color:var(--shiki-token-string-expression)">&quot;user&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-string-expression)">                    &quot;content&quot;</span><span style="color:var(--shiki-token-punctuation)">: </span><span style="color:var(--shiki-token-keyword)">f</span><span style="color:var(--shiki-token-string-expression)">&quot;[Inbox]</span><span style="color:var(--shiki-token-punctuation)">\n</span><span style="color:var(--shiki-token-constant)">{</span><span style="color:var(--shiki-token-punctuation)">inbox_text</span><span style="color:var(--shiki-token-constant)">}</span><span style="color:var(--shiki-token-string-expression)">&quot;</span><span style="color:var(--shiki-token-punctuation)">})</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>教学版在用户输入循环外注入。CC 更精细，Lead 的 <code>useInboxPoller</code> 每 1 秒检查一次，有消息就提交为新的 turn，不需要等用户输入。</p>
+<h3 class="rp-toc-include" id="权限冒泡"><a href="#权限冒泡" class="rp-header-anchor rp-link" aria-hidden="true">#</a>权限冒泡</h3>
+<p>教学版省略了权限冒泡。真实 CC 的流程（<code>permissionSync.ts</code>、<code>useSwarmPermissionPoller.ts</code>）：</p>
+<ol>
+<li>队友遇到需要审批的操作 → 发 <code>permission_request</code> 到 Lead 收件箱</li>
+<li>Lead 的 <code>useInboxPoller</code> 检测到请求 → 路由到审批队列</li>
+<li>用户审批后 → Lead 发 <code>permission_response</code> 回队友</li>
+<li>队友的 <code>useSwarmPermissionPoller</code>（每 500ms 轮询）收到回复 → 继续或拒绝</li>
+</ol>
+<h3 class="rp-toc-include" id="合起来跑"><a href="#合起来跑" class="rp-header-anchor rp-link" aria-hidden="true">#</a>合起来跑</h3>
+<div class="rp-codeblock language-txt"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="txt"><code><span class="line"><span>1. Lead: &quot;搭建后端：一个人搞不定，组队吧&quot;</span></span>
+<span class="line"><span>2. Lead → spawn_teammate(&quot;alice&quot;, &quot;backend dev&quot;, &quot;创建数据库 schema&quot;)</span></span>
+<span class="line"><span>3. Lead → spawn_teammate(&quot;bob&quot;, &quot;frontend dev&quot;, &quot;写 API 客户端&quot;)</span></span>
+<span class="line"><span>4. alice 线程启动 → 自己的 LLM 调用 → bash &quot;python manage.py migrate&quot;</span></span>
+<span class="line"><span>5. bob 线程启动 → 自己的 LLM 调用 → write_file(&quot;client.ts&quot;, ...)</span></span>
+<span class="line"><span>6. alice 完成 → BUS.send(&quot;alice&quot;, &quot;lead&quot;, &quot;Schema done: users, orders tables&quot;)</span></span>
+<span class="line"><span>7. bob 完成 → BUS.send(&quot;bob&quot;, &quot;lead&quot;, &quot;Client written with types&quot;)</span></span>
+<span class="line"><span>8. Lead 下次循环 → inbox 注入 history → LLM 看到 alice 和 bob 的结果</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>两个队友并行工作。</p>
+<hr/>
+<h2 class="rp-toc-include" id="相对-s14-的变更"><a href="#相对-s14-的变更" class="rp-header-anchor rp-link" aria-hidden="true">#</a>相对 s14 的变更</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>组件</th><th>之前 (s14)</th><th>之后 (s15)</th></tr></thead><tbody><tr><td>Agent 数量</td><td>1</td><td>1 Lead + N 队友线程</td></tr><tr><td>通信</td><td>无</td><td>MessageBus + .mailboxes/*.jsonl</td></tr><tr><td>新类</td><td>—</td><td>MessageBus, active_teammates dict</td></tr><tr><td>新函数</td><td>—</td><td>spawn_teammate_thread, run_send_message, run_check_inbox</td></tr><tr><td>Lead 工具</td><td>11 (s14)</td><td>+ spawn_teammate, send_message, check_inbox (14)</td></tr><tr><td>队友工具</td><td>—</td><td>bash, read_file, write_file, send_message (4)</td></tr><tr><td>权限</td><td>本地决策</td><td>教学版省略（真实 CC 有冒泡机制）</td></tr></tbody></table></div>
+<hr/>
+<h2 class="rp-toc-include" id="试一下"><a href="#试一下" class="rp-header-anchor rp-link" aria-hidden="true">#</a>试一下</h2>
+<div class="rp-codeblock language-sh"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="sh"><code><span class="line"><span style="color:var(--shiki-token-function)">cd</span><span style="color:var(--shiki-token-string)"> learn-claude-code</span></span>
+<span class="line"><span style="color:var(--shiki-token-function)">python</span><span style="color:var(--shiki-token-string)"> s15_agent_teams/code.py</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>试试这些 prompt：</p>
+<ol>
+<li><code>Spawn alice as a backend developer. Ask her to create a file called schema.sql with a users table.</code></li>
+<li><code>Check your inbox for alice&#x27;s result.</code></li>
+<li><code>Spawn bob as a tester. Ask him to check if schema.sql exists and list its contents.</code></li>
+</ol>
+<p>观察重点：Lead 如何启动队友？<code>.mailboxes/</code> 目录下的 JSONL 文件长什么样？队友完成后 Lead 的 inbox 有没有注入到 history？</p>
+<hr/>
+<h2 class="rp-toc-include" id="接下来"><a href="#接下来" class="rp-header-anchor rp-link" aria-hidden="true">#</a>接下来</h2>
+<p>队友能干活、能通信。但如果 Lead 想让 Alice 关机，直接杀线程会留下写到一半的文件。需要一个体面的关机协议：Lead 发 shutdown_request，队友收尾后退出。</p>
+<p>s16 Team Protocols → 关机握手与消息约定。</p>
+<details>
+<summary>深入 CC 源码</summary>
+<blockquote>
+<p>以下基于 CC 源码 <code>spawnMultiAgent.ts</code>、<code>useInboxPoller.ts</code>（969 行）、<code>useSwarmPermissionPoller.ts</code>（330 行）、<code>teammateMailbox.ts</code>、<code>teamHelpers.ts</code> 的完整分析。</p>
+</blockquote>
+<h3 class="rp-toc-include" id="一没有中央消息总线是文件系统"><a href="#一没有中央消息总线是文件系统" class="rp-header-anchor rp-link" aria-hidden="true">#</a>一、没有中央消息总线，是文件系统</h3>
+<p>教学版用 <code>MessageBus</code> 类收发消息。CC 的做法更直接，每个 Agent 直接写其他 Agent 的收件箱文件。</p>
+<p>收件箱路径：<code>~/.claude/teams/{teamName}/inboxes/{agentName}.json</code></p>
+<p>写入时用 <code>proper-lockfile</code> 文件锁保证并发安全（最多重试 10 次）。每个文件是一个 JSON 数组，append 新消息时读→追加→写回。</p>
+<h3 class="rp-toc-include" id="二15-种消息类型"><a href="#二15-种消息类型" class="rp-header-anchor rp-link" aria-hidden="true">#</a>二、15 种消息类型</h3>
+<p>CC 的团队通信有 15 种结构化消息（<code>teammateMailbox.ts</code>）：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>类型</th><th>方向</th><th>用途</th></tr></thead><tbody><tr><td><code>plain text</code></td><td>双向</td><td>普通队友间通信</td></tr><tr><td><code>idle_notification</code></td><td>队友→Lead</td><td>队友完成一轮工作，进入空闲</td></tr><tr><td><code>permission_request</code></td><td>队友→Lead</td><td>队友需要操作审批</td></tr><tr><td><code>permission_response</code></td><td>Lead→队友</td><td>Lead 审批结果</td></tr><tr><td><code>plan_approval_request</code></td><td>队友→Lead</td><td>队友提交计划待审</td></tr><tr><td><code>plan_approval_response</code></td><td>Lead→队友</td><td>Lead 审批计划</td></tr><tr><td><code>shutdown_request</code></td><td>Lead→队友</td><td>请求体面关机</td></tr><tr><td><code>shutdown_approved</code></td><td>队友→Lead</td><td>确认关机</td></tr><tr><td><code>shutdown_rejected</code></td><td>队友→Lead</td><td>拒绝关机（附原因）</td></tr><tr><td><code>task_assignment</code></td><td>Lead→队友</td><td>分配任务</td></tr><tr><td><code>team_permission_update</code></td><td>Lead→队友</td><td>广播权限变更</td></tr><tr><td><code>mode_set_request</code></td><td>Lead→队友</td><td>修改队友的权限模式</td></tr><tr><td><code>sandbox_permission_*</code></td><td>双向</td><td>网络权限请求/回复</td></tr><tr><td><code>teammate_terminated</code></td><td>系统</td><td>队友被移除通知</td></tr></tbody></table></div>
+<p>文本消息被包装在 <code>&lt;teammate-message&gt;</code> XML 标签中交付给模型。</p>
+<h3 class="rp-toc-include" id="三权限冒泡双向轮询"><a href="#三权限冒泡双向轮询" class="rp-header-anchor rp-link" aria-hidden="true">#</a>三、权限冒泡：双向轮询</h3>
+<p>教学版省略了权限冒泡。CC 的实际流程（<code>permissionSync.ts</code>）：</p>
+<ol>
+<li><strong>队友</strong>遇到需要审批的操作 → 发 <code>permission_request</code> 到 Lead 的收件箱</li>
+<li><strong>Lead</strong> 的 <code>useInboxPoller</code>（每 1 秒轮询）检测到请求 → 路由到 <code>ToolUseConfirmQueue</code></li>
+<li>Lead 的 UI 显示审批对话框，带队友名字和颜色</li>
+<li>用户审批后 → Lead 发 <code>permission_response</code> 回队友的收件箱</li>
+<li><strong>队友</strong>的 <code>useSwarmPermissionPoller</code>（每 500ms 轮询）收到回复 → 继续或拒绝执行</li>
+</ol>
+<h3 class="rp-toc-include" id="四队友生命周期"><a href="#四队友生命周期" class="rp-header-anchor rp-link" aria-hidden="true">#</a>四、队友生命周期</h3>
+<p>CC 的队友由 <code>spawnTeammate()</code>（<code>spawnMultiAgent.ts</code>）创建：</p>
+<ol>
+<li><strong>Spawn</strong>：创建 tmux 窗格（或进程内），分配颜色，写入 team config</li>
+<li><strong>Work</strong>：<code>useInboxPoller</code> 每 1 秒检查收件箱 → 有消息就提交为新的 turn</li>
+<li><strong>Idle</strong>：Stop hook 触发 → 发 <code>idle_notification</code> 给 Lead</li>
+<li><strong>Shutdown</strong>：Lead 发 <code>shutdown_request</code> → 队友回复 <code>shutdown_approved</code> → Lead 清理</li>
+</ol>
+<h3 class="rp-toc-include" id="五team-config"><a href="#五team-config" class="rp-header-anchor rp-link" aria-hidden="true">#</a>五、Team Config</h3>
+<p>团队注册表在 <code>~/.claude/teams/{teamName}/config.json</code>（<code>teamHelpers.ts</code>）：</p>
+<div class="rp-codeblock language-json"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="json"><code><span class="line"><span style="color:var(--shiki-foreground)">{</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;name&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;my-team&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;leadAgentId&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;lead@my-team&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">  &quot;members&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-foreground)"> [{</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;agentId&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;researcher@my-team&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;name&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;researcher&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;agentType&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;general-purpose&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;color&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-string-expression)"> &quot;blue&quot;</span><span style="color:var(--shiki-token-punctuation)">,</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    &quot;isActive&quot;</span><span style="color:var(--shiki-token-punctuation)">:</span><span style="color:var(--shiki-token-constant)"> true</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">  }]</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">}</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="复制代码"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>队友之间不能嵌套（<code>AgentTool.tsx:273</code> 明确禁止 &quot;teammates spawning other teammates&quot;）。</p>
+</details>
+<!--/$--></div><footer class="rp-doc-footer"><div class="rp-doc-footer__edit"></div><div class="rp-doc-footer__divider"></div><div class="rp-prev-next-page"><a href="/learn-claude/s14_cron_scheduler/index.html" class="rp-prev-next-page__item rp-prev-next-page__prev rp-link"><span class="rp-prev-next-page__item__desc">上一页</span><span class="rp-prev-next-page__item__title"><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon rp-prev-next-page__rotate_180"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg><span>s14_cron_scheduler</span></span></a><a href="/learn-claude/s16_team_protocols/index.html" class="rp-prev-next-page__item rp-prev-next-page__next rp-link"><span class="rp-prev-next-page__item__desc">下一页</span><span class="rp-prev-next-page__item__title"><span>s16_team_protocols</span><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></span></a></div></footer></main></div><aside class="rp-doc-layout__outline rp-scrollbar"><div class="rp-outline"><div class="rp-outline__title">目录<svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg></div><nav class="rp-outline__toc rp-scrollbar"><a href="#问题" class="rp-toc-item rp-link" title="问题" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">问题</span></a><a href="#解决方案" class="rp-toc-item rp-link" title="解决方案" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">解决方案</span></a><a href="#工作原理" class="rp-toc-item rp-link" title="工作原理" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">工作原理</span></a><a href="#messagebus-文件收件箱" class="rp-toc-item rp-link" title="MessageBus: 文件收件箱" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">MessageBus: 文件收件箱</span></a><a href="#spawn_teammate_thread-启动队友" class="rp-toc-item rp-link" title="spawn_teammate_thread: 启动队友" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">spawn_teammate_thread: 启动队友</span></a><a href="#lead-的-inbox-注入" class="rp-toc-item rp-link" title="Lead 的 inbox 注入" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">Lead 的 inbox 注入</span></a><a href="#权限冒泡" class="rp-toc-item rp-link" title="权限冒泡" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">权限冒泡</span></a><a href="#合起来跑" class="rp-toc-item rp-link" title="合起来跑" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">合起来跑</span></a><a href="#相对-s14-的变更" class="rp-toc-item rp-link" title="相对 s14 的变更" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">相对 s14 的变更</span></a><a href="#试一下" class="rp-toc-item rp-link" title="试一下" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">试一下</span></a><a href="#接下来" class="rp-toc-item rp-link" title="接下来" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">接下来</span></a><a href="#一没有中央消息总线是文件系统" class="rp-toc-item rp-link" title="一、没有中央消息总线，是文件系统" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">一、没有中央消息总线，是文件系统</span></a><a href="#二15-种消息类型" class="rp-toc-item rp-link" title="二、15 种消息类型" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">二、15 种消息类型</span></a><a href="#三权限冒泡双向轮询" class="rp-toc-item rp-link" title="三、权限冒泡：双向轮询" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">三、权限冒泡：双向轮询</span></a><a href="#四队友生命周期" class="rp-toc-item rp-link" title="四、队友生命周期" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">四、队友生命周期</span></a><a href="#五team-config" class="rp-toc-item rp-link" title="五、Team Config" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">五、Team Config</span></a></nav><div class="rp-outline__divider"></div><div class="rp-outline__bottom"></div></div></aside></div></div>
+    <div id="__rspress_modal_container"></div>
+  </body>
+</html>

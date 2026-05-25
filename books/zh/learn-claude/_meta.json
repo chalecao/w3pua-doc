@@ -1,0 +1,102 @@
+[
+  {
+    "type": "dir-section-header",
+    "name": "s01_agent_loop",
+    "label": "s01_agent_loop"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "s02_tool_use",
+    "label": "s02_tool_use"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "s03_permission",
+    "label": "s03_permission"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "s04_hooks",
+    "label": "s04_hooks"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "s05_todo_write",
+    "label": "s05_todo_write"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "s06_subagent",
+    "label": "s06_subagent"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "s07_skill_loading",
+    "label": "s07_skill_loading"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "s08_context_compact",
+    "label": "s08_context_compact"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "s09_memory",
+    "label": "s09_memory"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "s10_system_prompt",
+    "label": "s10_system_prompt"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "s11_error_recovery",
+    "label": "s11_error_recovery"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "s12_task_system",
+    "label": "s12_task_system"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "s13_background_tasks",
+    "label": "s13_background_tasks"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "s14_cron_scheduler",
+    "label": "s14_cron_scheduler"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "s15_agent_teams",
+    "label": "s15_agent_teams"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "s16_team_protocols",
+    "label": "s16_team_protocols"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "s17_autonomous_agents",
+    "label": "s17_autonomous_agents"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "s18_worktree_isolation",
+    "label": "s18_worktree_isolation"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "s19_mcp_plugin",
+    "label": "s19_mcp_plugin"
+  },
+  {
+    "type": "dir-section-header",
+    "name": "s20_comprehensive",
+    "label": "s20_comprehensive"
+  }
+]

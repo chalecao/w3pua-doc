@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>s20: Comprehensive Agent — All Mechanisms, One Loop</title>
+<script>{;const saved = localStorage.getItem('rspress-theme-appearance');const preferDark = window.matchMedia('(prefers-color-scheme: dark)').matches;const isDark = !saved || saved === 'auto' ? preferDark : saved === 'dark';document.documentElement.classList.toggle('dark', isDark);document.documentElement.classList.toggle('rp-dark', isDark);document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';}</script>
+<script>window.onload=function(){document.title='「万维飘」w3pua.com';setTimeout(function(){var imgs=document.querySelectorAll('img.rp-home-hero__image-img');imgs.forEach(function(img){var num=Math.floor(Math.random()*19)+1;img.src='/logo/'+num+'.svg';});},100);};</script>
+<script src="/katex.min.js"></script>
+<script>
+    (function() {
+      function renderMathInElement(container) {
+        if (!container) return;
+        
+        var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+        var textNodes = [];
+        while(walker.nextNode()) textNodes.push(walker.currentNode);
+        
+        textNodes.forEach(function(textNode) {
+          var text = textNode.textContent;
+          if (!text || (!text.includes('$$') && !text.includes('$'))) return;
+          
+          var parent = textNode.parentNode;
+          if (!parent) return;
+          if (parent.tagName === 'PRE' || parent.tagName === 'CODE' || parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE') return;
+          
+          var newHtml = text.replace(/\$\$([\s\S]*?)\$\$/g, function(match, formula) {
+            try {
+              return '<div class="math math-display">' + katex.renderToString(formula.trim(), {displayMode: true, throwOnError: false}) + '</div>';
+            } catch(e) { return match; }
+          }).replace(/\$([^\$\n]+?)\$/g, function(match, formula) {
+            try {
+              return katex.renderToString(formula.trim(), {displayMode: false, throwOnError: false});
+            } catch(e) { return match; }
+          });
+          
+          if (newHtml !== text) {
+            var span = document.createElement('span');
+            span.innerHTML = newHtml;
+            parent.replaceChild(span, textNode);
+          }
+        });
+      }
+
+      function onRouteChange() {
+        setTimeout(function() {
+          var container = document.getElementById('__rspress_root');
+          if (container) {
+            renderMathInElement(container);
+          }
+        }, 100);
+      }
+
+      if (typeof window !== 'undefined') {
+        if (window.__RSPRESS__) {
+          window.__RSPRESS__.addEventListener('routeChangeComplete', onRouteChange);
+        } else {
+          window.addEventListener('popstate', onRouteChange);
+          var originalPushState = history.pushState;
+          history.pushState = function() {
+            originalPushState.apply(this, arguments);
+            onRouteChange();
+          };
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+          onRouteChange();
+        });
+        
+        setTimeout(onRouteChange, 500);
+        setTimeout(onRouteChange, 1000);
+        setTimeout(onRouteChange, 2000);
+      }
+    })();
+  </script>
+<link href="/static/css/styles.e6bedadc36.css" rel="stylesheet">
+<link rel="stylesheet" href="/katex.min.css">
+<script defer src="/static/js/styles.03ebfe3fca.js"></script>
+<script defer src="/static/js/lib-react.06aa503779.js"></script>
+<script defer src="/static/js/lib-router.a7a83a8399.js"></script>
+<script defer src="/static/js/6665.052760f3df.js"></script>
+<script defer src="/static/js/index.2a1d1b00fc.js"></script>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Rspress v2.0.11">
+<link rel="icon" href="/logo.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="s20: Comprehensive Agent — All Mechanisms, One Loop">
+<meta name="description" content="s01 → ... → s18 → s19 → s20 &quot;Many mechanisms, one loop&quot; — tools, permissions, memory, tasks, teams, and plugins all hang off the same while True.Harness layer: Comprehensive — put the previous 19 mechanisms back into one runnable system.">
+<meta property="og:description" content="s01 → ... → s18 → s19 → s20 &quot;Many mechanisms, one loop&quot; — tools, permissions, memory, tasks, teams, and plugins all hang off the same while True.Harness layer: Comprehensive — put the previous 19 mechanisms back into one runnable system."></head>
+
+  <body>
+    <div id="__rspress_root"><link rel="preload" as="image" href="/logo.png"/><link rel="preload" as="image" href="/static/svg/system-architecture.en.eb8a0070f3.svg"/><header class="rp-nav"><div class="rp-nav__left"><div class="rp-nav__title"><a href="/en/" class="rp-nav__title__link rp-link"><div class="rp-nav__title__logo"><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--light"/><img src="/logo.png" alt="logo" id="logo" class="rspress-logo rp-nav__title__logo-image rp-nav__title__logo-image--dark"/></div></a></div></div><div class="rp-nav__right"><button class="rp-search-button"><div class="rp-search-button__content"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21" class="rp-search-button__icon"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg><span class="rp-search-button__word">Search</span></div><div class="rp-search-button__hotkey" style="opacity:0"><span></span><span>K</span></div></button><div class="rp-search-button--mobile"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" viewBox="0 0 20 21"><path fill="currentColor" d="M8.333 1.913A6.667 6.667 0 0 1 15 8.58c0 1.54-.525 2.957-1.402 4.085l4.49 4.492a.834.834 0 0 1-1.177 1.178l-4.491-4.49a6.64 6.64 0 0 1-4.087 1.402 6.667 6.667 0 0 1 0-13.334m0 1.667a5 5 0 1 0 0 10 5 5 0 0 0 0-10"></path></svg></div><ul class="rp-nav-menu rp-nav-menu--right"><li class="rp-nav-menu__item"><a href="/en/book/preface.html" class="rp-nav-menu__item__container rp-link">Agent Guide</a></li><li class="rp-nav-menu__item"><a href="/en/harness/1-four-frameworks-comparison.html" class="rp-nav-menu__item__container rp-link">Harness Handbook</a></li><li class="rp-nav-menu__item rp-nav-menu__item--active"><a href="/en/learn-claude/s01_agent_loop/index.html" class="rp-nav-menu__item__container rp-link">Learn Claude</a></li></ul><div class="rp-nav__others"><div class="rp-nav-menu__divider"></div><li class="rp-nav-menu__item"><div class="rp-nav-menu__item__container">English<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-menu__item__icon"><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--center"><li class="rp-hover-group__item rp-hover-group__item--active" style="padding-left:8px" data-depth="0"><a href="/en/learn-claude/s20_comprehensive/index.html" class="rp-hover-group__item__link rp-link" aria-label="English" lang="en" hrefLang="en" rel="alternate">English</a></li><li class="rp-hover-group__item" style="padding-left:8px" data-depth="0"><a href="/learn-claude/s20_comprehensive/index.html" class="rp-hover-group__item__link rp-link" aria-label="简体中文" lang="zh" hrefLang="zh" rel="alternate">简体中文</a></li></ul></li><div class="rp-switch-appearance"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" class="rp-switch-appearance__icon rp-switch-appearance__icon--sun"><path fill="currentColor" d="m7.001 15.848-1.226 1.226a.58.58 0 0 0 0 .818.58.58 0 0 0 .818 0l1.226-1.226a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0m-.352-8.735a.584.584 0 0 0 .825-.825L6.237 5.051a.584.584 0 0 0-.825.825zM5.011 11.07h-1.75a.584.584 0 0 0 0 1.167h1.75c.324 0 .584-.26.584-.583a.585.585 0 0 0-.584-.584m7.003-5.835c.324 0 .584-.26.584-.584V2.9a.58.58 0 0 0-.584-.584.58.58 0 0 0-.583.583V4.65c0 .323.262.584.583.584m5.616 1.621 1.226-1.225a.58.58 0 0 0 0-.818.58.58 0 0 0-.818 0l-1.226 1.225a.58.58 0 0 0 0 .818.576.576 0 0 0 .818 0m3.138 4.214h-1.75a.58.58 0 0 0-.584.584c0 .324.26.584.583.584h1.751a.584.584 0 1 0 0-1.167m-3.389 5.124a.584.584 0 0 0-.825.825l1.238 1.238a.584.584 0 0 0 .825-.826zm-5.365-9.795a5.256 5.256 0 0 0-5.257 5.258 5.256 5.256 0 0 0 5.257 5.257 5.256 5.256 0 0 0 5.257-5.257 5.256 5.256 0 0 0-5.257-5.258m0 11.675a.58.58 0 0 0-.583.583v1.751a.582.582 0 1 0 1.167 0v-1.75a.584.584 0 0 0-.584-.584"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" viewBox="0 0 19 19" class="rp-switch-appearance__icon rp-switch-appearance__icon--moon"><path fill="currentColor" d="M9.166 0a9.2 9.2 0 0 1 1.857.188.834.834 0 0 1 .042 1.623 4.47 4.47 0 1 0 5.457 5.457l.048-.135a.834.834 0 0 1 1.575.177q.186.902.188 1.856A9.168 9.168 0 1 1 9.166 0"></path></svg></div></div><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__sm"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg></button><button aria-label="mobile hamburger" class="rp-nav-hamburger rp-nav-hamburger__md"><svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 21 21"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.667" d="M3.645 5.225h13.333M3.645 10.225h13.333M3.645 15.225h13.333"></path></svg><ul class="rp-hover-group rp-hover-group--hidden rp-hover-group--right"><div class="rp-nav-menu__others-mobile__container"><div class="rp-nav-hamburger__md__hover-group"><div class="rp-nav-screen-appearance"><div class="rp-nav-screen-appearance__left">Theme</div><div class="rp-nav-screen-appearance__right"></div></div><div class="rp-nav-screen-langs"><div class="rp-nav-screen-langs__left">Languages</div><div class="rp-nav-screen-langs__right">English<svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-nav-screen-langs__icon "><path fill="currentColor" d="M16 22 6 12l1.4-1.4 8.6 8.6 8.6-8.6L26 12z"></path></svg></div></div><div class="rp-nav-screen-langs-group" style="display:grid;grid-template-rows:0fr;transition:grid-template-rows 0.2s ease-out"><div class="rp-nav-screen-langs-group__inner"><span class="rp-nav-screen-langs-group__item rp-nav-screen-langs-group__item--active" aria-current="page" aria-disabled="true">English</span><a href="/learn-claude/s20_comprehensive/index.html" class="rp-nav-screen-langs-group__item rp-link" hrefLang="zh" lang="zh" rel="alternate">简体中文</a></div></div><div class="rp-nav-screen-divider"></div></div></div></ul></button></div></header><div class="rp-doc-layout__menu"><div class="rp-sidebar-menu"><button type="button" class="rp-sidebar-menu__left"><svg width="1em" height="1em" viewBox="0 0 32 32"><path fill="currentColor" d="M4 6h24v2H4zm0 18h24v2H4zm0-12h24v2H4zm0 6h24v2H4z"></path></svg><span>Menu</span></button><button type="button" class="rp-sidebar-menu__right"><span class="rp-sidebar-menu__right__text">ON THIS PAGE</span><svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-sidebar-menu__right__icon" style="transform:rotate(0deg);transition:transform 0.2s ease-out"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg></button></div></div><div class="rp-doc-layout__container"><aside class="rp-doc-layout__sidebar rp-scrollbar"><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s01_agent_loop</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s01_agent_loop/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s01_agent_loop</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s02_tool_use</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s02_tool_use/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s02_tool_use</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s03_permission</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s03_permission/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s03_permission</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s04_hooks</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s04_hooks/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s04_hooks</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s05_todo_write</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s05_todo_write/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s05_todo_write</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s06_subagent</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s06_subagent/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s06_subagent</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s07_skill_loading</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s07_skill_loading/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s07_skill_loading</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s08_context_compact</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s08_context_compact/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s08_context_compact</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s09_memory</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s09_memory/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s09_memory</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s10_system_prompt</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s10_system_prompt/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s10_system_prompt</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s11_error_recovery</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s11_error_recovery/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s11_error_recovery</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s12_task_system</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s12_task_system/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s12_task_system</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s13_background_tasks</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s13_background_tasks/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s13_background_tasks</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s14_cron_scheduler</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s14_cron_scheduler/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s14_cron_scheduler</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s15_agent_teams</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s15_agent_teams/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s15_agent_teams</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s16_team_protocols</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s16_team_protocols/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s16_team_protocols</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s17_autonomous_agents</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s17_autonomous_agents/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s17_autonomous_agents</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s18_worktree_isolation</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s18_worktree_isolation/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s18_worktree_isolation</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s19_mcp_plugin</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s19_mcp_plugin/index.html" class="rp-sidebar-item rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s19_mcp_plugin</span></div><div class="rp-sidebar-item__right"></div></a><div class="rp-sidebar-section-header"><div class="rp-sidebar-section-header__left"><span>s20_comprehensive</span></div><div class="rp-sidebar-section-header__right"></div></div><a href="/en/learn-claude/s20_comprehensive/index.html" class="rp-sidebar-item rp-sidebar-item--active rp-link" style="padding-left:12px" data-depth="0"><div class="rp-sidebar-item__left"><span>s20_comprehensive</span></div><div class="rp-sidebar-item__right"></div></a></aside><div class="rp-doc-layout__doc"><main class="rp-doc-layout__doc-container"><div class="rp-doc rspress-doc"><!--$--><h1 class="rp-toc-include" id="s20-comprehensive-agent--all-mechanisms-one-loop"><a href="#s20-comprehensive-agent--all-mechanisms-one-loop" class="rp-header-anchor rp-link" aria-hidden="true">#</a>s20: Comprehensive Agent — All Mechanisms, One Loop<!-- --> </h1>
+<p>s01 → ... → s18 → s19 → <code>s20</code></p>
+<blockquote>
+<p><em>&quot;Many mechanisms, one loop&quot;</em> — tools, permissions, memory, tasks, teams, and plugins all hang off the same <code>while True</code>.</p>
+<p><strong>Harness layer</strong>: Comprehensive — put the previous 19 mechanisms back into one runnable system.</p>
+</blockquote>
+<hr/>
+<h2 class="rp-toc-include" id="problem"><a href="#problem" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Problem</h2>
+<p>The first 19 chapters add one mechanism at a time. That is the right way to learn, but a real agent does not run with only one mechanism enabled.</p>
+<p>A long-running coding agent needs all of these at once:</p>
+<ul>
+<li>tool dispatch and permission boundaries</li>
+<li>hook extension points</li>
+<li>todo planning and task graphs</li>
+<li>skills, memory, and runtime system prompt assembly</li>
+<li>compaction and error recovery</li>
+<li>background tasks and cron scheduling</li>
+<li>teams, protocols, autonomous claiming</li>
+<li>worktree isolation</li>
+<li>MCP external tool integration</li>
+</ul>
+<p>The hard part is not piling up features. The hard part is seeing where each mechanism belongs around the loop. S20 is the endpoint chapter: every component is placed back into one harness.</p>
+<hr/>
+<h2 class="rp-toc-include" id="solution"><a href="#solution" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Solution</h2>
+<p><img alt="System Architecture" src="/static/svg/system-architecture.en.eb8a0070f3.svg"/></p>
+<p>S20 does not invent a new mechanism. It merges the teaching components from the earlier chapters into one complete harness:</p>
+<div class="rp-codeblock language-text"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="text"><code><span class="line"><span>user input</span></span>
+<span class="line"><span>  → UserPromptSubmit hooks</span></span>
+<span class="line"><span>  → cron/background notification injection</span></span>
+<span class="line"><span>  → context compact</span></span>
+<span class="line"><span>  → memory + skills + MCP state assemble the system prompt</span></span>
+<span class="line"><span>  → LLM</span></span>
+<span class="line"><span>  → has tool_use block?</span></span>
+<span class="line"><span>      no  → Stop hooks → return</span></span>
+<span class="line"><span>      yes → PreToolUse hooks + permission</span></span>
+<span class="line"><span>          → TOOL_HANDLERS / MCP handlers / background dispatch</span></span>
+<span class="line"><span>          → PostToolUse hooks</span></span>
+<span class="line"><span>          → tool_result / task_notification back to messages</span></span>
+<span class="line"><span>          → next round</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>The loop is still the same structure: call the model, check whether the response contains a <code>tool_use</code> block, execute tools, append results back to <code>messages</code>. CC source does not directly trust <code>stop_reason == &quot;tool_use&quot;</code>; the actual presence of a tool_use block is the continuation signal. What changed is that the harness around the loop is now complete.</p>
+<hr/>
+<h2 class="rp-toc-include" id="where-each-component-sits"><a href="#where-each-component-sits" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Where Each Component Sits</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>Position</th><th>Component</th><th>Role</th></tr></thead><tbody><tr><td>Around user input</td><td><code>UserPromptSubmit</code> hooks</td><td>Log, inject, or audit user input</td></tr><tr><td>Before LLM</td><td>cron queue</td><td>Inject scheduled prompts into <code>messages</code></td></tr><tr><td>Before LLM</td><td>background notifications</td><td>Inject completed background work as <code>&lt;task_notification&gt;</code></td></tr><tr><td>Before LLM</td><td>compaction pipeline</td><td>Budget large outputs, trim history, compact old tool results, summarize when needed</td></tr><tr><td>Before LLM</td><td>memory / skills / MCP state</td><td>Assemble the system prompt so the model sees current capabilities and long-term context</td></tr><tr><td>LLM call</td><td>error recovery</td><td>Retry 429/529, escalate <code>max_tokens</code>, compact on prompt-too-long</td></tr><tr><td>Before tool execution</td><td><code>PreToolUse</code> hooks + permission</td><td>Block dangerous commands, out-of-bounds writes, destructive MCP tools</td></tr><tr><td>Tool dispatch</td><td><code>assemble_tool_pool</code></td><td>Assemble built-in tools and dynamic MCP tools</td></tr><tr><td>During tool execution</td><td>background dispatch</td><td>Move slow bash work into a daemon thread and return a placeholder result</td></tr><tr><td>After tool execution</td><td><code>PostToolUse</code> hooks</td><td>Large-output warnings, logs, post-processing</td></tr><tr><td>Back to loop</td><td>tool_result</td><td>One <code>tool_result</code> per <code>tool_use</code>, then the next model round</td></tr><tr><td>No tool_use this round / on stop</td><td><code>Stop</code> hooks</td><td>Stats, cleanup, audit</td></tr></tbody></table></div>
+<hr/>
+<h2 class="rp-toc-include" id="what-codepy-contains"><a href="#what-codepy-contains" class="rp-header-anchor rp-link" aria-hidden="true">#</a>What code.py Contains</h2>
+<h3 class="rp-toc-include" id="tools-and-dispatch"><a href="#tools-and-dispatch" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Tools and Dispatch</h3>
+<p>The built-in tool pool contains 27 tools:</p>
+<div class="rp-codeblock language-text"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="text"><code><span class="line"><span>bash, read_file, write_file, edit_file, glob</span></span>
+<span class="line"><span>todo_write, task, load_skill, compact</span></span>
+<span class="line"><span>create_task, list_tasks, get_task, claim_task, complete_task</span></span>
+<span class="line"><span>schedule_cron, list_crons, cancel_cron</span></span>
+<span class="line"><span>spawn_teammate, send_message, check_inbox</span></span>
+<span class="line"><span>request_shutdown, request_plan, review_plan</span></span>
+<span class="line"><span>create_worktree, remove_worktree, keep_worktree</span></span>
+<span class="line"><span>connect_mcp</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p><code>assemble_tool_pool()</code> assembles these every round:</p>
+<div class="rp-codeblock language-text"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="text"><code><span class="line"><span>BUILTIN_TOOLS + connected MCP tools</span></span>
+<span class="line"><span>BUILTIN_HANDLERS + mcp__server__tool handlers</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>After <code>connect_mcp(&quot;docs&quot;)</code>, the next round exposes tools like <code>mcp__docs__search</code>.</p>
+<h3 class="rp-toc-include" id="permissions-and-hooks"><a href="#permissions-and-hooks" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Permissions and Hooks</h3>
+<p>Permission is not hardcoded into the tool execution line. It is a <code>PreToolUse</code> hook:</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-foreground)">blocked </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> trigger_hooks</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-string-expression)">&quot;PreToolUse&quot;</span><span style="color:var(--shiki-token-punctuation)">, block)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">if</span><span style="color:var(--shiki-foreground)"> blocked</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    results</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">append</span><span style="color:var(--shiki-token-punctuation)">(</span><span style="color:var(--shiki-token-function)">tool_result</span><span style="color:var(--shiki-token-punctuation)">(block.id, blocked))</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    continue</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>That means permission, logging, and audit logic all attach to the same hook point. After execution, <code>PostToolUse</code> hooks run.</p>
+<h3 class="rp-toc-include" id="planning-and-tasks"><a href="#planning-and-tasks" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Planning and Tasks</h3>
+<p>S20 keeps two planning layers:</p>
+<ul>
+<li><code>todo_write</code>: lightweight plan for the current session, kept in memory</li>
+<li>task graph: cross-session, dependency-aware, claimable task files under <code>.tasks/task_*.json</code></li>
+</ul>
+<p>The first keeps a single agent from drifting. The second supports team coordination.</p>
+<h3 class="rp-toc-include" id="subagents-and-teams"><a href="#subagents-and-teams" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Subagents and Teams</h3>
+<p>S20 has two kinds of delegation:</p>
+<ul>
+<li><code>task</code>: one-shot subagent. It uses an isolated <code>messages[]</code>, discards intermediate context, and returns only a final summary.</li>
+<li><code>spawn_teammate</code>: persistent teammate thread. It communicates through <code>MessageBus</code>, polls the task board while idle, and can claim work autonomously.</li>
+</ul>
+<p>One-shot subagents solve context isolation. Persistent teammates solve long-running parallel collaboration.</p>
+<h3 class="rp-toc-include" id="memory-skills-and-prompt"><a href="#memory-skills-and-prompt" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Memory, Skills, and Prompt</h3>
+<p><code>assemble_system_prompt(context)</code> assembles each round from:</p>
+<ul>
+<li>identity and tool guidance</li>
+<li>workspace</li>
+<li>skills catalog</li>
+<li><code>.memory/MEMORY.md</code></li>
+<li>connected MCP servers</li>
+</ul>
+<p>Skills only put their catalog into the system prompt. Full content is loaded on demand through <code>load_skill(name)</code>.</p>
+<h3 class="rp-toc-include" id="compaction-and-recovery"><a href="#compaction-and-recovery" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Compaction and Recovery</h3>
+<p>Before the LLM call, S20 runs the compaction pipeline:</p>
+<div class="rp-codeblock language-text"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="text"><code><span class="line"><span>tool_result_budget → snip_compact → micro_compact → compact_history</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>The model call is wrapped with recovery:</p>
+<ul>
+<li>429: exponential backoff retry</li>
+<li>529: exponential backoff, optionally switch to fallback model after repeated failures</li>
+<li><code>max_tokens</code>: raise max tokens, then request continuation</li>
+<li>prompt too long: reactive compact and retry</li>
+</ul>
+<h3 class="rp-toc-include" id="background-and-cron"><a href="#background-and-cron" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Background and Cron</h3>
+<p>Slow bash work does not block the main loop:</p>
+<div class="rp-codeblock language-text"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="text"><code><span class="line"><span>should_run_background → start_background_task → placeholder tool_result</span></span>
+<span class="line"><span>background done → task_notification → next round injects messages</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>The cron scheduler runs as a daemon thread and checks once per second. The CLI watches <code>cron_queue</code>; when a job fires, it injects <code>[Scheduled] ...</code> and runs one agent turn automatically.</p>
+<h3 class="rp-toc-include" id="worktree-and-mcp"><a href="#worktree-and-mcp" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Worktree and MCP</h3>
+<p>Worktree isolation owns directories:</p>
+<ul>
+<li><code>create_worktree(name, task_id)</code> creates an isolated branch and directory</li>
+<li>the task <code>worktree</code> field binds a task to that directory</li>
+<li>when a teammate claims a task with a worktree, its bash/read/write tools run in that directory</li>
+</ul>
+<p>MCP owns external capability:</p>
+<ul>
+<li><code>connect_mcp(name)</code> connects a mock server</li>
+<li><code>assemble_tool_pool()</code> assembles MCP tools into the tool pool</li>
+<li>tool names use <code>mcp__server__tool</code></li>
+</ul>
+<hr/>
+<h2 class="rp-toc-include" id="changes-from-s19"><a href="#changes-from-s19" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Changes from s19</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="rp-table-scroll-container rp-scrollbar"><table><thead><tr><th>Component</th><th>s19</th><th>s20</th></tr></thead><tbody><tr><td>tool pool</td><td>built-in + MCP</td><td>built-in + MCP, with s01-s18 tools restored</td></tr><tr><td>permission</td><td>omitted in teaching body</td><td>runs inside <code>PreToolUse</code> hook</td></tr><tr><td>hooks</td><td>omitted</td><td>UserPromptSubmit / PreToolUse / PostToolUse / Stop</td></tr><tr><td>todo</td><td>omitted</td><td><code>todo_write</code> + reminder</td></tr><tr><td>skill</td><td>omitted</td><td>catalog in system prompt + <code>load_skill</code></td></tr><tr><td>compact</td><td>omitted</td><td>pre-LLM compaction + <code>compact</code> tool + reactive compact</td></tr><tr><td>error recovery</td><td>simple try/except</td><td>retry / max_tokens / prompt too long</td></tr><tr><td>background</td><td>omitted</td><td>slow-operation thread + task notification</td></tr><tr><td>cron</td><td>omitted</td><td>daemon scheduler + durable jobs</td></tr><tr><td>multi-agent</td><td>kept</td><td>kept; teammates use basic tools in isolated directories</td></tr><tr><td>worktree</td><td>kept</td><td>kept</td></tr><tr><td>MCP</td><td>new</td><td>kept as part of the final tool pool</td></tr></tbody></table></div>
+<hr/>
+<h2 class="rp-toc-include" id="try-it"><a href="#try-it" class="rp-header-anchor rp-link" aria-hidden="true">#</a>Try It</h2>
+<div class="rp-codeblock language-sh"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="sh"><code><span class="line"><span style="color:var(--shiki-token-function)">cd</span><span style="color:var(--shiki-token-string)"> learn-claude-code</span></span>
+<span class="line"><span style="color:var(--shiki-token-function)">python</span><span style="color:var(--shiki-token-string)"> s20_comprehensive/code.py</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>Try:</p>
+<ol>
+<li><code>Create a todo list for inspecting this repo, then list Python files</code></li>
+<li><code>Connect to the docs MCP server and search for agent loop</code></li>
+<li><code>Create two tasks, create worktrees for them, then spawn alice and bob. Ask them to submit plans before claiming tasks.</code></li>
+<li><code>remind me of the meeting in 3 minutes.</code></li>
+<li><code>Run npm install in the background and continue reading README.md</code></li>
+</ol>
+<p>Watch for:</p>
+<ul>
+<li>whether each tool call passes through hooks/permission</li>
+<li>whether MCP tools appear on the next round after <code>connect_mcp</code></li>
+<li>whether slow operations return a background placeholder</li>
+<li>whether cron automatically reminds you when the time arrives</li>
+<li>whether teammates submit plans and pause before approval</li>
+<li>whether teammates can claim tasks after plan approval</li>
+<li>whether teammates switch to the bound worktree directory</li>
+</ul>
+<hr/>
+<h2 class="rp-toc-include" id="the-end-is-the-beginning"><a href="#the-end-is-the-beginning" class="rp-header-anchor rp-link" aria-hidden="true">#</a>The End Is the Beginning</h2>
+<p>From s01 to s20, the code gets more capable, but the core remains unchanged:</p>
+<div class="rp-codeblock language-python"><div class="rp-codeblock__content"><div class="rp-codeblock__content__scroll-container rp-scrollbar rp-scrollbar--always"><pre class="shiki css-variables" style="background-color:var(--shiki-background);color:var(--shiki-foreground)" tabindex="0" data-lang="python"><code><span class="line"><span style="color:var(--shiki-token-keyword)">while</span><span style="color:var(--shiki-token-constant)"> True</span><span style="color:var(--shiki-token-punctuation)">:</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    response </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> LLM</span><span style="color:var(--shiki-token-punctuation)">(messages, tools)</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">    if</span><span style="color:var(--shiki-token-keyword)"> not</span><span style="color:var(--shiki-token-function)"> has_tool_use</span><span style="color:var(--shiki-token-punctuation)">(response.content):</span></span>
+<span class="line"><span style="color:var(--shiki-token-keyword)">        return</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    results </span><span style="color:var(--shiki-token-keyword)">=</span><span style="color:var(--shiki-token-function)"> execute_tools</span><span style="color:var(--shiki-token-punctuation)">(response.content)</span></span>
+<span class="line"><span style="color:var(--shiki-foreground)">    messages</span><span style="color:var(--shiki-token-punctuation)">.</span><span style="color:var(--shiki-token-function)">append</span><span style="color:var(--shiki-token-punctuation)">(tool_results)</span></span></code></pre></div><div class="rp-code-button-group"><button class="rp-code-button-group__button rp-code-wrap-button" title="Toggle code wrap"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrapped"><path fill="currentColor" d="M21 5H3v2h18zM3 19h7v-2H3zm0-6h15c1 0 2 .43 2 2s-1 2-2 2h-2v-2l-4 3 4 3v-2h2c2.95 0 4-1.27 4-4 0-2.72-1-4-4-4H3z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-button-group__icon--wrap"><path fill="currentColor" d="M16 7H3V5h13zM3 19h13v-2H3zm19-7-4-3v2H3v2h15v2z"></path></svg></button><button class="rp-code-button-group__button rp-code-copy-button" title="Copy code"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--copy"><path fill="currentColor" d="M20 8v12H8V8zm0-2H8a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2"></path><path fill="currentColor" d="M4 16H2V4a2 2 0 0 1 2-2h12v2H4Z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="rp-code-button-group__icon rp-code-copy-button__icon rp-code-copy-button__icon--success"><path fill="currentColor" d="m9.55 18-5.7-5.7 1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"></path></svg></button></div></div></div>
+<p>Claude Code&#x27;s complexity is not &quot;another agent brain.&quot; It is the complexity of a mature harness. The model decides and chooses actions; the harness organizes environment, tools, permissions, memory, teams, and external capabilities.</p>
+<p>This is the endpoint of the course: many mechanisms, one loop.</p><!--/$--></div><footer class="rp-doc-footer"><div class="rp-doc-footer__edit"></div><div class="rp-doc-footer__divider"></div><div class="rp-prev-next-page"><a href="/en/learn-claude/s19_mcp_plugin/index.html" class="rp-prev-next-page__item rp-prev-next-page__prev rp-link"><span class="rp-prev-next-page__item__desc">Previous page</span><span class="rp-prev-next-page__item__title"><svg width="1em" height="1em" viewBox="0 0 32 32" class="rp-prev-next-page__icon rp-prev-next-page__rotate_180"><path fill="currentColor" d="M22 16 12 26l-1.4-1.4 8.6-8.6-8.6-8.6L12 6z"></path></svg><span>s19_mcp_plugin</span></span></a><div class="rp-prev-next-page__placeholder"></div></div></footer></main></div><aside class="rp-doc-layout__outline rp-scrollbar"><div class="rp-outline"><div class="rp-outline__title">ON THIS PAGE<svg width="14" height="14" class="rp-progress-circle"><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-divider-light)" stroke-width="2"></circle><circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--rp-c-brand)" stroke-width="2" stroke-dasharray="37.69911184307752" stroke-dashoffset="37.69911184307752" transform="rotate(-90 7 7)" style="transition:stroke-dashoffset 0.3s"></circle></svg></div><nav class="rp-outline__toc rp-scrollbar"><a href="#problem" class="rp-toc-item rp-link" title="Problem" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">Problem</span></a><a href="#solution" class="rp-toc-item rp-link" title="Solution" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">Solution</span></a><a href="#where-each-component-sits" class="rp-toc-item rp-link" title="Where Each Component Sits" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">Where Each Component Sits</span></a><a href="#what-codepy-contains" class="rp-toc-item rp-link" title="What code.py Contains" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">What code.py Contains</span></a><a href="#tools-and-dispatch" class="rp-toc-item rp-link" title="Tools and Dispatch" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">Tools and Dispatch</span></a><a href="#permissions-and-hooks" class="rp-toc-item rp-link" title="Permissions and Hooks" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">Permissions and Hooks</span></a><a href="#planning-and-tasks" class="rp-toc-item rp-link" title="Planning and Tasks" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">Planning and Tasks</span></a><a href="#subagents-and-teams" class="rp-toc-item rp-link" title="Subagents and Teams" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">Subagents and Teams</span></a><a href="#memory-skills-and-prompt" class="rp-toc-item rp-link" title="Memory, Skills, and Prompt" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">Memory, Skills, and Prompt</span></a><a href="#compaction-and-recovery" class="rp-toc-item rp-link" title="Compaction and Recovery" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">Compaction and Recovery</span></a><a href="#background-and-cron" class="rp-toc-item rp-link" title="Background and Cron" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">Background and Cron</span></a><a href="#worktree-and-mcp" class="rp-toc-item rp-link" title="Worktree and MCP" style="padding-left:12px" data-depth="1"><span class="rp-toc-item__text rp-doc">Worktree and MCP</span></a><a href="#changes-from-s19" class="rp-toc-item rp-link" title="Changes from s19" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">Changes from s19</span></a><a href="#try-it" class="rp-toc-item rp-link" title="Try It" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">Try It</span></a><a href="#the-end-is-the-beginning" class="rp-toc-item rp-link" title="The End Is the Beginning" style="padding-left:0" data-depth="0"><span class="rp-toc-item__text rp-doc">The End Is the Beginning</span></a></nav><div class="rp-outline__divider"></div><div class="rp-outline__bottom"></div></div></aside></div></div>
+    <div id="__rspress_modal_container"></div>
+  </body>
+</html>
