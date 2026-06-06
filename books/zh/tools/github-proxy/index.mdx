@@ -1,0 +1,360 @@
+---
+title: GitHub 加速代理
+description: 将 GitHub 链接转换为多个加速通道,支持 git clone、wget / curl、原始链接三种模式。
+---
+
+import { useState } from 'react';
+
+# GitHub 加速代理
+
+将 GitHub 链接转换为多个加速通道,解决国内访问 GitHub 缓慢或无法访问的问题。支持 `git clone`、`wget` / `curl`、原始链接三种模式。
+
+<GithubProxy />
+
+export function GithubProxy() {
+  const [url, setUrl] = useState('https://github.com/ConardLi/garden-skills.git');
+  const [mode, setMode] = useState('git');
+  const [showQR, setShowQR] = useState(null);
+  const [copied, setCopied] = useState(null);
+
+  const cleanUrl = (url || '').trim();
+
+  const proxies = [
+    {
+      name: 'cloudflare (v4)',
+      host: 'https://gh-proxy.org/',
+      desc: '主机加速, 全球高速分发!国内优选和IPv6网络支持请使用优选服务器。',
+      tagColor: '#f97316',
+    },
+    {
+      name: 'Cloudflare (v4)',
+      host: 'https://v4.gh-proxy.org/',
+      desc: '优选加速服务器, 仅支持IPv4 网络智能解析。',
+      tagColor: '#f97316',
+      recommend: true,
+    },
+    {
+      name: 'Cloudflare (v4/v6)',
+      host: 'https://v6.gh-proxy.org/',
+      desc: '优选加速服务器, 支持 IPv6/IPv4 网络智能解析。',
+      tagColor: '#0ea5e9',
+    },
+    {
+      name: 'Fastly (v4)',
+      host: 'https://cdn.gh-proxy.org/',
+      desc: 'Fastly CDN 节点加速。',
+      tagColor: '#a855f7',
+    },
+  ];
+
+  const getDisplayUrl = (proxyUrl) => {
+    if (mode === 'git') return `git clone ${proxyUrl}`;
+    if (mode === 'wget') return `wget ${proxyUrl}`;
+    return proxyUrl;
+  };
+
+  const handleCopy = async (text, idx) => {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (e) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    setCopied(idx);
+    setTimeout(() => setCopied(null), 1500);
+  };
+
+  const card = {
+    background: 'var(--rp-c-bg-soft, #f1f5f9)',
+    border: '1px solid var(--rp-c-border, #e2e8f0)',
+    borderRadius: 12,
+    padding: 24,
+    marginBottom: 20,
+  };
+  const sectionTitle = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    fontSize: 20,
+    fontWeight: 700,
+    margin: '0 0 20px 0',
+    color: 'var(--rp-c-text-1, #0f172a)',
+    whiteSpace: 'nowrap',
+  };
+  const inputStyle = {
+    width: '100%',
+    boxSizing: 'border-box',
+    padding: '14px 18px',
+    fontSize: 15,
+    fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace',
+    background: 'var(--rp-c-bg, #f8fafc)',
+    border: '1px solid var(--rp-c-border, #e2e8f0)',
+    borderRadius: 8,
+    color: 'var(--rp-c-text-1, #0f172a)',
+    outline: 'none',
+  };
+  const modeRow = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: 12,
+    marginTop: 16,
+  };
+  const modeBtn = (active) => ({
+    padding: '12px 16px',
+    fontSize: 15,
+    fontWeight: 500,
+    border: active ? '1px solid #3b82f6' : '1px solid var(--rp-c-border, #e2e8f0)',
+    background: active ? '#3b82f6' : 'var(--rp-c-bg, #f8fafc)',
+    color: active ? '#fff' : 'var(--rp-c-text-1, #0f172a)',
+    borderRadius: 8,
+    cursor: 'pointer',
+    transition: 'all .2s',
+  });
+  const convertBtn = {
+    width: '100%',
+    marginTop: 16,
+    padding: '16px 20px',
+    fontSize: 16,
+    fontWeight: 600,
+    background: '#3b82f6',
+    color: '#fff',
+    border: 'none',
+    borderRadius: 8,
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  };
+  const proxyCard = {
+    background: 'var(--rp-c-bg, #f8fafc)',
+    border: '1px solid var(--rp-c-border, #e2e8f0)',
+    borderRadius: 10,
+    padding: 20,
+    marginBottom: 16,
+  };
+  const proxyHeader = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 14,
+    flexWrap: 'wrap',
+  };
+  const badge = (color) => ({
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 4,
+    background: color,
+    color: '#fff',
+    padding: '4px 10px',
+    borderRadius: 6,
+    fontSize: 13,
+    fontWeight: 600,
+    whiteSpace: 'nowrap',
+  });
+  const recommendTag = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: 4,
+    background: '#dcfce7',
+    color: '#16a34a',
+    padding: '4px 10px',
+    borderRadius: 6,
+    fontSize: 12,
+    fontWeight: 600,
+  };
+  const urlBox = {
+    background: 'var(--rp-c-bg-soft, #f1f5f9)',
+    border: '1px solid var(--rp-c-border, #e2e8f0)',
+    borderRadius: 6,
+    padding: '12px 16px',
+    fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace',
+    fontSize: 14,
+    color: 'var(--rp-c-text-1, #0f172a)',
+    wordBreak: 'break-all',
+    marginBottom: 12,
+  };
+  const actionRow = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: 8,
+  };
+  const actionBtn = {
+    padding: '10px 12px',
+    fontSize: 14,
+    fontWeight: 500,
+    background: 'var(--rp-c-bg, #f8fafc)',
+    border: '1px solid var(--rp-c-border, #e2e8f0)',
+    color: 'var(--rp-c-text-1, #0f172a)',
+    borderRadius: 6,
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    transition: 'all .2s',
+  };
+  const qrOverlay = {
+    position: 'fixed',
+    inset: 0,
+    background: 'rgba(0,0,0,.55)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 9999,
+    padding: 20,
+  };
+  const qrBox = {
+    background: '#fff',
+    borderRadius: 12,
+    padding: 24,
+    maxWidth: 340,
+    width: '100%',
+    textAlign: 'center',
+    boxShadow: '0 20px 60px rgba(0,0,0,.3)',
+  };
+  const note = {
+    marginTop: 12,
+    padding: 14,
+    background: 'var(--rp-c-bg-soft, #f1f5f9)',
+    borderRadius: 8,
+    color: 'var(--rp-c-text-2, #475569)',
+    fontSize: 14,
+    display: 'flex',
+    gap: 8,
+    alignItems: 'flex-start',
+  };
+
+  return (
+    <div>
+      <div style={card}>
+        <h2 style={sectionTitle}>
+          <span style={{ color: '#3b82f6' }}>🔗</span>
+          <span>GitHub 链接</span>
+        </h2>
+        <input
+          type="text"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder="请输入 GitHub 链接"
+          style={inputStyle}
+        />
+        <div style={modeRow}>
+          <button
+            style={modeBtn(mode === 'raw')}
+            onClick={() => setMode('raw')}
+          >
+            原始链接
+          </button>
+          <button
+            style={modeBtn(mode === 'git')}
+            onClick={() => setMode('git')}
+          >
+            Git Clone
+          </button>
+          <button
+            style={modeBtn(mode === 'wget')}
+            onClick={() => setMode('wget')}
+          >
+            Wget / cURL
+          </button>
+        </div>
+        <button style={convertBtn}>
+          <span>⚡</span> 转换链接
+        </button>
+      </div>
+
+      <div style={card}>
+        <h2 style={sectionTitle}>
+          <span style={{ color: '#3b82f6' }}>🚀</span> 加速拉取链接
+        </h2>
+        {proxies.map((p, idx) => {
+          const proxyUrl = cleanUrl ? p.host + cleanUrl : '';
+          const display = getDisplayUrl(proxyUrl);
+          return (
+            <div key={idx} style={proxyCard}>
+              <div style={proxyHeader}>
+                <span style={badge(p.tagColor)}>📍 {p.name}</span>
+                {p.recommend && <span style={recommendTag}>👍 推荐</span>}
+                <span style={{ color: 'var(--rp-c-text-2, #475569)', fontSize: 14 }}>
+                  {p.desc}
+                </span>
+              </div>
+              <div style={urlBox}>{display || '— 请先输入 GitHub 链接 —'}</div>
+              <div style={actionRow}>
+                <button
+                  style={actionBtn}
+                  onClick={() => handleCopy(display, idx)}
+                  disabled={!display}
+                >
+                  📋 {copied === idx ? '已复制' : '复制链接'}
+                </button>
+                <button
+                  style={actionBtn}
+                  onClick={() => window.open(proxyUrl, '_blank', 'noopener')}
+                  disabled={!proxyUrl}
+                >
+                  🔗 打开
+                </button>
+                <button
+                  style={actionBtn}
+                  onClick={() => setShowQR({ url: proxyUrl, title: p.name })}
+                  disabled={!proxyUrl}
+                >
+                  🔳 二维码
+                </button>
+              </div>
+            </div>
+          );
+        })}
+        <div style={note}>
+          <span style={{ color: '#3b82f6' }}>ℹ️</span>
+          <span>任一子加速节点不可用后预计会在 15 分钟内自动重定向至主站加速。</span>
+        </div>
+      </div>
+
+      {showQR && (
+        <div style={qrOverlay} onClick={() => setShowQR(null)}>
+          <div style={qrBox} onClick={(e) => e.stopPropagation()}>
+            <div style={{ fontWeight: 600, marginBottom: 12, color: '#0f172a' }}>
+              {showQR.title}
+            </div>
+            <img
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(showQR.url)}`}
+              alt="QR Code"
+              style={{ width: 240, height: 240, borderRadius: 8 }}
+            />
+            <div
+              style={{
+                marginTop: 12,
+                fontSize: 12,
+                color: '#64748b',
+                wordBreak: 'break-all',
+                fontFamily: 'ui-monospace, monospace',
+              }}
+            >
+              {showQR.url}
+            </div>
+            <button
+              style={{
+                ...actionBtn,
+                marginTop: 16,
+                width: '100%',
+                background: '#3b82f6',
+                color: '#fff',
+                border: 'none',
+              }}
+              onClick={() => setShowQR(null)}
+            >
+              关闭
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
